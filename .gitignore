@@ -5,6 +5,7 @@
 # Ops
 
 package-lock.json
+/dist/
 
 # Sensitive
 

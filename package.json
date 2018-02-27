@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "REACT front end for HRLA Scheduler",
   "scripts": {
-    "build": "webpack --config webpack.prod.config.js",
-    "build-dev": "webpack --config webpack.dev.config.js --watch"
+    "build": "webpack --mode production --config webpack.prod.config.js",
+    "build-dev": "webpack --mode development --config webpack.dev.config.js --watch"
   },
   "author": "Gabriel Katz, Daniel Chong",
   "license": "ISC",
@@ -18,7 +18,8 @@
     "dotenv-webpack": "^1.5.4",
     "html-webpack-plugin": "^2.30.1",
     "style-loader": "^0.20.2",
-    "webpack": "^4.0.1"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9"
   },
   "dependencies": {
     "history": "^4.7.2",

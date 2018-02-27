@@ -17,11 +17,11 @@ const enhancer = applyMiddleware(
 );
 
 const persistConfig = {
-  key: 'root',
+  key: 'hrla-scheduler',
   storage,
 };
 
-const persistedReducer = persistedReducer(persistConfig, Reducer);
+const persistedReducer = persistReducer(persistConfig, Reducer);
 
 function configureStore() {
   let store = createStore(persistedReducer, enhancer);

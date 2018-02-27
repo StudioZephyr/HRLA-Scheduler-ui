@@ -9,12 +9,13 @@ import { configureStore, history } from './store/configureStore';
 import './global.css';
 
 import App from './components/app/app.jsx';
+import LoadingView from './components/loading/loadingView.jsx'
 
 const { store, persistor } = configureStore();
 
 render(
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate loading={<LoadingView />} persistor={persistor}>
       <ConnectedRouter history={history}>
         <App />
       </ConnectedRouter>

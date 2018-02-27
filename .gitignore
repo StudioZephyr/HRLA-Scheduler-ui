@@ -1,0 +1,11 @@
+# Node Modules
+
+/node_modules/
+
+# Ops
+
+package-lock.json
+
+# Sensitive
+
+.env

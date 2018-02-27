@@ -1,0 +1,10 @@
+{
+  "name": "hrla-scheduler-ui",
+  "version": "1.0.0",
+  "description": "REACT front end for HRLA Scheduler",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabriel Katz, Daniel Chong",
+  "license": "ISC"
+}

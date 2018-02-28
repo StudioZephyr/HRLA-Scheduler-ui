@@ -14,4 +14,9 @@ const authLogin = (userObj) => (dispatch) => {
     });
 };
 
-export { authLogin };
+const authLogout = () => (dispatch) => {
+  dispatch({ type: `LOGOUT_SUCCESS` });
+  dipatch(push('/'));
+};
+
+export { authLogin, authLogout };

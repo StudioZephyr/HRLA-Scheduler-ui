@@ -16,7 +16,7 @@ const authLogin = (userObj) => (dispatch) => {
 
 const authLogout = () => (dispatch) => {
   dispatch({ type: `LOGOUT_SUCCESS` });
-  dipatch(push('/'));
+  dispatch(push('/'));
 };
 
 export { authLogin, authLogout };

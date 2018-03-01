@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import Routes from './routes.jsx';
+import Navbar from '../navbar/navbarView.jsx';
 
 class App extends Component {
   constructor() {
@@ -11,6 +12,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Navbar />
         <Routes />
       </div>
     )

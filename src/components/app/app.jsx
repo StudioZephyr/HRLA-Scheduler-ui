@@ -12,6 +12,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <p>hello</p>
         <Navbar />
         <Routes />
       </div>

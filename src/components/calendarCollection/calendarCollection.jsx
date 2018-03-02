@@ -14,11 +14,9 @@ class CalendarCollection extends Component {
   render() {
     return (
       <div>
-        {console.log(this.state.totalRooms)}
         {
-          this.state.totalRooms.map((x, i) => {
-            return <Calendar room={i} />
-
+          this.state.totalRooms.map((x, i, arr) => {
+            return <Calendar room={i} collectionSize={arr.length} />
           })
         }
       </div>

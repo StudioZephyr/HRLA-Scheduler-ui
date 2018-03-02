@@ -27,13 +27,19 @@ class Calendar extends Component {
         end: new Date(2018, 2, 2, 15, 0, 0),
       }]
     })
+    document.getElementById(this.props.room)
+    .getElementsByClassName('rbc-calendar')[0]
+    .style
+    .width = this.props.room === 0 ? 
+    `calc(${100 / (this.props.collectionSize + 1)  + '%'} + 76px)`
+    : 100 / (this.props.collectionSize + 1) + '%';
   }
 
 
   render() {
 
     return (
-      <div>
+      <div id={this.props.room} className='calendar'>
         test
         <BigCalendar
           events={this.state.eventsList}

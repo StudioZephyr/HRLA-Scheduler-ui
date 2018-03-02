@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 
-class LandingPage extends Component {
+class Calendar extends Component {
   constructor() {
     super();
     BigCalendar.momentLocalizer(moment);
@@ -25,7 +25,6 @@ class LandingPage extends Component {
         title: 'Test event',
         start: new Date(2018, 2, 2, 13, 0, 0),
         end: new Date(2018, 2, 2, 15, 0, 0),
-        
       }]
     })
   }
@@ -35,6 +34,7 @@ class LandingPage extends Component {
 
     return (
       <div>
+        test
         <BigCalendar
           events={this.state.eventsList}
           defaultView={'day'}
@@ -49,4 +49,4 @@ class LandingPage extends Component {
   }
 };
 
-export default LandingPage;
+export default Calendar;

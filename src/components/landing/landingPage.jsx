@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-
+import CalendarCollection from '../calendarCollection/calendarCollection.jsx'
 
 
 
@@ -14,7 +14,7 @@ class LandingPage extends Component {
 
     return (
       <div>
-        
+        <CalendarCollection />
       </div>
     )
   }

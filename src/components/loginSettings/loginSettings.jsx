@@ -11,22 +11,28 @@ class LoginSetting extends Component {
   constructor(props) {
     super(props);
 
-    const { groupName, login, password, type } = this.props.user;
+    const { groupName, login, password } = this.props.user;
 
     this.state = {
       groupName,
       login,
       password,
-      type,
       editDisabled: true,
     }
 
     this.setGroupName = this.setGroupName.bind(this);
+    this.setLogin = this.setLogin.bind(this);
   }
 
   setGroupName(text) {
     this.setState({
       groupName: text,
+    });
+  }
+
+  setLogin(text) {
+    this.setState({
+      login: text,
     });
   }
 
@@ -38,7 +44,7 @@ class LoginSetting extends Component {
 
   render() {
     const { updateLogin, user } = this.props;
-    const { editDisabled, groupName, login, password, type } = this.state;
+    const { editDisabled, groupName, login, password } = this.state;
 
     return (
       <div>
@@ -48,13 +54,17 @@ class LoginSetting extends Component {
         }
         {
           user.type === 'admin' &&
-          <AdminLogin groupName={groupName} setGroupName={this.setGroupName} editDisabled={editDisabled} />
+          <AdminLogin groupName={groupName} login={login} password={password}
+            setGroupName={this.setGroupName} 
+            setLogin={this.setLogin}
+            editDisabled={editDisabled} 
+          />
         }
         {
           !editDisabled &&
           <button onClick={(e) => {
             e.preventDefault();
-            updateLogin({ groupName, login, password, type }, user.id);
+            updateLogin({ groupName, login, password }, user.id);
             this.toggleEdit();
           }}>
             SUBMIT

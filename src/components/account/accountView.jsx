@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 
-import AdminAccount from './adminAccount.jsx';
-import GroupAccount from './groupAccount.jsx';
+import AccountRoutes from './routes.jsx';
+import TabBar from '../tab-bar/tabBarView.jsx';
 
 import { updateLogin } from '../../actions/authActions';
 
@@ -24,11 +24,8 @@ class AccountView extends Component {
 
     return (
       <div>
-        {
-          user.type === 'admin' ?
-          <AdminAccount user={user} /> :
-          <GroupAccount user={user} updateLogin={updateLogin} />
-        }
+        <TabBar type={user.type} />
+        <AccountRoutes />
       </div>
     )
   }
@@ -47,4 +44,4 @@ const AccountDispatch = (dispatch) => {
   }
 };
 
-export default connect(AccountState, AccountDispatch)(AccountView);
+export default withRouter(connect(AccountState, AccountDispatch)(AccountView));

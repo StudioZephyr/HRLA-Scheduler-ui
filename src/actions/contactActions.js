@@ -35,4 +35,15 @@ const updateContact = (contactObj, id) => (dispatch) => {
     });
 };
 
-export { getContacts, addContact, updateContact };
+const deleteContact = (id) => (dispatch) => {
+  axios.delete(`${API_SERVER}/api/contact/${id}`)
+    .then(({ data }) => {
+      dispatch({ type: 'CONTACT_SUCCESS' });
+    })
+    .catch(err => {
+      console.log(`Error deleting contact. ${err.message}`);
+      dispatch({ type: 'CONTACT_FAILED' });
+    });
+};
+
+export { getContacts, addContact, updateContact, deleteContact };

@@ -24,7 +24,7 @@ class AccountView extends Component {
 
     return (
       <div>
-        <TabBar type={user.type} />
+        <TabBar user={user} />
         <AccountRoutes />
       </div>
     )

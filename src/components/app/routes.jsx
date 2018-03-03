@@ -13,8 +13,9 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
+        <Route exact path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
-        <Route path="/" component={LandingPage} />
+        <Route path="/account" component={AccountPage} />
       </Switch>
     )
   }

@@ -18,6 +18,10 @@ class TabBarView extends Component {
           pathname: "/account/contacts",
           state: { authorized }
         }}>Contacts</Link>
+        <Link to={{
+          pathname: "/account/manage",
+          state: { authorized }
+        }}>Manage</Link>
       </div>
     )
   }

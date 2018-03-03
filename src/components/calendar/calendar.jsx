@@ -13,7 +13,6 @@ class Calendar extends Component {
     this.state = {
       eventsList: [{
         title: 'All Day Event very long initial event',
-        // allDay: true,
         start: new Date(2018, 2, 2, 15, 0, 0),
         end: new Date(2018, 2, 2, 17, 0, 0),
       }],
@@ -28,12 +27,9 @@ class Calendar extends Component {
         end: new Date(2018, 2, 2, 15, 0, 0),
       }]
     })
-    // document.getElementById(`room${this.props.room}`)
-    // .getElementsByClassName('rbc-calendar')[0]
-    // .style
-    // .width = this.props.room === 0 ? 
-    // `76px`
-    
+    document.getElementById(`room${this.props.room}`)
+    .getElementsByClassName('rbc-header')[0]
+    .textContent = this.props.room === 0 ? `Room No.` : `Room ${this.props.room}`
   }
 
 

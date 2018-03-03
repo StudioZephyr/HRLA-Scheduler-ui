@@ -8,7 +8,7 @@ class CalendarCollection extends Component {
   constructor() {
     super();
     this.state= {
-      totalRooms: new Array(4).fill('filler') //make number refer to a dynamic property on props
+      totalRooms: new Array(5).fill('filler') //make number refer to a dynamic property on props
     }
   }
 

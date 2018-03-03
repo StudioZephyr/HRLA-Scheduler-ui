@@ -23,7 +23,11 @@
   display: none;
 }
 
-.rbc-row {
+.rbc-row:last-child {
+  display: none;
+}
+
+.rbc-row .rbc-label, .rbc-header-gutter {
   display: none;
 }
 

@@ -29,7 +29,7 @@ class Calendar extends Component {
     })
     document.getElementById(`room${this.props.room}`)
     .getElementsByClassName('rbc-header')[0]
-    .textContent = this.props.room === 0 ? `Room No.` : `Room ${this.props.room}`
+    .textContent = this.props.room === 0 ? `Room` : `Room ${this.props.room}` //replace room number with room name
   }
 
 
@@ -38,10 +38,9 @@ class Calendar extends Component {
     return (
       <div id={`room${this.props.room}`} className='calendar'>
         <BigCalendar
-          hideGutter={true}
-          hideTimeIndicator={true}
           events={this.state.eventsList}
           defaultView={'day'}
+          date={this.props.date}
           step={15}
           views={['week', 'day']}
           min={new Date('2018-03-02T16:00:00.113Z')}

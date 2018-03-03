@@ -45,3 +45,26 @@
 .calendar {
   width: 100%
 }
+
+#calendarNav {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+#calendarNav .container {
+  width: 20%;
+}
+
+#calendarNav .rbc-calenar {
+  flex-grow: 2;
+  flex-basis: auto;
+}
+
+#calendarNav .rbc-toolbar {
+  display: inline-block;
+}
+
+#calendarNav .rbc-time-view {
+  display: none;
+}

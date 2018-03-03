@@ -1,16 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Redirect } from 'react-router-dom';
+
+import AdminAccount from './adminAccount.jsx';
+import GroupAccount from './groupAccount.jsx';
 
 class AccountView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {
+    const { user, authorized } = this.props;
+
+    if (!authorized) {
+      return (
+        <Redirect to="/" />
+      )
+    }
+
     return (
       <div>
-        Account Settings View
+        {
+          user.type === 'admin' ?
+          <AdminAccount user={user} /> :
+          <GroupAccount user={user} />
+        }
       </div>
     )
   }

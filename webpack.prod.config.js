@@ -50,7 +50,7 @@ module.exports = {
     ),
     new HTMLPlugin({
       template: TEMPLATE_DIR,
-      inject: 'body',
+      inject: false,
     }),
     new Dotenv({
       path: ENV_DIR,

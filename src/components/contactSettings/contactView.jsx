@@ -32,12 +32,13 @@ class ContactView extends Component {
 
   toggleEdit() {
     this.setState({
-      editDisabled: this.state.editDisabled,
+      editDisabled: !this.state.editDisabled,
     });
   }
 
   render() {
     const { editDisabled, email, name } = this.state;
+    const { contact, id, updateContact } = this.props;
 
     return (
       <div>
@@ -49,6 +50,8 @@ class ContactView extends Component {
           !editDisabled &&
           <button onClick={(e) => {
             e.preventDefault();
+            updateContact({ email, name, UserId: id }, contact.id);
+            this.toggleEdit();
           }} >
             SUBMIT
           </button>

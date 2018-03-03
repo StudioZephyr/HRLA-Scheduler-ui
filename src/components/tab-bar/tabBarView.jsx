@@ -7,16 +7,16 @@ class TabBarView extends Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { authorized } = this.props;
     return (
       <div>
         <Link to={{
           pathname: "/account",
-          state: { user }
+          state: { authorized }
         }}>User Settings</Link>
         <Link to={{
           pathname: "/account/contacts",
-          state: { id: user.id }
+          state: { authorized }
         }}>Contacts</Link>
       </div>
     )

@@ -2,15 +2,22 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class TabBarView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {
+    const { user } = this.props;
     return (
       <div>
-        <Link to="/account">User Settings</Link>
-        <Link to="/account/contacts">Contacts</Link>
+        <Link to={{
+          pathname: "/account",
+          state: { user }
+        }}>User Settings</Link>
+        <Link to={{
+          pathname: "/account/contacts",
+          state: { id: user.id }
+        }}>Contacts</Link>
       </div>
     )
   }

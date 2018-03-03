@@ -4,8 +4,6 @@ import { Redirect, withRouter } from 'react-router-dom';
 import AccountRoutes from './routes.jsx';
 import TabBar from '../tab-bar/tabBarView.jsx';
 
-import { updateLogin } from '../../actions/authActions';
-
 class AccountView extends Component {
   constructor(props) {
     super(props);

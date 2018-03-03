@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import { getContacts } from '../../actions/contactActions';
 
+import ContactView from './contactView.jsx';
+
 class ContactSetting extends Component {
   constructor(props) {
     super(props);
@@ -21,11 +23,13 @@ class ContactSetting extends Component {
       )
     }
 
-    console.log(contacts);
-
     return (
       <div>
-        Contacts settings
+        {
+          updated && contacts.map((contact, i) => (
+            <ContactView key={`contact-view-${id}-${i}`} contact={contact} />
+          ))
+        }
       </div>
     )
   }

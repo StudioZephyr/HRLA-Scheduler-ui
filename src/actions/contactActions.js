@@ -16,12 +16,23 @@ const getContacts = (id) => (dispatch) => {
 const addContact = (contactObj, id) => (dispatch) => {
   axios.post(`${API_SERVER}/api/contact/${id}`, contactObj)
     .then(({ data }) => {
-      dispatch({ type: 'CONTACT_ADD_SUCCESS' });
+      dispatch({ type: 'CONTACT_SUCCESS' });
     })
     .catch(err => {
       console.log(`Error adding Contact. ${err.message}`);
-      dispatch({ type: 'CONTACT_ADD_FAILED' });
+      dispatch({ type: 'CONTACT_FAILED' });
     });
 };
 
-export { getContacts, addContact };
+const updateContact = (contactObj, id) => (dispatch) => {
+  axios.put(`${API_SERVER}/api/contact/${id}`, contactObj)
+    .then(({ data }) => {
+      dispatch({ type: 'CONTACT_SUCCESS' });
+    })
+    .catch(err => {
+      console.log(`Error updating contact. ${err.message}`);
+      dispatch({ type: 'CONTACT_FAILED' });
+    });
+};
+
+export { getContacts, addContact, updateContact };

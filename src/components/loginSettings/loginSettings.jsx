@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import GroupLogin from './groupLogin.jsx';
+import AdminLogin from './adminLogin.jsx';
+
 class LoginSetting extends Component {
   constructor(props) {
     super(props);
@@ -9,13 +12,32 @@ class LoginSetting extends Component {
       login: '',
       password: '',
       type: '',
+      editDisabled: true,
     }
+
+    this.setGroupName = this.setGroupName.bind(this);
+  }
+
+  setGroupName(text) {
+    this.setState({
+      groupName: text,
+    });
   }
 
   render() {
+    const { user } = this.props;
+    const { editDisabled } = this.state;
+
     return (
       <div>
-        Login Settings
+        {
+          user.type === 'group' &&
+          <GroupLogin groupName={user.groupName} setGroupName={this.setGroupName} editDisabled={editDisabled} />
+        }
+        {
+          user.type === 'admin' &&
+          <AdminLogin groupName={user.groupName} setGroupName={this.setGroupName} editDisabled={editDisabled} />
+        }
       </div>
     )
   }

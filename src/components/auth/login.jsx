@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Redirect } from 'react-router-dom';
 
 import { authLogin } from '../../actions/authActions';
+import { getContacts } from '../../actions/contactActions';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -29,9 +30,10 @@ class LoginPage extends Component {
 
   render() {
     const { login, password } = this.state;
-    const { authorized, loginAction } = this.props;
+    const { authorized, getContacts, loginAction, user } = this.props;
 
     if (authorized) {
+      getContacts(user.id);
       return (
         <Redirect to="/" />
       )
@@ -68,6 +70,7 @@ const LoginState = (state) => {
 const LoginDispatch = (dispatch) => {
   return {
     loginAction: bindActionCreators(authLogin, dispatch),
+    getContacts: bindActionCreators(getContacts, dispatch)
   }
 };
 

@@ -66,7 +66,7 @@ class ContactSetting extends Component {
             }} />
             <button onClick={(e) => {
               e.preventDefault();
-              addContact({ name, email }, user.id);
+              addContact({ name, email }, id);
               this.toggleAdd();
             }} >
               SUBMIT

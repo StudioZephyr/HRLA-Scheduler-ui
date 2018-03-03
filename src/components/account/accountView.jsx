@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Redirect, withRouter } from 'react-router-dom';
 
 import AccountRoutes from './routes.jsx';
@@ -14,7 +12,7 @@ class AccountView extends Component {
   }
 
   render() {
-    const { authorized, updateLogin, user } = this.props;
+    const { authorized } = this.props.location.state;
 
     if (!authorized) {
       return (
@@ -24,24 +22,11 @@ class AccountView extends Component {
 
     return (
       <div>
-        <TabBar user={user} />
+        <TabBar authorized={authorized} />
         <AccountRoutes />
       </div>
     )
   }
 };
 
-const AccountState = (state) => {
-  return {
-    user: state.auth.user,
-    authorized: state.auth.authorized,
-  }
-};
-
-const AccountDispatch = (dispatch) => {
-  return {
-    updateLogin: bindActionCreators(updateLogin, dispatch),
-  }
-};
-
-export default withRouter(connect(AccountState, AccountDispatch)(AccountView));
+export default withRouter(AccountView);

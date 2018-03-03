@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import LoginSetting from '../loginSettings/loginSettings.jsx';
+import ContactSetting from '../contactSettings/contactSettings.jsx';
 
 class AccountRoutes extends Component {
   constructor() {
@@ -12,7 +13,7 @@ class AccountRoutes extends Component {
     return (
       <Switch>
         <Route exact path="/account" component={LoginSetting} />
-        {/* <Route path="/account/contacts" component={} /> */}
+        <Route path="/account/contacts" component={ContactSetting} />
         {/* <Route path="/account/manage" component={} /> */}
       </Switch>
     )

@@ -4,6 +4,7 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+import './calendar.css';
 
 class Calendar extends Component {
   constructor() {
@@ -27,21 +28,22 @@ class Calendar extends Component {
         end: new Date(2018, 2, 2, 15, 0, 0),
       }]
     })
-    document.getElementById(this.props.room)
-    .getElementsByClassName('rbc-calendar')[0]
-    .style
-    .width = this.props.room === 0 ? 
-    `calc(${100 / (this.props.collectionSize + 1)  + '%'} + 76px)`
-    : 100 / (this.props.collectionSize + 1) + '%';
+    // document.getElementById(`room${this.props.room}`)
+    // .getElementsByClassName('rbc-calendar')[0]
+    // .style
+    // .width = this.props.room === 0 ? 
+    // `76px`
+    
   }
 
 
   render() {
 
     return (
-      <div id={this.props.room} className='calendar'>
-        test
+      <div id={`room${this.props.room}`} className='calendar'>
         <BigCalendar
+          hideGutter={true}
+          hideTimeIndicator={true}
           events={this.state.eventsList}
           defaultView={'day'}
           step={15}

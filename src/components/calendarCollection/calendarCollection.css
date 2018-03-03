@@ -1,0 +1,43 @@
+/* .rbc-label .rbc-time-column {
+  display: none;
+}
+
+#room0 > .rbc-label .rbc-time-column {
+  display: inline-block;
+} */
+
+.rbc-time-view .rbc-time-gutter {
+  display: none;
+}
+
+#room0 .rbc-time-view .rbc-time-gutter {
+  display: inline-block;
+  flex-basis: auto;
+}
+
+#room0 {
+  flex-basis: 0;
+}
+
+#room0 .rbc-day-slot {
+  display: none;
+}
+
+.rbc-row {
+  display: none;
+}
+
+.rbc-toolbar {
+  display: none;
+}
+
+
+#calendars {
+  display: inline-flex;
+  /* flex-direction: row; */
+  width: 100%;
+}
+
+.calendar {
+  width: 100%
+}

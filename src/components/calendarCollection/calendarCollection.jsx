@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Calendar from '../calendar/calendar.jsx'
 
+import './calendarCollection.css';
 
 class CalendarCollection extends Component {
   constructor() {
@@ -13,7 +14,7 @@ class CalendarCollection extends Component {
 
   render() {
     return (
-      <div>
+      <div id='calendars'>
         {
           this.state.totalRooms.map((x, i, arr) => {
             return <Calendar room={i} collectionSize={arr.length} />

@@ -13,4 +13,15 @@ const getContacts = (id) => (dispatch) => {
     });
 };
 
-export { getContacts };
+const addContact = (contactObj, id) => (dispatch) => {
+  axios.post(`${API_SERVER}/api/contact/${id}`, contactObj)
+    .then(({ data }) => {
+      dispatch({ type: 'CONTACT_ADD_SUCCESS' });
+    })
+    .catch(err => {
+      console.log(`Error adding Contact. ${err.message}`);
+      dispatch({ type: 'CONTACT_ADD_FAILED' });
+    });
+};
+
+export { getContacts, addContact };

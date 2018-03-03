@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export const AdminLoginSettings = (props) => (
+const AdminLoginSettings = (props) => (
   <form>
     <input type="text" placeholder={props.groupName} disabled={props.editDisabled} onChange={(e) => {
       props.setGroupName(e.target.value);
     }} />
   </form>
 );
+
+export default AdminLoginSettings;

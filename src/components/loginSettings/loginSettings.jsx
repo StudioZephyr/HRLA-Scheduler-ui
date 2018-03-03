@@ -22,6 +22,7 @@ class LoginSetting extends Component {
 
     this.setGroupName = this.setGroupName.bind(this);
     this.setLogin = this.setLogin.bind(this);
+    this.setPassword = this.setPassword.bind(this);
   }
 
   setGroupName(text) {
@@ -33,6 +34,12 @@ class LoginSetting extends Component {
   setLogin(text) {
     this.setState({
       login: text,
+    });
+  }
+
+  setPassword(text) {
+    this.setState({
+      password: text,
     });
   }
 
@@ -57,6 +64,7 @@ class LoginSetting extends Component {
           <AdminLogin groupName={groupName} login={login} password={password}
             setGroupName={this.setGroupName} 
             setLogin={this.setLogin}
+            setPassword={this.setPassword}
             editDisabled={editDisabled} 
           />
         }

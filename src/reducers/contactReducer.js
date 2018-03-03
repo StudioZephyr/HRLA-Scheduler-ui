@@ -19,12 +19,12 @@ const contactsReducer = (state=initialState, action) => {
         contactsUpdated: false,
       });
     }
-    case `CONTACT_ADD_SUCCESS`: {
+    case `CONTACT_SUCCESS`: {
       return Object.assign({}, state, {
         contactsUpdated: false,
       });
     }
-    case `CONTACT_ADD_FAILED`: {
+    case `CONTACT_FAILED`: {
       return state;
     }
     default: {

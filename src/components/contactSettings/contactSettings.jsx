@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getContacts, addContact, updateContact } from '../../actions/contactActions';
+import { getContacts, addContact, updateContact, deleteContact } from '../../actions/contactActions';
 
 import ContactView from './contactView.jsx';
 
@@ -36,7 +36,7 @@ class ContactSetting extends Component {
   }
 
   render() {
-    const { addContact, contacts, getContacts, id, updateContact, updated } = this.props;
+    const { addContact, contacts, deleteContact, getContacts, id, updateContact, updated } = this.props;
     const { addDisabled, email, name } = this.state;
 
     if (!updated) {
@@ -52,7 +52,7 @@ class ContactSetting extends Component {
       <div>
         {
           updated && contacts.map((contact, i) => (
-            <ContactView key={`contact-view-${id}-${i}`} contact={contact} updateContact={updateContact} id={id} />
+            <ContactView key={`contact-view-${id}-${i}`} contact={contact} updateContact={updateContact} id={id} deleteContact={deleteContact} />
           ))
         }
         {
@@ -97,6 +97,7 @@ const ContactDispatch = (dispatch) => {
     getContacts: bindActionCreators(getContacts, dispatch),
     addContact: bindActionCreators(addContact, dispatch),
     updateContact: bindActionCreators(updateContact, dispatch),
+    deleteContact: bindActionCreators(deleteContact, dispatch),
   }
 };
 

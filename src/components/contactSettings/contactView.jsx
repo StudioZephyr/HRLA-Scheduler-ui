@@ -38,7 +38,7 @@ class ContactView extends Component {
 
   render() {
     const { editDisabled, email, name } = this.state;
-    const { contact, id, updateContact } = this.props;
+    const { contact, id, updateContact, deleteContact } = this.props;
 
     return (
       <div>
@@ -61,6 +61,12 @@ class ContactView extends Component {
           this.toggleEdit();
         }} >
           { editDisabled ? 'EDIT' : 'CANCEL' }
+        </button>
+        <button onClick={(e) => {
+          e.preventDefault();
+          deleteContact(contact.id);
+        }}>
+          DELETE
         </button>
       </div>
     )

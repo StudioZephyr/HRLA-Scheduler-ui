@@ -20,6 +20,10 @@ class Navbar extends Component {
           !authorized && 
           <Link to="/login">LOGIN</Link> 
         }
+        {
+          authorized && 
+          <Link to="/account">ACCOUNT</Link>
+        }
         { 
           authorized &&
           <button onClick={(e) => {

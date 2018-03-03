@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import LandingPage from '../landing/landingPage.jsx';
 import LoginPage from '../auth/login.jsx';
+import AccountPage from '../account/accountView.jsx';
 
 class Routes extends Component {
   constructor() {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import ManageGroupView from './manageGroupView.jsx';
+import AddGroupView from './manageGroupView.jsx';
 
 class ManageGroupsSettings extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class ManageGroupsSettings extends Component {
       logins: [],
     };
 
+    this.addLogin = this.addLogin.bind(this);
     this.updateLogin = this.updateLogin.bind(this);
   }
 
@@ -39,6 +41,24 @@ class ManageGroupsSettings extends Component {
     }
   }
 
+  addLogin(loginObj) {
+    axios.post(`${process.env.API_SERVER}/api/signup`, loginObj)
+      .then(({ data }) => {
+        alert(`User, ${data.result.login}, has been added!`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      })
+      .catch(err => {
+        console.log(`Error adding User. ${err.message}`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      });
+  }
+
   updateLogin(loginObj, id) {
     axios.put(`${process.env.API_SERVER}/api/login/${id}`, loginObj)
       .then(({ data }) => {
@@ -58,7 +78,7 @@ class ManageGroupsSettings extends Component {
   }
 
   render() {
-    const { updated, logins } = this.state;
+    const { add, updated, logins } = this.state;
 
     if (!updated) {
       return (
@@ -83,6 +103,7 @@ class ManageGroupsSettings extends Component {
             <ManageGroupView key={`manage-group-${i}`} login={login} updateLogin={this.updateLogin} />
           ))
         }
+        <AddGroupView addLogin={this.addLogin} />
       </div>
     )
   }

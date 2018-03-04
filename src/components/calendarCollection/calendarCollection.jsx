@@ -15,7 +15,7 @@ class CalendarCollection extends Component {
     super();
     BigCalendar.momentLocalizer(moment);
     this.state = {
-      totalRooms: new Array(5).fill('filler'), //make number refer to a dynamic property on props
+      roomArray: [{name: 'time'}],
       calType: 'day',
       currDay: moment(),
       eventData: []
@@ -23,13 +23,20 @@ class CalendarCollection extends Component {
   }
 
   componentDidMount() {
-
     axios.get(`${API_SERVER}/api/rooms`)
       .then(({ data }) => {
         this.setState({
-          eventData: data
+          roomArray: this.state.roomArray.concat(data.result)
         })
+        console.log('here is the new state', this.state.roomArray)
+        axios.get(`${API_SERVER}/api/timeslots`)
+          .then(({ data }) => {
+            this.setState({
+              eventData: data
+            })
+          })
       })
+
 
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
@@ -80,6 +87,7 @@ class CalendarCollection extends Component {
   }
 
   render() {
+    // if (this.state.roomArray)
     return (
       <div id='calendarCollection'>
         <div id='calendarNav'>
@@ -98,8 +106,8 @@ class CalendarCollection extends Component {
         {
           this.state.calType === 'day' ?
           <div id='calendars'>
-            {this.state.totalRooms.map((x, i, arr) => {
-              return <Calendar room={i} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+            {this.state.roomArray.map((x, i, arr) => {
+              return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               })}
               </div>
             :

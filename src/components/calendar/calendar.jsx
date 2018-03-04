@@ -31,16 +31,16 @@ class Calendar extends Component {
       }]
     })
 
-    this.props.events.forEach((event) => {
-      if (event.name)
-      this.state.eventsList.push(event)
-    })
+    // this.props.events.forEach((event) => {
+    //   if (event.name)
+    //   this.state.eventsList.push(event)
+    // })
 
     this.fillTimeSlot(new Date(2018, 2, 2, 13, 0, 0), new Date(2018, 2, 2, 15, 0, 0))
     
-    document.getElementById(`room${this.props.room}`)
+    document.getElementById(`${this.props.room.name}`)
     .getElementsByClassName('rbc-header')[0]
-    .textContent = this.props.room === 0 ? `Room` : `Room ${this.props.room}` //replace room number with room name
+    .textContent = this.props.room.name === 'time' ? `Room` : `${this.props.room.name}` //replace room number with room name
   }
 
   toIdx(time) {
@@ -58,7 +58,7 @@ class Calendar extends Component {
   render() {
 
     return (
-      <div id={`room${this.props.room}`} className='calendar'>
+      <div id={`${this.props.room.name}`} className='calendar'>
       {this.props.currDate ? 
         <BigCalendar
           events={this.state.eventsList}

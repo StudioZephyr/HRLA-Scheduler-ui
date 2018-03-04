@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import ManageGroupView from './manageGroupView.jsx';
-import AddGroupView from './manageGroupView.jsx';
+import AddGroupView from './addGroupView.jsx';
 
 class ManageGroupsSettings extends Component {
   constructor(props) {

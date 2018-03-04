@@ -71,8 +71,7 @@ class CalendarCollection extends Component {
 
   render() {
     return (
-      <div>
-        {console.log('currday', this.state.currDay)}
+      <div id='calendarCollection'>
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -86,16 +85,18 @@ class CalendarCollection extends Component {
           />
           <div className='container'></div>
         </div>
-        <div id='calendars'>
-          {
-            this.state.calType === 'day' ?
-              this.state.totalRooms.map((x, i, arr) => {
-                return <Calendar room={i} currDate={this.state.currDay} calType={this.state.calType} />
-              })
-              :
-              <Calendar room={0} date={this.state.currDay} type={this.state.type} />
-          }
-        </div>
+        {
+          this.state.calType === 'day' ?
+          <div id='calendars'>
+            {this.state.totalRooms.map((x, i, arr) => {
+              return <Calendar room={i} currDate={this.state.currDay} calType={this.state.calType} />
+              })}
+              </div>
+            :
+            <div id='weekCalendar'>
+              <Calendar room={'weeks'} currDate={this.state.currDay} calType={this.state.calType} />
+            </div>
+        }
       </div>
     )
   }

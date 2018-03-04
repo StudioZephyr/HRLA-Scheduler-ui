@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import './calendar.css';
+const API_SERVER = process.env.API_SERVER;
 
 class Calendar extends Component {
   constructor() {
@@ -29,8 +31,13 @@ class Calendar extends Component {
       }]
     })
 
+    this.props.events.forEach((event) => {
+      if (event.name)
+      this.state.eventsList.push(event)
+    })
+
     this.fillTimeSlot(new Date(2018, 2, 2, 13, 0, 0), new Date(2018, 2, 2, 15, 0, 0))
-    console.log(this.state.eventRow);
+    
     document.getElementById(`room${this.props.room}`)
     .getElementsByClassName('rbc-header')[0]
     .textContent = this.props.room === 0 ? `Room` : `Room ${this.props.room}` //replace room number with room name

@@ -1,12 +1,4 @@
-/* .rbc-label .rbc-time-column {
-  display: none;
-}
-
-#room0 > .rbc-label .rbc-time-column {
-  display: inline-block;
-} */
-
-.rbc-time-view .rbc-time-gutter {
+#calendars .rbc-time-view .rbc-time-gutter {
   display: none;
 }
 
@@ -23,22 +15,20 @@
   display: none;
 }
 
-.rbc-row:last-child {
+#calendars .rbc-row:last-child {
   display: none;
 }
 
-.rbc-row .rbc-label, .rbc-header-gutter {
+#calendars .rbc-row .rbc-label, .rbc-header-gutter {
   display: none;
 }
 
-.rbc-toolbar {
+#calendars .rbc-toolbar {
   display: none;
 }
-
 
 #calendars {
   display: inline-flex;
-  /* flex-direction: row; */
   width: 100%;
 }
 
@@ -66,5 +56,13 @@
 }
 
 #calendarNav .rbc-time-view {
+  display: none;
+}
+
+#weekCalendar .rbc-label, .rbc-header-gutter {
+  display: inline-block;
+}
+
+#weekCalendar .rbc-toolbar {
   display: none;
 }

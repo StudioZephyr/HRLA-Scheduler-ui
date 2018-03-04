@@ -37,16 +37,20 @@ class Calendar extends Component {
 
     return (
       <div id={`room${this.props.room}`} className='calendar'>
+      {this.props.currDate ? 
         <BigCalendar
           events={this.state.eventsList}
-          defaultView={'day'}
-          date={this.props.date}
+          view={this.props.calType}
+          date={this.props.currDate}
           step={15}
           views={['week', 'day']}
           min={new Date('2018-03-02T16:00:00.113Z')}
           max={new Date('2018-03-02T04:00:00.113Z')}
           defaultDate={new Date(2018, 2, 2)}
         />
+      : 
+      <p>Loading</p>
+      }
       </div>
     )
   }

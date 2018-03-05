@@ -2,16 +2,16 @@
   display: none;
 }
 
-#room0 .rbc-time-view .rbc-time-gutter {
+#time .rbc-time-view .rbc-time-gutter {
   display: inline-block;
   flex-basis: auto;
 }
 
-#room0 {
+#time {
   flex-basis: 0;
 }
 
-#room0 .rbc-day-slot {
+#time .rbc-day-slot {
   display: none;
 }
 

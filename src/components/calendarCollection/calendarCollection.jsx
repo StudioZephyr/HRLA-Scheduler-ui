@@ -1,25 +1,45 @@
 import React, { Component } from 'react';
 
-import Calendar from '../calendar/calendar.jsx'
+import Calendar from '../calendar/calendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
+import axios from 'axios';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendarCollection.css';
+const API_SERVER = process.env.API_SERVER;
 
 class CalendarCollection extends Component {
   constructor() {
     super();
     BigCalendar.momentLocalizer(moment);
     this.state = {
-      totalRooms: new Array(5).fill('filler'), //make number refer to a dynamic property on props
+      roomArray: [],
       calType: 'day',
-      currDay: moment()
+      currDay: moment(),
+      eventData: [],
+      eventsLoaded: false
     }
   }
 
   componentDidMount() {
+    axios.get(`${API_SERVER}/api/rooms`)
+      .then(({ data }) => {
+        this.setState({
+          roomArray: this.state.roomArray.concat(data.result)
+        })
+        console.log('here is the new state', this.state.roomArray)
+        axios.get(`${API_SERVER}/api/timeslot`)
+          .then(({ data }) => {
+            this.setState({
+              eventData: data.result,
+              eventsLoaded: true
+            })
+            console.log('event in calcoll', this.state.eventData)
+          })
+      })
+
 
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
@@ -85,19 +105,27 @@ class CalendarCollection extends Component {
           />
           <div className='container'></div>
         </div>
+
         {
-          this.state.calType === 'day' ?
-          <div id='calendars'>
-            {this.state.totalRooms.map((x, i, arr) => {
-              return <Calendar room={i} currDate={this.state.currDay} calType={this.state.calType} />
-              })}
+          this.state.eventsLoaded ?
+            this.state.calType === 'day' ?
+              <div id='calendars'>
+              <Calendar room={{name: 'time'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                {this.state.roomArray.map((x, i, arr) => {
+                  console.log('events in render:', this.state.eventData);
+                  return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                })}
+              </div>
+              :
+              <div id='weekCalendar'>
+                <Calendar room={{name: 'weeks'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
-            <div id='weekCalendar'>
-              <Calendar room={'weeks'} currDate={this.state.currDay} calType={this.state.calType} />
-            </div>
+            <div>Loading</div>
         }
-      </div>
+
+        }
+        </div>
     )
   }
 };

@@ -15,7 +15,7 @@ class CalendarCollection extends Component {
     super();
     BigCalendar.momentLocalizer(moment);
     this.state = {
-      roomArray: [{ name: 'time' }],
+      roomArray: [],
       calType: 'day',
       currDay: moment(),
       eventData: [],
@@ -110,6 +110,7 @@ class CalendarCollection extends Component {
           this.state.eventsLoaded ?
             this.state.calType === 'day' ?
               <div id='calendars'>
+              <Calendar room={{name: 'time'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
                 {this.state.roomArray.map((x, i, arr) => {
                   console.log('events in render:', this.state.eventData);
                   return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
@@ -117,7 +118,7 @@ class CalendarCollection extends Component {
               </div>
               :
               <div id='weekCalendar'>
-                <Calendar room={'weeks'} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                <Calendar room={{name: 'weeks'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
             <div>Loading</div>

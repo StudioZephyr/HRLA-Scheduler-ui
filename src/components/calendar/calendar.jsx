@@ -30,12 +30,11 @@ class Calendar extends Component {
             start: new Date(event.start),
             end: new Date(event.end)
           })
-
         })
       }
     })
-    console.log('eventlist for room>>>', this.props.room.id , this.state.eventsList)
-
+    
+    console.log('checking totime', this.toTime(10))
     this.setState({
       eventsList: this.state.eventsList
     })
@@ -49,14 +48,23 @@ class Calendar extends Component {
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
       this.blockTodaysEvents();
-      console.log('checking row data', this.state.eventRow);
+      this.populateEventOptions();
       this.setState({
         rowDate: this.props.currDate
       })
+      console.log(this.state.eventsList)
     }
   }
 
-
+  toTime(idx) {
+    return moment({
+      year: this.props.currDate.year(),
+      month: this.props.currDate.month(),
+      date: this.props.currDate.date(),
+      hour: Math.floor(idx / 2) + 8,
+      minute: idx % 2 === 0 ? 0 : 30
+    }).toDate()
+  }
 
   toIdx(time) {
     return (time.getHours() - 8) * 2 + (time.getMinutes() === 0 ? 0 : 1);
@@ -77,7 +85,24 @@ class Calendar extends Component {
         this.fillTimeSlot(event.start, event.end);
       }
     })
+  }
 
+  populateEventOptions () {
+    this.state.eventRow.forEach((spot, i, arr) => {
+      if (spot === 0) {
+        this.state.eventRow[i] = 1;
+        this.state.eventsList.push({
+          id: 0,
+          title: 'Empty Time Slot',
+          start: this.toTime(i),
+          end: this.toTime(i + 1)
+        })
+      }
+    })
+  }
+
+  eventStyles () {
+    //check docs on eventPropGetter
   }
 
   render() {

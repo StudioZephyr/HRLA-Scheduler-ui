@@ -15,10 +15,11 @@ class CalendarCollection extends Component {
     super();
     BigCalendar.momentLocalizer(moment);
     this.state = {
-      roomArray: [{name: 'time'}],
+      roomArray: [{ name: 'time' }],
       calType: 'day',
       currDay: moment(),
-      eventData: []
+      eventData: [],
+      eventsLoaded: false
     }
   }
 
@@ -29,11 +30,13 @@ class CalendarCollection extends Component {
           roomArray: this.state.roomArray.concat(data.result)
         })
         console.log('here is the new state', this.state.roomArray)
-        axios.get(`${API_SERVER}/api/timeslots`)
+        axios.get(`${API_SERVER}/api/timeslot`)
           .then(({ data }) => {
             this.setState({
-              eventData: data
+              eventData: data.result,
+              eventsLoaded: true
             })
+            console.log('event in calcoll', this.state.eventData)
           })
       })
 
@@ -87,7 +90,6 @@ class CalendarCollection extends Component {
   }
 
   render() {
-    // if (this.state.roomArray)
     return (
       <div id='calendarCollection'>
         <div id='calendarNav'>
@@ -103,19 +105,26 @@ class CalendarCollection extends Component {
           />
           <div className='container'></div>
         </div>
+
         {
-          this.state.calType === 'day' ?
-          <div id='calendars'>
-            {this.state.roomArray.map((x, i, arr) => {
-              return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
-              })}
+          this.state.eventsLoaded ?
+            this.state.calType === 'day' ?
+              <div id='calendars'>
+                {this.state.roomArray.map((x, i, arr) => {
+                  console.log('events in render:', this.state.eventData);
+                  return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                })}
+              </div>
+              :
+              <div id='weekCalendar'>
+                <Calendar room={'weeks'} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
-            <div id='weekCalendar'>
-              <Calendar room={'weeks'} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
-            </div>
+            <div>Loading</div>
         }
-      </div>
+
+        }
+        </div>
     )
   }
 };

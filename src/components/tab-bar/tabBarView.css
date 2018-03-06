@@ -1,0 +1,9 @@
+#tabnav {
+  padding-top: 5%;
+  text-align: center;
+}
+
+#tabnav a {
+  text-decoration: none;
+  margin-bottom: 10px;
+}

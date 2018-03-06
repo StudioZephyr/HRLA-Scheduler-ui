@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+
+import './tabBarView.css';
 
 class TabBarView extends Component {
   constructor(props) {
@@ -9,20 +11,32 @@ class TabBarView extends Component {
   render() {
     const { authorized } = this.props;
     return (
-      <div>
-        <Link to={{
-          pathname: "/account",
-          state: { authorized }
-        }}>User Settings</Link>
-        <Link to={{
-          pathname: "/account/contacts",
-          state: { authorized }
-        }}>Contacts</Link>
-        <Link to={{
-          pathname: "/account/manage",
-          state: { authorized }
-        }}>Manage</Link>
-      </div>
+      <nav className="nav flex-column nav-pills" id="tabnav">
+        <NavLink exact className="nav-link"
+          to={{
+            pathname: "/account",
+            state: { authorized }
+          }}
+        >
+          User Settings
+        </NavLink>
+        <NavLink className="nav-link"
+          to={{
+            pathname: "/account/contacts",
+            state: { authorized }
+          }}
+        >
+          Contacts
+        </NavLink>
+        <NavLink className="nav-link"
+          to={{
+            pathname: "/account/manage",
+            state: { authorized }
+          }}
+        >
+          Manage
+        </NavLink>
+      </nav>
     )
   }
 }

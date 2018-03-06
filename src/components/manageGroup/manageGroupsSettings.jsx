@@ -5,6 +5,7 @@ import './manageGroupSettings.css';
 
 import ManageGroupView from './manageGroupView.jsx';
 import AddGroupView from './addGroupView.jsx';
+import Loading from '../loading/loadingView.jsx';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -105,17 +106,7 @@ class ManageGroupsSettings extends Component {
 
     if (!updated) {
       return (
-        <div className="account-settings">
-          Updating..
-        </div>
-      )
-    }
-
-    if (logins.length === 0) {
-      return (
-        <div className="account-settings">
-          Error getting logins. SOMETHING IS WRONG! AHHHHHHHHHHHHHHH
-        </div>
+        <Loading />
       )
     }
 

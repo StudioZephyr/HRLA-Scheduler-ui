@@ -117,6 +117,8 @@ class Calendar extends Component {
 
   resetEvents () {
       this.state.eventRow = new Array(24).fill(0)
+      this.state.optionList = [].slice();
+      this.state.eventsList = [].slice();
   }
 
   selectEvents() {

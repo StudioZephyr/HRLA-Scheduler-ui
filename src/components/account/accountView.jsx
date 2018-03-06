@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 
+import './accountView.css';
+
 import AccountRoutes from './routes.jsx';
 import TabBar from '../tab-bar/tabBarView.jsx';
 
@@ -19,9 +21,13 @@ class AccountView extends Component {
     }
 
     return (
-      <div>
-        <TabBar authorized={authorized} />
-        <AccountRoutes />
+      <div className="row">
+        <div className="col col-lg-2" id="tab-nav">
+          <TabBar authorized={authorized} />
+        </div>
+        <div className="col col-lg-10">
+          <AccountRoutes />
+        </div>
       </div>
     )
   }

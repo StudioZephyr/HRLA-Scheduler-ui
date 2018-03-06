@@ -1,0 +1,7 @@
+.row {
+  height: 100%;
+}
+
+#tab-nav {
+  border-right: 1px solid black;
+}

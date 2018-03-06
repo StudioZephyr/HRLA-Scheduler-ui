@@ -21,7 +21,8 @@ class CalendarCollection extends Component {
       eventData: [],
       eventsLoaded: false,
       eventsSorted: [],
-      slotView: 'booked'
+      slotView: 'booked',
+      bookingText: 'Book a Room'
     }
   }
 
@@ -167,6 +168,7 @@ class CalendarCollection extends Component {
   toggleSlotView() {
     console.log('toggling')
     this.setState({
+      bookingText: this.state.slotView === 'booked' ? 'Cancel' : 'Book a Room',
       slotView: this.state.slotView === 'booked' ? 'available' : 'booked'
     })
   }
@@ -178,7 +180,9 @@ class CalendarCollection extends Component {
         {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
-          <button onClick={()=> {this.toggleSlotView()}}> Book a Room </button>
+          <span className='rbc-toolbar' id='slotViewToggler'>
+          <button onClick={()=> {this.toggleSlotView()}}>{this.state.bookingText}</button>
+          </span>
           <BigCalendar
             events={[]}
             date={this.state.currDay}

@@ -21,7 +21,7 @@ class Navbar extends Component {
           <Link to="/">HRLA Scheduler</Link>
         </span>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarAuthContent" aria-controls="navbarAuthContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse d-flex flex-row-reverse" id="navbarAuthContent">
           <div className="navbar-nav">

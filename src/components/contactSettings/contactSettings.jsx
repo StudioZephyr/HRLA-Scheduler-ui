@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 
 import { getContacts, addContact, updateContact, deleteContact } from '../../actions/contactActions';
 
+import './contactSettings.css';
+
 import ContactView from './contactView.jsx';
 
 class ContactSetting extends Component {
@@ -49,36 +51,53 @@ class ContactSetting extends Component {
     }
 
     return (
-      <div>
-        {
-          updated && contacts.map((contact, i) => (
-            <ContactView key={`contact-view-${id}-${i}`} contact={contact} updateContact={updateContact} id={id} deleteContact={deleteContact} />
-          ))
-        }
-        {
-          !addDisabled &&
-          <form>
-            <input type="text" placeholder={'Name'} onChange={(e) => {
-              this.setName(e.target.value);
-            }} />
-            <input type="text" placeholder={'Email'} onChange={(e) => {
-              this.setEmail(e.target.value);
-            }} />
-            <button onClick={(e) => {
+      <div className="account-settings" >
+        <div className="row justify-content-center">
+          {
+            updated && contacts.map((contact, i) => (
+              <ContactView key={`contact-view-${id}-${i}`} contact={contact} updateContact={updateContact} id={id} deleteContact={deleteContact} />
+            ))
+          }
+        </div>
+        <div className="row contact-add justify-content-center">
+          <div className="col col-lg-auto">
+            {
+              !addDisabled &&
+              <form className="contact-form">
+                <div className="form-group">
+                  <label htmlFor="contact-add-name">Name</label>
+                  <input type="text" id="contact-add-name" className="form-control" onChange={(e) => {
+                    this.setName(e.target.value);
+                  }} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="contact-add-email">Email</label>
+                  <input type="text" id="contact-add-email" className="form-control" onChange={(e) => {
+                    this.setEmail(e.target.value);
+                  }} />
+                </div>
+              </form>
+            }
+          </div>
+          <div className="col col-lg-auto align-self-end">
+            {
+              !addDisabled &&
+              <button className="btn btn-success contact-add-btn" onClick={(e) => {
+                e.preventDefault();
+                addContact({ name, email }, id);
+                this.toggleAdd();
+              }} >
+                SUBMIT
+              </button>
+            }
+            <button className="btn btn-info contact-add-btn" onClick={(e) => {
               e.preventDefault();
-              addContact({ name, email }, id);
               this.toggleAdd();
             }} >
-              SUBMIT
+              { addDisabled ? 'ADD' : 'CANCEL' }
             </button>
-          </form>
-        }
-        <button onClick={(e) => {
-          e.preventDefault();
-          this.toggleAdd();
-        }} >
-          { addDisabled ? 'ADD' : 'CANCEL' }
-        </button>
+          </div>
+        </div>
       </div>
     )
   }

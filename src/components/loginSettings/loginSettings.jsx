@@ -56,7 +56,7 @@ class LoginSetting extends Component {
     const { editDisabled, groupName, login, password } = this.state;
 
     return (
-      <div id="login-settings" className="row justify-content-center settings-row" >
+      <div className="account-settings row justify-content-center settings-row" >
         <div className="col col-lg-auto">
           {
             user.type === 'group' &&
@@ -75,7 +75,7 @@ class LoginSetting extends Component {
         <div className="col col-lg-4 align-self-end">
           {
             !editDisabled &&
-            <button className="btn btn-primary" onClick={(e) => {
+            <button className="btn btn-success login-btn" onClick={(e) => {
               e.preventDefault();
               updateLogin({ groupName, login, password }, user.id);
               this.toggleEdit();
@@ -83,7 +83,7 @@ class LoginSetting extends Component {
               SUBMIT
             </button>
           }
-          <button className="btn btn-primary" onClick={(e) => {
+          <button className="btn btn-primary login-btn" onClick={(e) => {
             e.preventDefault();
             this.toggleEdit();
           }}>

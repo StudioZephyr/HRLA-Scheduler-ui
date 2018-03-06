@@ -2,7 +2,7 @@
   height: auto;
 }
 
-#login-settings {
+.account-settings {
   padding-top: 5%;
 }
 
@@ -10,8 +10,12 @@
   width: 400px;
 }
 
-#login-settings button {
-  height: 45px;
+.account-settings button {
+  height: 40px;
   width: 80px;
   margin-right: 10px;
+}
+
+.login-btn {
+  margin-bottom: 15px;
 }

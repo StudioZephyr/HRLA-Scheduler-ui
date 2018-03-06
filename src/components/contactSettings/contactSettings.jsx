@@ -7,6 +7,7 @@ import { getContacts, addContact, updateContact, deleteContact } from '../../act
 import './contactSettings.css';
 
 import ContactView from './contactView.jsx';
+import Loading from '../loading/loadingView.jsx';
 
 class ContactSetting extends Component {
   constructor(props) {
@@ -44,9 +45,7 @@ class ContactSetting extends Component {
     if (!updated) {
       getContacts(id);
       return (
-        <div>
-          Updating...
-        </div>
+        <Loading />
       )
     }
 

@@ -41,7 +41,7 @@ class ContactView extends Component {
     const { contact, id, updateContact, deleteContact } = this.props;
 
     return (
-      <div className="col col-lg-auto">
+      <div className="col col-lg-auto col-contact-edit">
         <ContactInfo editDisabled={editDisabled} name={name} email={email}
           setEmail={this.setEmail}
           setName={this.setName}

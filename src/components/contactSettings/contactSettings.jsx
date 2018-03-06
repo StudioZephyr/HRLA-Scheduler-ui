@@ -14,7 +14,6 @@ class ContactSetting extends Component {
     super(props);
 
     this.state = {
-      addDisabled: true,
       name: '',
       email: '',
     };
@@ -32,15 +31,9 @@ class ContactSetting extends Component {
     });
   }
 
-  toggleAdd() {
-    this.setState({
-      addDisabled: !this.state.addDisabled,
-    });
-  }
-
   render() {
     const { addContact, contacts, deleteContact, getContacts, id, updateContact, updated } = this.props;
-    const { addDisabled, email, name } = this.state;
+    const { email, name } = this.state;
 
     if (!updated) {
       getContacts(id);
@@ -51,6 +44,13 @@ class ContactSetting extends Component {
 
     return (
       <div className="account-settings" >
+        <div className="row contact-add justify-content-center">
+          <div className="col col-lg-auto align-self-end">
+            <button type="button" className="btn btn-info contact-add-btn" data-toggle="modal" data-target="#add-contact-modal" >
+              ADD
+            </button>
+          </div>
+        </div>
         <div className="row justify-content-center">
           {
             updated && contacts.map((contact, i) => (
@@ -58,43 +58,45 @@ class ContactSetting extends Component {
             ))
           }
         </div>
-        <div className="row contact-add justify-content-center">
-          <div className="col col-lg-auto">
-            {
-              !addDisabled &&
-              <form className="contact-form">
-                <div className="form-group">
-                  <label htmlFor="contact-add-name">Name</label>
-                  <input type="text" id="contact-add-name" className="form-control" onChange={(e) => {
-                    this.setName(e.target.value);
-                  }} />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="contact-add-email">Email</label>
-                  <input type="text" id="contact-add-email" className="form-control" onChange={(e) => {
-                    this.setEmail(e.target.value);
-                  }} />
-                </div>
-              </form>
-            }
-          </div>
-          <div className="col col-lg-auto align-self-end">
-            {
-              !addDisabled &&
-              <button className="btn btn-success contact-add-btn" onClick={(e) => {
-                e.preventDefault();
-                addContact({ name, email }, id);
-                this.toggleAdd();
-              }} >
-                SUBMIT
-              </button>
-            }
-            <button className="btn btn-info contact-add-btn" onClick={(e) => {
-              e.preventDefault();
-              this.toggleAdd();
-            }} >
-              { addDisabled ? 'ADD' : 'CANCEL' }
-            </button>
+        <div className="modal fade" id="add-contact-modal" tabIndex="-1" role="dialog" aria-labelledby="add-contact-modal-label" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="add-contact-modal-label">Add Contact</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  <div className="form-group">
+                    <label htmlFor="contact-add-name">Name</label>
+                    <input type="text" id="contact-add-name" className="form-control" onChange={(e) => {
+                      this.setName(e.target.value);
+                    }} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="contact-add-email">Email</label>
+                    <input type="text" id="contact-add-email" className="form-control" onChange={(e) => {
+                      this.setEmail(e.target.value);
+                    }} />
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">
+                  CANCEL
+                </button>
+                <button className="btn btn-success" data-dismiss="modal"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addContact({ name, email }, id);
+                  }}
+                >
+                  SUBMIT
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

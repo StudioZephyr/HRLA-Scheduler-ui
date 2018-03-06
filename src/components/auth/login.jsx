@@ -55,7 +55,7 @@ class LoginPage extends Component {
             <input type="password" id="inputPW-auth" className="form-control" aria-describedby="authHelpBlock"
               onChange={(e) => {this.setPassword(e.target.value)}} 
             />
-            <small id="authHelpBlock" class="form-text text-muted">
+            <small id="authHelpBlock" className="form-text text-muted">
               Contact your Project Check-in HiR if you have forgotten your Login/PW
             </small>
           </div>

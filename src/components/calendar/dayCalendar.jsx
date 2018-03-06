@@ -14,26 +14,31 @@ class DayCalendar extends Component {
     BigCalendar.momentLocalizer(moment);
     this.state = {
       eventRow: new Array(24).fill(0), //array length should be length of day in hours * 2
+      initEventRow: [],
       rowDate: props.currDate,
       eventsList: [],
       optionList: [],
-      view: 'booked'
+      view: 'booked',
+      selectedStart: '',
+      selectedEnd: '',
+      roomname: ''
     }
   }
 
   componentDidMount() {
     this.renderDay();
     this.setState({
-      eventsList: this.state.eventsList
+      eventsList: this.state.eventsList,
+      roomname: this.props.room.name.replace(/\s+/g, '')
     });
     document.getElementById(`${this.props.room.name}`)
-    .getElementsByClassName('rbc-header')[0]
-    .textContent = this.props.room.name === 'time' ? `Room` : `${this.props.room.name}` //replace room number with room name
+      .getElementsByClassName('rbc-header')[0]
+      .textContent = this.props.room.name === 'time' ? `Room` : `${this.props.room.name}` //replace room number with room name
   }
 
   componentDidUpdate() {
-    if (this.props.slotView !== this.state.view){
-      
+    if (this.props.slotView !== this.state.view) {
+
       this.selectEvents()
       this.setState({
         view: this.props.slotView
@@ -67,8 +72,8 @@ class DayCalendar extends Component {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
     let initEventRow = this.state.eventRow.slice();
-    console.log('fill start time of ',startTime.getHours(), 'in room', this.props.room)
-    for (let i = startIdx; i < endIdx; i++){
+    console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
+    for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
         this.state.eventRow = initEventRow;
         return false;
@@ -89,10 +94,10 @@ class DayCalendar extends Component {
     })
   }
 
-  populateEventOptions () {
+  populateEventOptions() {
     //remove this when click to create events works
     this.state.eventRow.forEach((spot, i, arr) => {
-      if (spot === 0){
+      if (spot === 0) {
         let slotSize = 1;
         if (arr[i + 1] === 0 && i % 2 === 0) {
           slotSize = 2;
@@ -113,14 +118,14 @@ class DayCalendar extends Component {
     })
   }
 
-  resetEvents () {
-      this.state.eventRow = new Array(24).fill(0)
-      this.state.optionList = [].slice();
-      this.state.eventsList = [].slice();
+  resetEvents() {
+    this.state.eventRow = new Array(24).fill(0)
+    this.state.optionList = [].slice();
+    this.state.eventsList = [].slice();
   }
 
   selectEvents() {
-    console.log('selecint events with options as',this.state.optionList, 'and switch set to', this.props.slotView)
+    console.log('selecint events with options as', this.state.optionList, 'and switch set to', this.props.slotView)
     if (this.props.slotView === 'booked') {
       this.state.eventsList = this.props.events.slice()
     } else {
@@ -128,38 +133,45 @@ class DayCalendar extends Component {
     }
   }
 
-  renderDay () {
+  renderDay() {
     this.resetEvents();
     this.blockTodaysEvents();
+    this.state.initEventRow = this.state.eventRow;
     // this.populateEventOptions();
     this.selectEvents();
   }
 
-  eventStyles (event, start, end, isSelected) {
+  eventStyles(event, start, end, isSelected) {
     let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
     let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
     let color = event.id === 'openSlot' ? '#3174B6' : 'lightgray';
     let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
     let style = {
-        backgroundColor: backgroundColor,
-        borderRadius: borderRadius,
-        opacity: opacity,
-        color: color,
-        border: '1px solid #eaf6ff',
-        display: 'block'
+      backgroundColor: backgroundColor,
+      borderRadius: borderRadius,
+      opacity: opacity,
+      color: color,
+      border: '1px solid #eaf6ff',
+      display: 'block'
     };
     return {
-        style: style
+      style: style
     };
   }
 
-  createEvent(slot) {
+  selectRange(slot) {
     console.log('filling slots with', slot.start, slot.end)
     let fill = this.fillTimeSlot(slot.start, slot.end);
     if (!fill) {
       alert('Please select a valid time');
     } else {
-      alert('this is fine')
+
+      this.setState({
+        selectedStart: slot.start.toLocaleString(),
+        selectedEnd: slot.end.toLocaleString()
+      })
+      console.log(this.state.roomname)
+      $(`#${this.state.roomname}Modal`).modal('show')
     }
   }
 
@@ -167,24 +179,51 @@ class DayCalendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-      {console.log('EVENTLIST IN DAYCALENDAR RENDER',this.state.eventsList)}
-      {this.props.currDate ? 
-        <BigCalendar
-          selectable
-          events={this.state.eventsList}
-          view={this.props.calType}
-          date={this.props.currDate}
-          step={15}
-          views={['week', 'day']}
-          min={new Date('2018-03-02T16:00:00.113Z')}
-          max={new Date('2018-03-02T04:00:00.113Z')}
-          defaultDate={new Date(2018, 2, 2)}
-          eventPropGetter = {this.eventStyles}
-          onSelectSlot={this.createEvent.bind(this)}
-        />
-      : 
-      <p>Loading</p>
-      }
+        {console.log('EVENTLIST IN DAYCALENDAR RENDER', this.state.eventsList)}
+        {this.props.currDate ?
+          <BigCalendar
+            selectable
+            events={this.state.eventsList}
+            view={this.props.calType}
+            date={this.props.currDate}
+            step={15}
+            views={['week', 'day']}
+            min={new Date('2018-03-02T16:00:00.113Z')}
+            max={new Date('2018-03-02T04:00:00.113Z')}
+            defaultDate={new Date(2018, 2, 2)}
+            eventPropGetter={this.eventStyles}
+            onSelectSlot={this.selectRange.bind(this)}
+          />
+          :
+          <p>Loading</p>
+        }
+        <div className="modal fade" id={`${this.state.roomname}Modal`} role='dialog' ref={modal => this.modal = modal}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{this.props.room.name}</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>{`${this.state.selectedStart} - ${this.state.selectedEnd}`}</p>
+                <form>
+                  Name:<br/>
+                  <input type='text' value='login name'/><br/>
+                  Purpose:<br/>
+                  <input type='text' placeHolder='optional' />
+                </form>
+                
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={this.submitTime} data-dismiss="modal">Submit</button>
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     )
   }

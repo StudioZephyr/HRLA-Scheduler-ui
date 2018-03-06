@@ -112,6 +112,7 @@ class ManageGroupsSettings extends Component {
 
     return (
       <div className="account-settings">
+        <AddGroupView addLogin={this.addLogin} />
         <div className="row justify-content-center ">
           {
             logins.map((login, i) => (
@@ -119,7 +120,6 @@ class ManageGroupsSettings extends Component {
             ))
           }
         </div>
-        <AddGroupView addLogin={this.addLogin} />
       </div>
     )
   }

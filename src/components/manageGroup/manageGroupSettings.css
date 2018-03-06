@@ -10,3 +10,8 @@
 .col-edit-group {
   padding-bottom: 15px;
 }
+
+.manage-modal {
+  max-width: 50%;
+  margin: auto;
+}

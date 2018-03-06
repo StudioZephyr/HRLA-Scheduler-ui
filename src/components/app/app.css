@@ -1,0 +1,8 @@
+.container {
+  height: 100%;
+}
+
+#app-main-view {
+  padding-top: 56px;
+  height: 100%;
+}

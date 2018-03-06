@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { PulseLoader } from 'react-spinners';
+
+import './loadingView.css';
 
 class LoadingView extends Component {
   constructor() {
@@ -7,7 +10,14 @@ class LoadingView extends Component {
 
   render() {
     return (
-      <div>Loading</div>
+      <div id="loading-view">
+        <PulseLoader
+          loading={true}
+          color={'#007BFF'}
+          size={26}
+          margin={'10px'}
+        />
+      </div>
     )
   }
 };

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 
+import './accountView.css';
+
 import AccountRoutes from './routes.jsx';
 import TabBar from '../tab-bar/tabBarView.jsx';
-
-import { updateLogin } from '../../actions/authActions';
 
 class AccountView extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class AccountView extends Component {
   }
 
   render() {
-    const { authorized } = this.props.location.state;
+    const { authorized, type } = this.props.location.state;
 
     if (!authorized) {
       return (
@@ -21,9 +21,13 @@ class AccountView extends Component {
     }
 
     return (
-      <div>
-        <TabBar authorized={authorized} />
-        <AccountRoutes />
+      <div className="row">
+        <div id="tab-nav">
+          <TabBar authorized={authorized} type={type} />
+        </div>
+        <div className="col col-lg-12" id="settings-view">
+          <AccountRoutes />
+        </div>
       </div>
     )
   }

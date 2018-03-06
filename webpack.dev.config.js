@@ -27,6 +27,9 @@ module.exports = {
             'es2015',
             'react'
           ],
+          plugins: [
+            'emotion'
+          ],
         },
       },
       {

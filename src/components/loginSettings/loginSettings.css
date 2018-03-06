@@ -1,0 +1,17 @@
+.settings-row {
+  height: auto;
+}
+
+.account-settings {
+  padding-top: 5%;
+}
+
+.account-settings button {
+  height: 40px;
+  width: 80px;
+  margin-right: 10px;
+}
+
+.login-btn {
+  margin-bottom: 15px;
+}

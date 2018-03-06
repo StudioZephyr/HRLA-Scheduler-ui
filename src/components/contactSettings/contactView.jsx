@@ -41,14 +41,14 @@ class ContactView extends Component {
     const { contact, id, updateContact, deleteContact } = this.props;
 
     return (
-      <div>
+      <div className="col col-lg-auto col-contact-edit">
         <ContactInfo editDisabled={editDisabled} name={name} email={email}
           setEmail={this.setEmail}
           setName={this.setName}
         />
         {
           !editDisabled &&
-          <button onClick={(e) => {
+          <button className="btn btn-success contact-btn" onClick={(e) => {
             e.preventDefault();
             updateContact({ email, name, UserId: id }, contact.id);
             this.toggleEdit();
@@ -56,13 +56,13 @@ class ContactView extends Component {
             SUBMIT
           </button>
         }
-        <button onClick={(e) => {
+        <button className="btn btn-primary contact-btn" onClick={(e) => {
           e.preventDefault();
           this.toggleEdit();
         }} >
           { editDisabled ? 'EDIT' : 'CANCEL' }
         </button>
-        <button onClick={(e) => {
+        <button className="btn btn-danger contact-btn" onClick={(e) => {
           e.preventDefault();
           deleteContact(contact.id);
         }}>

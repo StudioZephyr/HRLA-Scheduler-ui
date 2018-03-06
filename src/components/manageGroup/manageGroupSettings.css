@@ -1,0 +1,18 @@
+.manage-add-row {
+  padding-top: 15px;
+  padding-left: 15px;
+}
+
+.manage-add-form {
+  padding-right: 5px;
+}
+
+.col-edit-group {
+  padding-bottom: 15px;
+}
+
+.manage-modal {
+  max-width: 50%;
+  margin: auto;
+  margin-top: 56px;
+}

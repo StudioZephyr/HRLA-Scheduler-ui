@@ -1,0 +1,17 @@
+.settings-row {
+  height: auto;
+}
+
+#login-settings {
+  padding-top: 5%;
+}
+
+.login-settings-form {
+  width: 400px;
+}
+
+#login-settings button {
+  height: 45px;
+  width: 80px;
+  margin-right: 10px;
+}

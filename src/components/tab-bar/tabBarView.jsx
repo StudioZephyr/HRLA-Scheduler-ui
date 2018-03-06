@@ -9,13 +9,13 @@ class TabBarView extends Component {
   }
 
   render() {
-    const { authorized } = this.props;
+    const { authorized, type } = this.props;
     return (
       <nav className="nav flex-column nav-pills" id="tabnav">
         <NavLink exact className="nav-link"
           to={{
             pathname: "/account",
-            state: { authorized }
+            state: { authorized, type }
           }}
         >
           User Settings
@@ -23,19 +23,21 @@ class TabBarView extends Component {
         <NavLink className="nav-link"
           to={{
             pathname: "/account/contacts",
-            state: { authorized }
+            state: { authorized, type }
           }}
         >
           Contacts
         </NavLink>
-        <NavLink className="nav-link"
-          to={{
-            pathname: "/account/manage",
-            state: { authorized }
-          }}
-        >
-          Manage
-        </NavLink>
+        { type === 'admin' &&
+          <NavLink className="nav-link"
+            to={{
+              pathname: "/account/manage",
+              state: { authorized, type }
+            }}
+          >
+            Manage
+          </NavLink>
+        }
       </nav>
     )
   }

@@ -13,7 +13,7 @@ class Navbar extends Component {
   }
 
   render() {
-    const { authorized, logoutAction } = this.props;
+    const { authorized, logoutAction, type } = this.props;
 
     return (
       <nav className="navbar fixed-top navbar-expand-lg bg-primary navbar-text-color">
@@ -36,7 +36,7 @@ class Navbar extends Component {
               <span className="nav-item nav-link">
                 <Link to={{
                   pathname: "/account",
-                  state: { authorized }
+                  state: { authorized, type }
                 }}>ACCOUNT</Link>
               </span>
             }
@@ -59,6 +59,7 @@ class Navbar extends Component {
 const NavbarState = (state) => {
   return {
     authorized: state.auth.authorized,
+    type: state.auth.user.type,
   }
 };
 

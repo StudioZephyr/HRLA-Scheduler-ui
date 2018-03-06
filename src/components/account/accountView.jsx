@@ -12,7 +12,7 @@ class AccountView extends Component {
   }
 
   render() {
-    const { authorized } = this.props.location.state;
+    const { authorized, type } = this.props.location.state;
 
     if (!authorized) {
       return (
@@ -23,7 +23,7 @@ class AccountView extends Component {
     return (
       <div className="row">
         <div className="col col-lg-2" id="tab-nav">
-          <TabBar authorized={authorized} />
+          <TabBar authorized={authorized} type={type} />
         </div>
         <div className="col col-lg-10">
           <AccountRoutes />

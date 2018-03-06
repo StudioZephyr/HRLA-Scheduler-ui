@@ -88,13 +88,21 @@ class Calendar extends Component {
 
   populateEventOptions () {
     this.state.eventRow.forEach((spot, i, arr) => {
-      if (spot === 0) {
-        this.state.eventRow[i] = 1;
+      if (spot === 0){
+        let slotSize = 1;
+        if (arr[i + 1] === 0 && i % 2 === 0) {
+          slotSize = 2;
+        }
+        let startTime = this.toTime(i)
+        let endTime = this.toTime(i + slotSize)
+
+        this.fillTimeSlot(startTime, endTime)
+        
         this.state.eventsList.push({
           id: 0,
           title: 'Empty Time Slot',
-          start: this.toTime(i),
-          end: this.toTime(i + 1)
+          start: startTime,
+          end: endTime
         })
       }
     })

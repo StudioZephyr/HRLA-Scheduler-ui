@@ -71,7 +71,7 @@ class CalendarCollection extends Component {
         },
         {
           title: 'test 3',
-          start: new Date(2018, 2, 5, 15, 0, 0),
+          start: new Date(2018, 2, 5, 15, 30, 0),
           end: new Date(2018, 2, 5, 17, 0, 0),
           finished: false,
           RoomId: 3
@@ -163,9 +163,6 @@ class CalendarCollection extends Component {
     }
   }
 
-  // localSeeding() {
-
-  // }
 
   render() {
     return (

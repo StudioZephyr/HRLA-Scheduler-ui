@@ -8,7 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendar.css';
 const API_SERVER = process.env.API_SERVER;
 
-class Calendar extends Component {
+class DayCalendar extends Component {
   constructor(props) {
     super();
     BigCalendar.momentLocalizer(moment);
@@ -46,6 +46,7 @@ class Calendar extends Component {
 
   componentDidUpdate() {
     if (this.props.slotView !== this.state.view){
+      
       this.selectEvents()
       this.setState({
         view: this.props.slotView
@@ -85,10 +86,12 @@ class Calendar extends Component {
   }
 
   blockTodaysEvents() {
-    console.log('attemptin to block todays events')
+    console.log('attemptin to block todays events', this.props.events)
     this.props.events.forEach((event) => {
-      if (event.start.getDate() === this.props.currDate.date() && event.start.getMonth() === this.props.currDate.month() && event.start.getFullYear() === this.props.currDate.year()) {
-        this.fillTimeSlot(event.start, event.end);
+      let start = event.start;
+      let end = event.end
+      if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
+        this.fillTimeSlot(start, end);
       }
     })
   }
@@ -164,6 +167,7 @@ class Calendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
+      {console.log('EVENTLIST IN DAYCALENDAR RENDER',this.state.eventsList)}
       {this.props.currDate ? 
         <BigCalendar
           events={this.state.eventsList}
@@ -184,4 +188,4 @@ class Calendar extends Component {
   }
 };
 
-export default Calendar;
+export default DayCalendar;

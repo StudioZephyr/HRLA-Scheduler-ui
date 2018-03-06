@@ -16,29 +16,28 @@ class Calendar extends Component {
       eventRow: new Array(24).fill(0), //array length should be length of day in hours * 2
       rowDate: props.currDate,
       eventsList: [],
+      optionList: [],
     }
   }
 
   componentDidMount() {
-    this.props.events.forEach((event) => {
-      console.log('comparison',event, this.props.room.id)
-      if (event.RoomId === this.props.room.id) {
-        this.setState({
-          eventsList: 
-          this.state.eventsList.push({
-            title: event.title,
-            start: new Date(event.start),
-            end: new Date(event.end)
-          })
-        })
-      }
-    })
-    
-    console.log('checking totime', this.toTime(10))
+    // this.props.events.forEach((event) => {
+    //   console.log('comparison',event, this.props.room.id)
+    //   if (event.RoomId === this.props.room.id) {
+    //     this.setState({
+    //       roomEvents: 
+    //       this.state.roomEvents.push({
+    //         title: event.title,
+    //         start: new Date(event.start),
+    //         end: new Date(event.end)
+    //       })
+    //     })
+    //   }
+    // })
+    this.renderDay();
     this.setState({
       eventsList: this.state.eventsList
-    })
-    
+    });
     document.getElementById(`${this.props.room.name}`)
     .getElementsByClassName('rbc-header')[0]
     .textContent = this.props.room.name === 'time' ? `Room` : `${this.props.room.name}` //replace room number with room name
@@ -47,12 +46,11 @@ class Calendar extends Component {
   componentDidUpdate() {
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
-      this.blockTodaysEvents();
-      this.populateEventOptions();
+      this.renderDay();
       this.setState({
         rowDate: this.props.currDate
       })
-      console.log(this.state.eventsList)
+      console.log('event list>>>>>>', this.state.eventsList)
     }
   }
 
@@ -80,6 +78,7 @@ class Calendar extends Component {
   }
 
   blockTodaysEvents() {
+    console.log('attemptin to block todays events')
     this.state.eventsList.forEach((event) => {
       if (event.start.getDate() === this.props.currDate.date() && event.start.getMonth() === this.props.currDate.month() && event.start.getFullYear() === this.props.currDate.year()) {
         this.fillTimeSlot(event.start, event.end);
@@ -99,6 +98,18 @@ class Calendar extends Component {
         })
       }
     })
+  }
+
+  resetEvents () {
+      this.state.eventRow = new Array(24).fill(0)
+      this.state.eventsList = this.props.events.slice()
+
+  }
+
+  renderDay () {
+    this.resetEvents();
+    this.blockTodaysEvents();
+    this.populateEventOptions();
   }
 
   eventStyles () {

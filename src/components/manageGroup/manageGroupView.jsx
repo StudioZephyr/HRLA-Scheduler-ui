@@ -40,11 +40,11 @@ class ManageGroupView extends Component {
 
   render() {
     const { editDisabled, groupName, login, password } = this.state;
-    const { updateLogin } = this.props;
+    const { deleteLogin, updateLogin } = this.props;
     const { id } = this.props.login;
 
     return (
-      <div className="col col-lg-auto">
+      <div className="col col-lg-auto col-edit-group">
         <form>
           <div className="form-group">
             <label htmlFor="manage-group-login">Login</label>
@@ -79,6 +79,12 @@ class ManageGroupView extends Component {
           this.toggleEdit();
         }}>
           { editDisabled ? 'EDIT' : 'CANCEL' }
+        </button>
+        <button className="btn btn-danger contact-btn" onClick={(e) => {
+          e.preventDefault();
+          deleteLogin(id);
+        }}>
+          DELETE
         </button>
       </div>
     )

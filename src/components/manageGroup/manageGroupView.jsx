@@ -44,28 +44,37 @@ class ManageGroupView extends Component {
     const { id } = this.props.login;
 
     return (
-      <div>
+      <div className="col col-lg-auto">
         <form>
-          <input type="text" disabled={editDisabled} placeholder={login} onChange={(e) => {
-            this.setLogin(e.target.value);
-          }} />
-          <input type="text" disabled={editDisabled} placeholder={password} onChange={(e) => {
-            this.setPassword(e.target.value);
-          }} />
-          <input type="text" disabled={editDisabled} placeholder={groupName} onChange={(e) => {
-            this.setGroupName(e.target.value);
-          }} />
+          <div className="form-group">
+            <label htmlFor="manage-group-login">Login</label>
+            <input type="text" id="manage-group-login" className="form-control" disabled={editDisabled} placeholder={login} onChange={(e) => {
+              this.setLogin(e.target.value);
+            }} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="manage-group-pw">Password</label>
+            <input type="text" id="manage-group-pw" className="form-control" disabled={editDisabled} placeholder={password} onChange={(e) => {
+              this.setPassword(e.target.value);
+            }} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="manage-group-groupName">Group Name</label>
+            <input type="text" id="manage-group-groupName" className="form-control" disabled={editDisabled} placeholder={groupName} onChange={(e) => {
+              this.setGroupName(e.target.value);
+            }} />
+          </div>
+        </form>
           {
             !editDisabled &&
-            <button onClick={(e) => {
+            <button className="btn btn-success contact-btn" onClick={(e) => {
               e.preventDefault();
               updateLogin({ login, password, groupName }, id);
             }}>
               SUBMIT
             </button>
           }
-        </form>
-        <button onClick={(e) => {
+        <button className="btn btn-primary contact-btn" onClick={(e) => {
           e.preventDefault();
           this.toggleEdit();
         }}>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import './manageGroupSettings.css';
+
 import ManageGroupView from './manageGroupView.jsx';
 import AddGroupView from './addGroupView.jsx';
 
@@ -82,7 +84,7 @@ class ManageGroupsSettings extends Component {
 
     if (!updated) {
       return (
-        <div>
+        <div className="account-settings">
           Updating..
         </div>
       )
@@ -90,19 +92,21 @@ class ManageGroupsSettings extends Component {
 
     if (logins.length === 0) {
       return (
-        <div>
+        <div className="account-settings">
           Error getting logins. SOMETHING IS WRONG! AHHHHHHHHHHHHHHH
         </div>
       )
     }
 
     return (
-      <div>
-        {
-          logins.map((login, i) => (
-            <ManageGroupView key={`manage-group-${i}`} login={login} updateLogin={this.updateLogin} />
-          ))
-        }
+      <div className="account-settings">
+        <div className="row justify-content-center ">
+          {
+            logins.map((login, i) => (
+              <ManageGroupView key={`manage-group-${i}`} login={login} updateLogin={this.updateLogin} />
+            ))
+          }
+        </div>
         <AddGroupView addLogin={this.addLogin} />
       </div>
     )

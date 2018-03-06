@@ -22,19 +22,6 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
-    // this.props.events.forEach((event) => {
-    //   console.log('comparison',event, this.props.room.id)
-    //   if (event.RoomId === this.props.room.id) {
-    //     this.setState({
-    //       roomEvents: 
-    //       this.state.roomEvents.push({
-    //         title: event.title,
-    //         start: new Date(event.start),
-    //         end: new Date(event.end)
-    //       })
-    //     })
-    //   }
-    // })
     this.renderDay();
     this.setState({
       eventsList: this.state.eventsList
@@ -79,10 +66,16 @@ class DayCalendar extends Component {
   fillTimeSlot(startTime, endTime) {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
+    let initEventRow = this.state.eventRow.slice();
     console.log('fill start time of ',startTime.getHours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++){
+      if (this.state.eventRow[i] === 1) {
+        this.state.eventRow = initEventRow;
+        return false;
+      }
       this.state.eventRow[i] = 1;
     }
+    return true;
   }
 
   blockTodaysEvents() {
@@ -97,6 +90,7 @@ class DayCalendar extends Component {
   }
 
   populateEventOptions () {
+    //remove this when click to create events works
     this.state.eventRow.forEach((spot, i, arr) => {
       if (spot === 0){
         let slotSize = 1;
@@ -112,7 +106,8 @@ class DayCalendar extends Component {
           id: 'openSlot',
           title: 'Available Slot',
           start: startTime,
-          end: endTime
+          end: endTime,
+          action: 'select'
         })
       }
     })
@@ -136,15 +131,11 @@ class DayCalendar extends Component {
   renderDay () {
     this.resetEvents();
     this.blockTodaysEvents();
-    this.populateEventOptions();
+    // this.populateEventOptions();
     this.selectEvents();
   }
 
   eventStyles (event, start, end, isSelected) {
-    //check docs on eventPropGetter
-
-    //blue #3174B6
-    // lightgray
     let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
     let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
     let color = event.id === 'openSlot' ? '#3174B6' : 'lightgray';
@@ -160,7 +151,16 @@ class DayCalendar extends Component {
     return {
         style: style
     };
+  }
 
+  createEvent(slot) {
+    console.log('filling slots with', slot.start, slot.end)
+    let fill = this.fillTimeSlot(slot.start, slot.end);
+    if (!fill) {
+      alert('Please select a valid time');
+    } else {
+      alert('this is fine')
+    }
   }
 
   render() {
@@ -170,6 +170,7 @@ class DayCalendar extends Component {
       {console.log('EVENTLIST IN DAYCALENDAR RENDER',this.state.eventsList)}
       {this.props.currDate ? 
         <BigCalendar
+          selectable
           events={this.state.eventsList}
           view={this.props.calType}
           date={this.props.currDate}
@@ -179,6 +180,7 @@ class DayCalendar extends Component {
           max={new Date('2018-03-02T04:00:00.113Z')}
           defaultDate={new Date(2018, 2, 2)}
           eventPropGetter = {this.eventStyles}
+          onSelectSlot={this.createEvent.bind(this)}
         />
       : 
       <p>Loading</p>

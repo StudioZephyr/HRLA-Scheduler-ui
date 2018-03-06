@@ -97,9 +97,9 @@ class Calendar extends Component {
         let endTime = this.toTime(i + slotSize)
 
         this.fillTimeSlot(startTime, endTime)
-        
+
         this.state.eventsList.push({
-          id: 0,
+          id: 'openSlot',
           title: 'Empty Time Slot',
           start: startTime,
           end: endTime
@@ -120,8 +120,27 @@ class Calendar extends Component {
     this.populateEventOptions();
   }
 
-  eventStyles () {
+  eventStyles (event, start, end, isSelected) {
     //check docs on eventPropGetter
+
+    //blue #3174B6
+    // lightgray
+    let backgroundColor = event.id === 'openSlot' ? 'lightgray' : '#3174B6';
+    let opacity = event.id === 'openSlot' ? 0.6 : 0.8;
+    let color = event.id === 'openSlot' ? '#3174B6' : 'lightgray';
+    let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
+    let style = {
+        backgroundColor: backgroundColor,
+        borderRadius: borderRadius,
+        opacity: opacity,
+        color: color,
+        border: '1px solid #eaf6ff',
+        display: 'block'
+    };
+    return {
+        style: style
+    };
+
   }
 
   render() {
@@ -138,6 +157,7 @@ class Calendar extends Component {
           min={new Date('2018-03-02T16:00:00.113Z')}
           max={new Date('2018-03-02T04:00:00.113Z')}
           defaultDate={new Date(2018, 2, 2)}
+          eventPropGetter = {this.eventStyles}
         />
       : 
       <p>Loading</p>

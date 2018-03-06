@@ -17,6 +17,7 @@ class Calendar extends Component {
       rowDate: props.currDate,
       eventsList: [],
       optionList: [],
+      view: 'booked'
     }
   }
 
@@ -44,6 +45,12 @@ class Calendar extends Component {
   }
 
   componentDidUpdate() {
+    if (this.props.slotView !== this.state.view){
+      this.selectEvents()
+      this.setState({
+        view: this.props.slotView
+      })
+    }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
       this.renderDay();
@@ -79,7 +86,7 @@ class Calendar extends Component {
 
   blockTodaysEvents() {
     console.log('attemptin to block todays events')
-    this.state.eventsList.forEach((event) => {
+    this.props.events.forEach((event) => {
       if (event.start.getDate() === this.props.currDate.date() && event.start.getMonth() === this.props.currDate.month() && event.start.getFullYear() === this.props.currDate.year()) {
         this.fillTimeSlot(event.start, event.end);
       }
@@ -98,9 +105,9 @@ class Calendar extends Component {
 
         this.fillTimeSlot(startTime, endTime)
 
-        this.state.eventsList.push({
+        this.state.optionList.push({
           id: 'openSlot',
-          title: 'Empty Time Slot',
+          title: 'Available Slot',
           start: startTime,
           end: endTime
         })
@@ -110,14 +117,22 @@ class Calendar extends Component {
 
   resetEvents () {
       this.state.eventRow = new Array(24).fill(0)
-      this.state.eventsList = this.props.events.slice()
+  }
 
+  selectEvents() {
+    console.log('selecint events with options as',this.state.optionList, 'and switch set to', this.props.slotView)
+    if (this.props.slotView === 'booked') {
+      this.state.eventsList = this.props.events.slice()
+    } else {
+      this.state.eventsList = this.state.optionList.slice();
+    }
   }
 
   renderDay () {
     this.resetEvents();
     this.blockTodaysEvents();
     this.populateEventOptions();
+    this.selectEvents();
   }
 
   eventStyles (event, start, end, isSelected) {
@@ -125,8 +140,8 @@ class Calendar extends Component {
 
     //blue #3174B6
     // lightgray
-    let backgroundColor = event.id === 'openSlot' ? 'lightgray' : '#3174B6';
-    let opacity = event.id === 'openSlot' ? 0.6 : 0.8;
+    let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
+    let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
     let color = event.id === 'openSlot' ? '#3174B6' : 'lightgray';
     let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
     let style = {

@@ -20,7 +20,8 @@ class CalendarCollection extends Component {
       currDay: moment(),
       eventData: [],
       eventsLoaded: false,
-      eventsSorted: []
+      eventsSorted: [],
+      slotView: 'booked'
     }
   }
 
@@ -163,6 +164,13 @@ class CalendarCollection extends Component {
     }
   }
 
+  toggleSlotView() {
+    console.log('toggling')
+    this.setState({
+      slotView: this.state.slotView === 'booked' ? 'available' : 'booked'
+    })
+  }
+
 
   render() {
     return (
@@ -170,6 +178,7 @@ class CalendarCollection extends Component {
         {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
+          <button onClick={()=> {this.toggleSlotView()}}> Book a Room </button>
           <BigCalendar
             events={[]}
             date={this.state.currDay}
@@ -189,7 +198,7 @@ class CalendarCollection extends Component {
                 <Calendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
                 {this.state.roomArray.map((x, i, arr) => {
                   console.log('events in render:', this.state.eventData);
-                  return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} />
+                  return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView}/>
                 })}
               </div>
               :

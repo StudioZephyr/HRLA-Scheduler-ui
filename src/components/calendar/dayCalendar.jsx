@@ -17,7 +17,6 @@ class DayCalendar extends Component {
       initEventRow: [],
       rowDate: props.currDate,
       eventsList: [],
-      optionList: [],
       view: 'booked',
       selectedStart: '',
       selectedEnd: '',
@@ -27,9 +26,9 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
+    this.state.eventsList = this.props.events,
     this.renderDay();
     this.setState({
-      eventsList: this.props.events,
       roomname: this.props.room.name.replace(/\s+/g, '')
     });
     document.getElementById(`${this.props.room.name}`)
@@ -69,7 +68,7 @@ class DayCalendar extends Component {
     console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
-        this.state.eventRow = initEventRow;
+        this.state.eventRow = initEventRow.slice();
         return false;
       }
       this.state.eventRow[i] = 1;
@@ -82,46 +81,47 @@ class DayCalendar extends Component {
     this.state.eventsList.forEach((event) => {
       let start = event.start;
       let end = event.end
+      console.log('looking at blocking start:', start, 'end:', end)
       if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
+        console.log('filling slotttt')
         this.fillTimeSlot(start, end);
       }
     })
   }
 
-  populateEventOptions() {
-    //remove this when click to create events works
-    this.state.eventRow.forEach((spot, i, arr) => {
-      if (spot === 0) {
-        let slotSize = 1;
-        if (arr[i + 1] === 0 && i % 2 === 0) {
-          slotSize = 2;
-        }
-        let startTime = this.toTime(i)
-        let endTime = this.toTime(i + slotSize)
+  // populateEventOptions() {
+  //   //remove this when click to create events works
+  //   this.state.eventRow.forEach((spot, i, arr) => {
+  //     if (spot === 0) {
+  //       let slotSize = 1;
+  //       if (arr[i + 1] === 0 && i % 2 === 0) {
+  //         slotSize = 2;
+  //       }
+  //       let startTime = this.toTime(i)
+  //       let endTime = this.toTime(i + slotSize)
 
-        this.fillTimeSlot(startTime, endTime)
+  //       this.fillTimeSlot(startTime, endTime)
 
-        this.state.optionList.push({
-          id: 'openSlot',
-          title: 'Available Slot',
-          start: startTime,
-          end: endTime,
-          action: 'select'
-        })
-      }
-    })
-  }
+  //       this.state.optionList.push({
+  //         id: 'openSlot',
+  //         title: 'Available Slot',
+  //         start: startTime,
+  //         end: endTime,
+  //         action: 'select'
+  //       })
+  //     }
+  //   })
+  // }
 
   resetEvents() {
     this.state.eventRow = new Array(24).fill(0)
-    this.state.optionList = [].slice();
   }
 
 
   renderDay() {
     this.resetEvents();
     this.blockTodaysEvents();
-    this.state.initEventRow = this.state.eventRow;
+    this.state.initEventRow = this.state.eventRow.slice();
     // this.populateEventOptions();
   }
 
@@ -170,12 +170,20 @@ class DayCalendar extends Component {
 
     axios.post(`${API_SERVER}/api/timeslot`, (event)),
     this.setState({
-      eventsList: this.state.eventsList.concat(event)
+      eventsList: this.state.eventsList.concat(event),
+      initEventRow: this.state.eventRow.slice()
     })
   }
 
   handlePurposeChange(e) {
     this.state.purpose = e.target.value
+  }
+
+  resetEventsRow() {
+    console.log('Resetting...')
+    this.setState({
+      eventRow: this.state.initEventRow.slice()
+    });
   }
 
 
@@ -219,7 +227,7 @@ class DayCalendar extends Component {
                 
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={this.createEvent.bind(this)} data-dismiss="modal">Submit</button>
-                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" className="btn btn-secondary" onClick={this.resetEventsRow.bind(this)} data-dismiss="modal" >Close</button>
                 </div>
               </div>
             </div>

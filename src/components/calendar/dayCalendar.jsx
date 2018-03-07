@@ -21,13 +21,14 @@ class DayCalendar extends Component {
       selectedStart: '',
       selectedEnd: '',
       roomname: '',
-      purpose: ''
+      purpose: '',
+      selectedEvent: {}
     }
   }
 
   componentDidMount() {
     this.state.eventsList = this.props.events,
-    this.renderDay();
+      this.renderDay();
     this.setState({
       roomname: this.props.room.name.replace(/\s+/g, '')
     });
@@ -52,13 +53,13 @@ class DayCalendar extends Component {
       year: this.props.currDate.year(),
       month: this.props.currDate.month(),
       date: this.props.currDate.date(),
-      hour: Math.floor(idx / 2) + 8,
+      hour: Math.floor(idx / 4) + 8,
       minute: idx % 2 === 0 ? 0 : 30
     }).toDate()
   }
 
   toIdx(time) {
-    return (time.getHours() - 8) * 2 + (time.getMinutes() === 0 ? 0 : 1);
+    return (time.getHours() - 8) * 4 + (time.getMinutes() === 0 ? 0 : 1);
   }
 
   fillTimeSlot(startTime, endTime) {
@@ -89,30 +90,6 @@ class DayCalendar extends Component {
     })
   }
 
-  // populateEventOptions() {
-  //   //remove this when click to create events works
-  //   this.state.eventRow.forEach((spot, i, arr) => {
-  //     if (spot === 0) {
-  //       let slotSize = 1;
-  //       if (arr[i + 1] === 0 && i % 2 === 0) {
-  //         slotSize = 2;
-  //       }
-  //       let startTime = this.toTime(i)
-  //       let endTime = this.toTime(i + slotSize)
-
-  //       this.fillTimeSlot(startTime, endTime)
-
-  //       this.state.optionList.push({
-  //         id: 'openSlot',
-  //         title: 'Available Slot',
-  //         start: startTime,
-  //         end: endTime,
-  //         action: 'select'
-  //       })
-  //     }
-  //   })
-  // }
-
   resetEvents() {
     this.state.eventRow = new Array(24).fill(0)
   }
@@ -122,7 +99,6 @@ class DayCalendar extends Component {
     this.resetEvents();
     this.blockTodaysEvents();
     this.state.initEventRow = this.state.eventRow.slice();
-    // this.populateEventOptions();
   }
 
   eventStyles(event, start, end, isSelected) {
@@ -133,10 +109,10 @@ class DayCalendar extends Component {
     let style = {
       backgroundColor: backgroundColor,
       borderRadius: borderRadius,
-      opacity: opacity,
+      opacity: 0.8,
       color: color,
       border: '1px solid #eaf6ff',
-      display: 'block'
+      display: 'block',
     };
     return {
       style: style
@@ -169,10 +145,10 @@ class DayCalendar extends Component {
     }
 
     axios.post(`${API_SERVER}/api/timeslot`, (event)),
-    this.setState({
-      eventsList: this.state.eventsList.concat(event),
-      initEventRow: this.state.eventRow.slice()
-    })
+      this.setState({
+        eventsList: this.state.eventsList.concat(event),
+        initEventRow: this.state.eventRow.slice()
+      })
   }
 
   handlePurposeChange(e) {
@@ -180,12 +156,17 @@ class DayCalendar extends Component {
   }
 
   resetEventsRow() {
-    console.log('Resetting...')
     this.setState({
       eventRow: this.state.initEventRow.slice()
     });
   }
 
+  editEvent(selectedEvent) {
+    this.setState({
+      selectedEvent: selectedEvent
+    })
+    $(`#${this.state.roomname}EditModal`).modal('show')
+  }
 
   render() {
 
@@ -204,12 +185,13 @@ class DayCalendar extends Component {
             max={new Date('2018-03-02T04:00:00.113Z')}
             defaultDate={new Date(2018, 2, 2)}
             eventPropGetter={this.eventStyles}
+            onSelectEvent={this.editEvent.bind(this)}
             onSelectSlot={this.selectRange.bind(this)}
           />
           :
           <p>Loading</p>
         }
-        <div className="modal fade" id={`${this.state.roomname}Modal`} role='dialog' ref={modal => this.modal = modal}>
+        <div className="modal fade" id={`${this.state.roomname}Modal`} role='dialog' tabIndex="-1" ref={modal => this.modal = modal}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -221,13 +203,38 @@ class DayCalendar extends Component {
               <div className="modal-body">
                 <p>{`${this.state.selectedStart.toLocaleString()} - ${this.state.selectedEnd.toLocaleString()}`}</p>
                 <form>
-                  Purpose:<br/>
+                  Purpose:<br />
                   <input id='eventNameInput' type='text' onChange={this.handlePurposeChange.bind(this)} />
                 </form>
-                
+
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={this.createEvent.bind(this)} data-dismiss="modal">Submit</button>
                   <button type="button" className="btn btn-secondary" onClick={this.resetEventsRow.bind(this)} data-dismiss="modal" >Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal fade" id={`${this.state.roomname}EditModal`} role='dialog' ref={modal => this.modal = modal}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit Event</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+
+                <form>
+                  Purpose:<br />
+                  <input id='eventNameInput' type='text' value={this.state.selectedEvent.title} onChange={this.handlePurposeChange.bind(this)} />
+                </form>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={this.createEvent.bind(this)} data-dismiss="modal">Submit</button>
+                  <button type="button" className="btn btn-secondary close" onClick={this.resetEventsRow.bind(this)} data-dismiss="modal" >Close</button>
                 </div>
               </div>
             </div>

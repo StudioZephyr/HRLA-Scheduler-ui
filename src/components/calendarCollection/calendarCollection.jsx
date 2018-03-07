@@ -38,6 +38,7 @@ class CalendarCollection extends Component {
             let events = data.result.map((event)=> {
               event.start = moment(event.start).toDate();
               event.end = moment(event.end).toDate();
+              event.selectable
               return event
             })
             this.setState({
@@ -105,13 +106,10 @@ class CalendarCollection extends Component {
 
   organizeEvents() {
     if (this.state.eventData.length > 0){
-      console.log('initing org events', this.state.eventData)
       // this.state.eventsSorted = new Array(this.state.roomArray.lenth).fill([].slice())
       console.log(this.state.eventsSorted)
       this.state.eventData.forEach((event) => {
-        console.log('foreach event', event)
         this.state.roomArray.forEach((room, r) => {
-          console.log('comparin in calcol', event.RoomId, room.id);
           if (event.RoomId === room.id) {
             if (!this.state.eventsSorted[r]) {
               this.state.eventsSorted[r] = []

@@ -71,3 +71,7 @@
   margin-right: 5px;
 
 }
+
+.rbc-calendar .rbc-event {
+  z-index: 11;
+}

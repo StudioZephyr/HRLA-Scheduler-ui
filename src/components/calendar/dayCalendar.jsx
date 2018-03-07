@@ -29,7 +29,7 @@ class DayCalendar extends Component {
   componentDidMount() {
     this.renderDay();
     this.setState({
-      eventsList: this.state.eventsList,
+      eventsList: this.props.events,
       roomname: this.props.room.name.replace(/\s+/g, '')
     });
     document.getElementById(`${this.props.room.name}`)
@@ -115,24 +115,14 @@ class DayCalendar extends Component {
   resetEvents() {
     this.state.eventRow = new Array(24).fill(0)
     this.state.optionList = [].slice();
-    this.state.eventsList = [].slice();
   }
 
-  selectEvents() {
-    console.log('selecint events with options as', this.state.optionList, 'and switch set to', this.props.slotView)
-    if (this.props.slotView === 'booked') {
-      this.state.eventsList = this.props.events.slice()
-    } else {
-      this.state.eventsList = this.state.optionList.slice();
-    }
-  }
 
   renderDay() {
     this.resetEvents();
     this.blockTodaysEvents();
     this.state.initEventRow = this.state.eventRow;
     // this.populateEventOptions();
-    this.selectEvents();
   }
 
   eventStyles(event, start, end, isSelected) {

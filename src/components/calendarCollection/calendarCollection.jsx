@@ -142,9 +142,6 @@ class CalendarCollection extends Component {
         {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
-          <span className='rbc-toolbar' id='slotViewToggler'>
-          <button onClick={()=> {this.toggleSlotView()}}>{this.state.bookingText}</button>
-          </span>
           <BigCalendar
             events={[]}
             date={this.state.currDay}

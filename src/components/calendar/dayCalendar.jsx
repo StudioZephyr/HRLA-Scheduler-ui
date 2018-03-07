@@ -38,6 +38,7 @@ class DayCalendar extends Component {
     this.handleEndAmPmChange = this.handleEndAmPmChange.bind(this);
     this.formatTime = this.formatTime.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
+    this.deleteEvent = this.deleteEvent.bind(this);
   }
 
   componentDidMount() {
@@ -165,18 +166,20 @@ class DayCalendar extends Component {
   }
 
   handlePurposeChange(e) {
-    this.state.purpose = e.target.value
+    this.setState({
+      purpose: e.target.value
+    });
   }
 
   handleStartChange(e) {
     console.log('converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a'))
     this.setState({
       selectedStart: moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a')
-    }) 
+    })
     console.log('the start state changed to', this.state.selectedStart)
   }
 
-  handleEndChange() {
+  handleEndChange(e) {
     this.setState({
       selectedEnd: moment(`${e.target.value} ${this.state.selectedendAmPm}`, 'hh:mm a')
     })
@@ -204,10 +207,11 @@ class DayCalendar extends Component {
     console.log(selectedEvent)
     this.setState({
       selectedEvent: selectedEvent,
+      purpose: selectedEvent.title,
       selectedStartAmPm: moment(selectedEvent.start).format('a'),
       selectedEndAmPm: moment(selectedEvent.end).format('a'),
-      selectedStart: selectedEvent.start,
-      selectedEnd: selectedEvent.end
+      selectedStart: moment(selectedEvent.start),
+      selectedEnd: moment(selectedEvent.end)
     })
     console.log(selectedEvent)
     $(`#${this.state.roomname}EditModal`).modal('show')
@@ -216,14 +220,17 @@ class DayCalendar extends Component {
   saveChanges() {
     console.log('attempting to save changes as', this.state.selectedEnd, this.state.selectedStart)
     this.state.selectedEvent.start = this.state.selectedStart.toDate();
-    this.state.selectedEvent.end = this.state.selectedEnd;   
+    this.state.selectedEvent.end = this.state.selectedEnd.toDate();
+    this.state.selectedEvent.title = this.state.purpose;
     this.setState({})
     console.log('selectedsevent state post save', this.state.selectedEvent)
     axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
   }
 
   deleteEvent() {
-
+    axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
+    delete this.state.selectedEvent;
+    this.setState({})
   }
 
   formatTime(time) {
@@ -298,31 +305,32 @@ class DayCalendar extends Component {
                   Start:<br />
                   <input id='eventStartInput' type='text' placeholder={this.formatTime(this.state.selectedEvent.start)} onChange={this.handleStartChange} />
                   <div className='btn-group'>
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {this.state.selectedStartAmPm}
-                  </button>
-                  <h8>hh:mm</h8>
-                  <div className="dropdown-menu">
-                    <option onClick={this.handleStartAmPmChange} >am</option>
-                    <option onClick={this.handleStartAmPmChange} >pm</option>
-                  </div>
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {this.state.selectedStartAmPm}
+                    </button>
+                    <h8>hh:mm</h8>
+                    <div className="dropdown-menu">
+                      <option onClick={this.handleStartAmPmChange} >am</option>
+                      <option onClick={this.handleStartAmPmChange} >pm</option>
+                    </div>
                   </div>
                   <br />
                   End: <br />
                   <input id='eventEndInput' type='text' placeholder={this.formatTime(this.state.selectedEvent.end)} onChange={this.handleEndChange} />
                   <div className='btn-group'>
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {this.state.selectedEndAmPm}
-                  </button>
-                  <h8>hh:mm</h8>
-                  <div className="dropdown-menu">
-                    <option onClick={this.handleEndAmPmChange} >am</option>
-                    <option onClick={this.handleEndAmPmChange} >pm</option>
-                  </div>
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {this.state.selectedEndAmPm}
+                    </button>
+                    <h8>hh:mm</h8>
+                    <div className="dropdown-menu">
+                      <option onClick={this.handleEndAmPmChange} >am</option>
+                      <option onClick={this.handleEndAmPmChange} >pm</option>
+                    </div>
                   </div>
                 </form>
 
                 <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={this.deleteEvent} data-dismiss="modal">Delete event</button>
                   <button type="button" className="btn btn-secondary" onClick={this.saveChanges} data-dismiss="modal">Save Changes</button>
                   <button type="button" className="btn btn-secondary close" onClick={this.resetEventsRow} data-dismiss="modal" >Close</button>
                 </div>

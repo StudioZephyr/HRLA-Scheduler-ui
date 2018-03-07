@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Calendar from '../calendar/calendar.jsx';
+import DayCalendar from '../calendar/dayCalendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -19,7 +19,10 @@ class CalendarCollection extends Component {
       calType: 'day',
       currDay: moment(),
       eventData: [],
-      eventsLoaded: false
+      eventsLoaded: false,
+      eventsSorted: [],
+      slotView: 'booked',
+      bookingText: 'Book a Room'
     }
   }
 
@@ -32,15 +35,26 @@ class CalendarCollection extends Component {
         console.log('here is the new state', this.state.roomArray)
         axios.get(`${API_SERVER}/api/timeslot`)
           .then(({ data }) => {
+            let events = data.result.map((event)=> {
+              event.start = moment(event.start).toDate();
+              event.end = moment(event.end).toDate();
+              return event
+            })
             this.setState({
-              eventData: data.result,
-              eventsLoaded: true
+              eventData: events,
             })
             console.log('event in calcoll', this.state.eventData)
           })
       })
 
+    //^^^^^^^^ recomment in when connected to internet
+    //vvvvvvvv remove after
+    
 
+    console.log('state of events in CDM', this.state.eventData)
+
+
+    //^^^^^^^^^ remove
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[0]
@@ -89,9 +103,43 @@ class CalendarCollection extends Component {
     })
   }
 
+  organizeEvents() {
+    if (this.state.eventData.length > 0){
+      console.log('initing org events', this.state.eventData)
+      // this.state.eventsSorted = new Array(this.state.roomArray.lenth).fill([].slice())
+      console.log(this.state.eventsSorted)
+      this.state.eventData.forEach((event) => {
+        console.log('foreach event', event)
+        this.state.roomArray.forEach((room, r) => {
+          console.log('comparin in calcol', event.RoomId, room.id);
+          if (event.RoomId === room.id) {
+            if (!this.state.eventsSorted[r]) {
+              this.state.eventsSorted[r] = []
+            }
+            this.state.eventsSorted[r].push(event)
+          }
+        })
+      })
+      console.log('sorted events', this.state.eventsSorted);
+      this.setState({
+        eventsLoaded: true
+      })
+    }
+  }
+
+  toggleSlotView() {
+    console.log('toggling')
+  this.setState({
+      bookingText: this.state.slotView === 'booked' ? 'Cancel' : 'Book a Room',
+      slotView: this.state.slotView === 'booked' ? 'available' : 'booked'
+    })
+  }
+
+
   render() {
     return (
       <div id='calendarCollection'>
+        {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -110,21 +158,27 @@ class CalendarCollection extends Component {
           this.state.eventsLoaded ?
             this.state.calType === 'day' ?
               <div id='calendars'>
-              <Calendar room={{name: 'time'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+              {/* change to toolbarcalendar component */}
+                <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
                 {this.state.roomArray.map((x, i, arr) => {
                   console.log('events in render:', this.state.eventData);
-                  return <Calendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView}/>
                 })}
               </div>
               :
               <div id='weekCalendar'>
-                <Calendar room={{name: 'weeks'}} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+              {/* change to weekcalendar component */}
+                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
-            <div>Loading</div>
+            <div>
+              Loading...
+
+              {this.organizeEvents()}
+            </div>
         }
 
-        }
+        
         </div>
     )
   }

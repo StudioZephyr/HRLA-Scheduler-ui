@@ -106,7 +106,6 @@ class CalendarCollection extends Component {
 
   organizeEvents() {
     if (this.state.eventData.length > 0){
-      // this.state.eventsSorted = new Array(this.state.roomArray.lenth).fill([].slice())
       console.log(this.state.eventsSorted)
       this.state.eventData.forEach((event) => {
         this.state.roomArray.forEach((room, r) => {
@@ -123,14 +122,6 @@ class CalendarCollection extends Component {
         eventsLoaded: true
       })
     }
-  }
-
-  toggleSlotView() {
-    console.log('toggling')
-  this.setState({
-      bookingText: this.state.slotView === 'booked' ? 'Cancel' : 'Book a Room',
-      slotView: this.state.slotView === 'booked' ? 'available' : 'booked'
-    })
   }
 
 

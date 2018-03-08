@@ -207,8 +207,8 @@ class DayCalendar extends Component {
   }
 
   editEvent(selectedEvent) {
-    console.log(selectedEvent)
-    if (this.props.user.id === selectedEvent.id || this.props.user.type === 'admin') {
+    console.log(selectedEvent, this.props.user)
+    if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
       this.setState({
         selectedEvent: selectedEvent,
         purpose: selectedEvent.title,

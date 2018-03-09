@@ -18,7 +18,6 @@ class DayCalendar extends Component {
       initEventRow: [],
       rowDate: props.currDate,
       eventsList: [],
-      view: 'booked',
       selectedStart: '',
       selectedEnd: '',
       selectedStartAmPm: 'am',
@@ -160,7 +159,7 @@ class DayCalendar extends Component {
       room: this.props.room.name
     }
 
-    let result= await axios.post(`${API_SERVER}/api/timeslot`, (event))
+    let result = await axios.post(`${API_SERVER}/api/timeslot`, (event))
     event.id = result.data.result.id;
     this.setState({
       eventsList: this.state.eventsList.concat(event),
@@ -175,7 +174,7 @@ class DayCalendar extends Component {
   }
 
   handleStartChange(e) {
-    console.log('converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a'))
+    console.log('START>> converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a'))
     this.setState({
       selectedStart: moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a')
     })
@@ -183,6 +182,7 @@ class DayCalendar extends Component {
   }
 
   handleEndChange(e) {
+    console.log('END >>>converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a'))
     this.setState({
       selectedEnd: moment(`${e.target.value} ${this.state.selectedendAmPm}`, 'hh:mm a')
     })
@@ -222,14 +222,27 @@ class DayCalendar extends Component {
     }
   }
 
-  saveChanges() {
+  async saveChanges() {
     console.log('attempting to save changes as', this.state.selectedEnd, this.state.selectedStart)
-    this.state.selectedEvent.start = this.state.selectedStart.toDate();
-    this.state.selectedEvent.end = this.state.selectedEnd.toDate();
+    let originalEvent = Object.assign({}, this.state.selectedEvent);
+
+    this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
+    this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
     this.state.selectedEvent.title = this.state.purpose;
     this.setState({})
     console.log('selectedsevent state post save', this.state.selectedEvent)
-    axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
+    console.log('ORIGINALEVENT', originalEvent)
+    try {
+      await axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
+
+    } catch (e) {
+      console.log(e)
+      this.state.selectedEvent.start = originalEvent.start;
+      this.state.selectedEvent.end = originalEvent.end;
+      this.setState({
+        selectedEvent: originalEvent
+      });
+    };
   }
 
   async deleteEvent() {
@@ -251,6 +264,10 @@ class DayCalendar extends Component {
     if (typeof time === 'object') {
       return moment(time).format('hh:mm');
     }
+  }
+
+  concatTimeMeridiem(time, meridiem) {
+    return moment(`${this.formatTime(time)} ${meridiem}`, 'hh:mm a')
   }
 
   render() {
@@ -363,5 +380,5 @@ const DayCalendarState = (state) => {
   }
 }
 
-
 export default connect(DayCalendarState)(DayCalendar);
+

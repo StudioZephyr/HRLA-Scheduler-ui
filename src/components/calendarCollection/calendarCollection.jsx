@@ -32,7 +32,6 @@ class CalendarCollection extends Component {
         this.setState({
           roomArray: this.state.roomArray.concat(data.result)
         })
-        console.log('here is the new state', this.state.roomArray)
         axios.get(`${API_SERVER}/api/timeslot`)
           .then(({ data }) => {
             let events = data.result.map((event)=> {
@@ -44,18 +43,9 @@ class CalendarCollection extends Component {
             this.setState({
               eventData: events,
             })
-            console.log('event in calcoll', this.state.eventData)
           })
       })
 
-    //^^^^^^^^ recomment in when connected to internet
-    //vvvvvvvv remove after
-    
-
-    console.log('state of events in CDM', this.state.eventData)
-
-
-    //^^^^^^^^^ remove
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[0]
@@ -136,7 +126,7 @@ class CalendarCollection extends Component {
             date={this.state.currDay}
             defaultView={'day'}
             views={['week', 'day']}
-            step={15}
+            step={30}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
           />

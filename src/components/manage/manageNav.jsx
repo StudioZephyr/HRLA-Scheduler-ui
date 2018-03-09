@@ -10,7 +10,7 @@ class ManageNav extends Component {
     const { authorized, type } = this.props;
 
     return (
-      <nav className="nav" id="manageNav">
+      <nav className="nav nav-tabs" id="manageNav">
         <NavLink exact className="nav-link"
           to={{
             pathname: "/account/manage",

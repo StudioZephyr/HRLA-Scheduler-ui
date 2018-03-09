@@ -1,0 +1,12 @@
+#manageView {
+  margin-left: 15px;
+}
+
+#manageNav {
+  padding: 10px 10px 0 0;
+  justify-content: center;
+}
+
+#manageNav a {
+  color: #007BFF;
+}

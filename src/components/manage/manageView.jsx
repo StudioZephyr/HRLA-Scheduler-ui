@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 
+import './manage.css';
+
 import ManageRoutes from './routes.jsx';
 import ManageNav from './manageNav.jsx';
 
@@ -19,7 +21,7 @@ class ManageView extends Component {
     }
 
     return (
-      <div>
+      <div id="manageView">
         <ManageNav authorized={authorized} type={type} />
         <ManageRoutes />
       </div>

@@ -102,7 +102,7 @@ class ManageGroupsSettings extends Component {
   }
 
   render() {
-    const { add, updated, logins } = this.state;
+    const { updated, logins } = this.state;
 
     if (!updated) {
       return (

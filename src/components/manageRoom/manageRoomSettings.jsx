@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import Loading from '../loading/loadingView.jsx';
+import AddRoomView from './addRoomView.jsx';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -13,6 +14,8 @@ class ManageRoomsSettings extends Component {
       updated: false,
       rooms: [],
     };
+
+    this.addRoom = this.addRoom.bind(this);
   }
 
   componentDidMount() {
@@ -36,6 +39,24 @@ class ManageRoomsSettings extends Component {
     }
   }
 
+  addRoom(roomObj) {
+    axios.post(`${API_SERVER}/api/room`, roomObj)
+      .then(({ data }) => {
+        alert(`Room, ${roomObj.name}, has been added!`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      })
+      .catch((err) => {
+        console.log(`Error creating room. ${err.message}`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      });
+  }
+
   render() {
     const { updated, rooms } = this.state;
 
@@ -47,7 +68,7 @@ class ManageRoomsSettings extends Component {
 
     return (
       <div className="account-settings">
-        room settings
+        <AddRoomView addRoom={this.addRoom} />
       </div>
     )
   }

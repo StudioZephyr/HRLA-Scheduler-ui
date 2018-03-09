@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Loading from '../loading/loadingView.jsx';
 import AddRoomView from './addRoomView.jsx';
+import ManageRoomView from './manageRoomView.jsx';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -16,6 +17,8 @@ class ManageRoomsSettings extends Component {
     };
 
     this.addRoom = this.addRoom.bind(this);
+    this.deleteRoom = this.deleteRoom.bind(this);
+    this.updateRoom = this.updateRoom.bind(this);
   }
 
   componentDidMount() {
@@ -57,6 +60,42 @@ class ManageRoomsSettings extends Component {
       });
   }
 
+  deleteRoom(id, name) {
+    axios.delete(`${API_SERVER}/api/room/${id}`)
+      .then(() => {
+        alert(`Room, ${name}, has been deleted!`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      })
+      .catch(err => {
+        console.log(`Error deleting room. ${err.message}`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      });
+  }
+
+  updateRoom(roomObj, id) {
+    axios.put(`${API_SERVER}/api/room/${id}`, roomObj)
+      .then(() => {
+        alert(`Room has been updated to: ${roomObj.name}!`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      })
+      .catch(err => {
+        console.log(`Error updating room. ${err.message}`);
+        this.setState({
+          updated: false,
+        });
+        this.componentDidMount();
+      });
+  }
+
   render() {
     const { updated, rooms } = this.state;
 
@@ -69,6 +108,13 @@ class ManageRoomsSettings extends Component {
     return (
       <div className="account-settings">
         <AddRoomView addRoom={this.addRoom} />
+        <div className="row justify-content-center">
+          {
+            rooms.map((room, i) => (
+              <ManageRoomView key={`manage-room-${i}`} room={room} deleteRoom={this.deleteRoom} updateRoom={this.updateRoom} />
+            ))
+          }
+        </div>
       </div>
     )
   }

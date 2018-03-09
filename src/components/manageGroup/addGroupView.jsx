@@ -43,7 +43,8 @@ class AddGroupView extends Component {
     return (
       <div>
         <div className="row justify-content-center manage-add-row">
-          <button className="btn btn-info contact-add-btn" data-toggle="modal" data-target="#add-manage-modal" >
+          <h2>Manage Groups</h2>
+          <button className="btn btn-info manage-add-btn" data-toggle="modal" data-target="#add-manage-modal" >
             ADD
           </button>
         </div>

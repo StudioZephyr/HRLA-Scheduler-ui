@@ -26,7 +26,7 @@ class CalendarCollection extends Component {
       bookingText: 'Book a Room',
       // eventCreated: false
     }
-    this.organizeEvents = this.organizeEvents.bind(this)
+    this.organizeEvents = this.organizeEvents.bind(this);
   }
 
   componentDidMount() {
@@ -44,7 +44,7 @@ class CalendarCollection extends Component {
               event.desc = event.owner;
               event.selectable;
               return event;
-            })
+            });
             this.setState({
               eventData: events,
             })
@@ -79,53 +79,49 @@ class CalendarCollection extends Component {
   dayReset() {
     this.setState({
       currDay: moment()
-    })
+    });
   }
 
   dayBack() {
     this.setState({
       currDay: moment(this.state.currDay).subtract(1, this.state.calType + 's')
-    })
+    });
   }
 
   dayForward() {
     this.setState({
       currDay: moment(this.state.currDay).add(1, this.state.calType + 's')
-    })
+    });
   }
 
   changeView(view) {
     this.setState({
       calType: view
-    })
+    });
   }
 
   organizeEvents() {
-    console.log('attemping to organize events')
     if (this.state.eventData.length > 0) {
-      console.log('looking at sorted event',this.state.eventsSorted)
       this.state.eventData.forEach((event) => {
         this.state.roomArray.forEach((room, r) => {
           if (event.RoomId === room.id) {
             if (!this.state.eventsSorted[r]) {
-              this.state.eventsSorted[r] = []
+              this.state.eventsSorted[r] = [];
             }
-            this.state.eventsSorted[r].push(event)
+            this.state.eventsSorted[r].push(event);
           }
         })
       })
-      console.log('sorted events', this.state.eventsSorted);
     }
     this.setState({
       eventsLoaded: true
-    })
+    });
   }
 
 
   render() {
     return (
       <div id='calendarCollection'>
-        {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -159,8 +155,6 @@ class CalendarCollection extends Component {
             :
             <div>
               Loading...
-
-              {/* {this.organizeEvents()} */}
             </div>
         }
 
@@ -173,7 +167,7 @@ class CalendarCollection extends Component {
 const CalendarCollectionState = (state) => {
   return {
     user: state.auth.user
-  }
+  };
 }
 
 export default connect(CalendarCollectionState)(CalendarCollection);

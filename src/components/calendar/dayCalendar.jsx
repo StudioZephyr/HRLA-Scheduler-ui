@@ -46,9 +46,6 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
-
-    console.log('looking at user', this.props.user)
-    console.log('looking at all props', this.props)
     this.state.eventCreated = this.props.user.hasEvent;
     if (this.props.events) {
       this.state.eventsList = this.props.events;
@@ -102,13 +99,11 @@ class DayCalendar extends Component {
   }
 
   blockTodaysEvents() {
-    console.log('attemptin to block todays events', this.props.events)
     this.state.eventsList.forEach((event) => {
       let start = event.start;
       let end = event.end
       console.log('looking at blocking start:', start, 'end:', end)
       if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
-        console.log('filling slotttt')
         this.fillTimeSlot(start, end);
       }
     })
@@ -146,12 +141,9 @@ class DayCalendar extends Component {
   }
 
   selectRange(slot) {
-    // console.log('filling slots with', slot.start, slot.end)
-    console.log('the user is', this.props.user, 'and visibility on eventcreate is', this.state.eventCreated)
     this.state.initEventRow = this.state.eventRow.slice();
     if (this.props.user.id) {
       //SLOT IS DATE OBJ
-      console.log('LOOKING AT A SLOT', slot)
       if (this.props.user.type !== 'admin' && slot.slots.length > 4) {
         //change to something prettier
         alert('Please select a time range of 2 hours or less')
@@ -166,7 +158,6 @@ class DayCalendar extends Component {
             selectedStart: slot.start,
             selectedEnd: slot.end
           })
-          console.log('from inside select range', this.state.roomname)
           $(`#${this.state.roomname}Modal`).modal('show')
         }
       }
@@ -211,15 +202,12 @@ class DayCalendar extends Component {
   }
 
   handleStartChange(e) {
-    console.log('START>> converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a'))
     this.setState({
       selectedStart: moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a')
     })
-    console.log('the start state changed to', this.state.selectedStart)
   }
 
   handleEndChange(e) {
-    console.log('END >>>converting e:', e.target.value, '  to >>>>', moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a'))
     this.setState({
       selectedEnd: moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a')
     })
@@ -244,7 +232,6 @@ class DayCalendar extends Component {
   }
 
   editEvent(selectedEvent) {
-    console.log(selectedEvent, this.props.user)
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
       this.setState({
         selectedEvent: selectedEvent,
@@ -254,24 +241,21 @@ class DayCalendar extends Component {
         selectedStart: moment(selectedEvent.start),
         selectedEnd: moment(selectedEvent.end)
       })
-      console.log(selectedEvent)
       $(`#${this.state.roomname}EditModal`).modal('show')
     }
   }
 
   async saveChanges() {
-    console.log('attempting to save changes as', this.state.selectedEnd, this.state.selectedStart)
     let originalEvent = Object.assign({}, this.state.selectedEvent);
 
     this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
     this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
-    console.log('the end of the state', this.state.selectedEvent.end)
     this.state.selectedEvent.title = this.state.purpose;
-    this.setState({})
+    this.setState({});
     if (this.props.user.type !== 'admin') {
-      let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime()
+      let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime();
       if (diffTime > 3600000) {
-        alert('Please select a time range of 2 hours or less')
+        alert('Please select a time range of 2 hours or less');
         this.state.selectedEvent.start = originalEvent.start;
         this.state.selectedEvent.end = originalEvent.end;
         this.setState({
@@ -284,7 +268,6 @@ class DayCalendar extends Component {
       await axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
       this.renderDay()
     } catch (e) {
-      console.log(e)
       this.state.selectedEvent.start = originalEvent.start;
       this.state.selectedEvent.end = originalEvent.end;
       this.setState({
@@ -295,7 +278,6 @@ class DayCalendar extends Component {
 
   async deleteEvent() {
     await axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
-    console.log(this.state.eventsList)
     this.props.refreshUser(this.props.user.id);
     this.state.eventsList.forEach((event, i) => {
       if (event.id === this.state.selectedEvent.id) {
@@ -309,28 +291,24 @@ class DayCalendar extends Component {
   }
 
   formatTime(time) {
-    console.log('time in formatTime', time)
     return moment(time).format('hh:mm');
   }
 
   concatTimeMeridiem(time, meridiem) {
-    console.log('inconcat', time, time.hour())
-    let year = this.state.selectedEvent.start.getFullYear()
-    let month = this.state.selectedEvent.start.getMonth() + 1
-    let day = this.state.selectedEvent.start.getDate()
-    // console.log('here is the conversion:', this.formatTime(time.toDate('hh:mm')));
-    return moment(`${year}-${month}-${day} ${time.hour()}:${time.minute()} ${meridiem} `, 'YYYY-MM-DD hh:mm a ')
+    let year = this.state.selectedEvent.start.getFullYear();
+    let month = this.state.selectedEvent.start.getMonth() + 1;
+    let day = this.state.selectedEvent.start.getDate();
+    return moment(`${year}-${month}-${day} ${time.hour()}:${time.minute()} ${meridiem} `, 'YYYY-MM-DD hh:mm a ');
   }
 
   title(event) {
-    return `${event.desc} - ${event.title}`
+    return `${event.desc} - ${event.title}`;
   }
 
   render() {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-        {console.log('EVENTLIST IN DAYCALENDAR RENDER', this.state.eventsList)}
         {this.props.currDate ?
           <BigCalendar
             selectable
@@ -434,13 +412,13 @@ class DayCalendar extends Component {
 const DayCalendarState = (state) => {
   return {
     user: state.auth.user
-  }
+  };
 }
 
 const DayCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
-  }
+  };
 }
 
 export default connect(DayCalendarState, DayCalendarDispatch)(DayCalendar);

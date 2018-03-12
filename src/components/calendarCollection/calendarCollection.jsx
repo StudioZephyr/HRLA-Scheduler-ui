@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import DayCalendar from '../calendar/dayCalendar.jsx';
 
@@ -22,8 +23,10 @@ class CalendarCollection extends Component {
       eventsLoaded: false,
       eventsSorted: [],
       slotView: 'booked',
-      bookingText: 'Book a Room'
+      bookingText: 'Book a Room',
+      // eventCreated: false
     }
+    this.organizeEvents = this.organizeEvents.bind(this);
   }
 
   componentDidMount() {
@@ -32,30 +35,23 @@ class CalendarCollection extends Component {
         this.setState({
           roomArray: this.state.roomArray.concat(data.result)
         })
-        console.log('here is the new state', this.state.roomArray)
         axios.get(`${API_SERVER}/api/timeslot`)
           .then(({ data }) => {
-            let events = data.result.map((event)=> {
+            console.log('data from get all timeslots', data)
+            let events = data.result.map((event) => {
               event.start = moment(event.start).toDate();
               event.end = moment(event.end).toDate();
-              event.selectable
-              return event
-            })
+              event.desc = event.owner;
+              event.selectable;
+              return event;
+            });
             this.setState({
               eventData: events,
             })
-            console.log('event in calcoll', this.state.eventData)
+            this.organizeEvents();
           })
       })
 
-    //^^^^^^^^ recomment in when connected to internet
-    //vvvvvvvv remove after
-    
-
-    console.log('state of events in CDM', this.state.eventData)
-
-
-    //^^^^^^^^^ remove
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[0]
@@ -83,52 +79,49 @@ class CalendarCollection extends Component {
   dayReset() {
     this.setState({
       currDay: moment()
-    })
+    });
   }
 
   dayBack() {
     this.setState({
       currDay: moment(this.state.currDay).subtract(1, this.state.calType + 's')
-    })
+    });
   }
 
   dayForward() {
     this.setState({
       currDay: moment(this.state.currDay).add(1, this.state.calType + 's')
-    })
+    });
   }
 
   changeView(view) {
     this.setState({
       calType: view
-    })
+    });
   }
 
   organizeEvents() {
-    if (this.state.eventData.length > 0){
-      console.log(this.state.eventsSorted)
+    if (this.state.eventData.length > 0) {
       this.state.eventData.forEach((event) => {
         this.state.roomArray.forEach((room, r) => {
           if (event.RoomId === room.id) {
             if (!this.state.eventsSorted[r]) {
-              this.state.eventsSorted[r] = []
+              this.state.eventsSorted[r] = [];
             }
-            this.state.eventsSorted[r].push(event)
+            this.state.eventsSorted[r].push(event);
           }
         })
       })
-      console.log('sorted events', this.state.eventsSorted);
-      this.setState({
-        eventsLoaded: true
-      })
     }
+    this.setState({
+      eventsLoaded: true
+    });
   }
 
 
   render() {
     return (
       <div id='calendarCollection'>
-        {console.log('rendering with this as eventdata', this.state.eventData)}
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -136,7 +129,7 @@ class CalendarCollection extends Component {
             date={this.state.currDay}
             defaultView={'day'}
             views={['week', 'day']}
-            step={15}
+            step={30}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
           />
@@ -147,30 +140,34 @@ class CalendarCollection extends Component {
           this.state.eventsLoaded ?
             this.state.calType === 'day' ?
               <div id='calendars'>
-              {/* change to toolbarcalendar component */}
+                {/* change to toolbarcalendar component */}
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
                 {this.state.roomArray.map((x, i, arr) => {
                   console.log('events in render:', this.state.eventData);
-                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView}/>
+                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView} />
                 })}
               </div>
               :
               <div id='weekCalendar'>
-              {/* change to weekcalendar component */}
+                {/* change to weekcalendar component */}
                 <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
             <div>
               Loading...
-
-              {this.organizeEvents()}
             </div>
         }
 
-        
-        </div>
+
+      </div>
     )
   }
 };
 
-export default CalendarCollection;
+const CalendarCollectionState = (state) => {
+  return {
+    user: state.auth.user
+  };
+}
+
+export default connect(CalendarCollectionState)(CalendarCollection);

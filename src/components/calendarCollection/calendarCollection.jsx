@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import DayCalendar from '../calendar/dayCalendar.jsx';
 
@@ -22,8 +23,10 @@ class CalendarCollection extends Component {
       eventsLoaded: false,
       eventsSorted: [],
       slotView: 'booked',
-      bookingText: 'Book a Room'
+      bookingText: 'Book a Room',
+      // eventCreated: false
     }
+    this.organizeEvents = this.organizeEvents.bind(this)
   }
 
   componentDidMount() {
@@ -34,7 +37,8 @@ class CalendarCollection extends Component {
         })
         axios.get(`${API_SERVER}/api/timeslot`)
           .then(({ data }) => {
-            let events = data.result.map((event)=> {
+            console.log('data from get all timeslots', data)
+            let events = data.result.map((event) => {
               event.start = moment(event.start).toDate();
               event.end = moment(event.end).toDate();
               event.selectable
@@ -43,6 +47,7 @@ class CalendarCollection extends Component {
             this.setState({
               eventData: events,
             })
+            this.organizeEvents();
           })
       })
 
@@ -95,8 +100,9 @@ class CalendarCollection extends Component {
   }
 
   organizeEvents() {
-    if (this.state.eventData.length > 0){
-      console.log(this.state.eventsSorted)
+    console.log('attemping to organize events')
+    if (this.state.eventData.length > 0) {
+      console.log('looking at sorted event',this.state.eventsSorted)
       this.state.eventData.forEach((event) => {
         this.state.roomArray.forEach((room, r) => {
           if (event.RoomId === room.id) {
@@ -108,10 +114,10 @@ class CalendarCollection extends Component {
         })
       })
       console.log('sorted events', this.state.eventsSorted);
-      this.setState({
-        eventsLoaded: true
-      })
     }
+    this.setState({
+      eventsLoaded: true
+    })
   }
 
 
@@ -137,30 +143,36 @@ class CalendarCollection extends Component {
           this.state.eventsLoaded ?
             this.state.calType === 'day' ?
               <div id='calendars'>
-              {/* change to toolbarcalendar component */}
+                {/* change to toolbarcalendar component */}
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
                 {this.state.roomArray.map((x, i, arr) => {
                   console.log('events in render:', this.state.eventData);
-                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView}/>
+                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventsSorted[i]} slotView={this.state.slotView} />
                 })}
               </div>
               :
               <div id='weekCalendar'>
-              {/* change to weekcalendar component */}
+                {/* change to weekcalendar component */}
                 <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
               </div>
             :
             <div>
               Loading...
 
-              {this.organizeEvents()}
+              {/* {this.organizeEvents()} */}
             </div>
         }
 
-        
-        </div>
+
+      </div>
     )
   }
 };
 
-export default CalendarCollection;
+const CalendarCollectionState = (state) => {
+  return {
+    user: state.auth.user
+  }
+}
+
+export default connect(CalendarCollectionState)(CalendarCollection);

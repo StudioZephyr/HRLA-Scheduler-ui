@@ -30,4 +30,16 @@ const updateLogin = (userObj, id) => (dispatch) => {
     });
 };
 
-export { authLogin, authLogout, updateLogin };
+const refreshUser = (id) => (dispatch) => {
+  axios.get(`${API_SERVER}/api/login/${id}`)
+  .then(({ data }) => {
+    console.log('attempting to refresh user with', data.result)
+    dispatch({ type: 'USER_RETRIEVED', payload: data.result });
+  })
+  .catch(err => {
+    console.log(`Error Retrieving User Info. ${err.message}`);
+    dispatch({type: `USER_RETRIEVAL_FAILED`});
+  })
+}
+
+export { authLogin, authLogout, updateLogin, refreshUser };

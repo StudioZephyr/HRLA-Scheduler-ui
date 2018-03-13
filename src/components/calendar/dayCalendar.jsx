@@ -28,8 +28,13 @@ class DayCalendar extends Component {
       roomname: '',
       purpose: '',
       selectedEvent: {},
-      eventCreated: false
+      eventCreated: false,
+      selectedRoom: '',
+      timeError: false
     }
+    // if (this.props.calType === 'weeks') {
+    //   this.state.selectedRoom = this.props.roomArray[0];
+    // };
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
     this.createEvent = this.createEvent.bind(this);
     this.resetEventsRow = this.resetEventsRow.bind(this);
@@ -202,27 +207,51 @@ class DayCalendar extends Component {
   }
 
   handleStartChange(e) {
+    let newStart = moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a');
+    if (this.state.selectedEvent.end - newStart <= 0) {
+      this.state.timeError = true;
+    } else {
+      this.state.timeError = false;
+    }
+    if (e.target.value === '') {
+      newStart = moment(this.state.selectedEvent.start)
+    }
+
     this.setState({
-      selectedStart: moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a')
+      selectedStart: newStart,
     })
   }
 
-  handleEndChange(e) {
+  async handleEndChange(e) {
+    let newEnd = moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a');
+    if (this.state.selectedEvent.start - newEnd >= 0) {
+      this.state.timeError = true;
+    } else {
+      this.state.timeError = false;
+    }
+    if (e.target.value === '') {
+      newEnd = moment(this.state.selectedEvent.end)
+    }
+
     this.setState({
-      selectedEnd: moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a')
+      selectedEnd: newEnd
     })
   }
 
   handleStartAmPmChange(e) {
+    console.log('ampm 1', e.target.value, 'was before', this.state.selectedStartAmPm)
     this.setState({
       selectedStartAmPm: e.target.value
     })
+    console.log('ampm of 1:', this.state.selectedStartAmPm, 'ampm of 2:', this.state.selectedEndAmPm);
   }
 
   handleEndAmPmChange(e) {
+    console.log('ampm 2', e.target.value)
     this.setState({
       selectedEndAmPm: e.target.value
     })
+    console.log('ampm of 1:', this.state.selectedStartAmPm, 'ampm of 2:', this.state.selectedEndAmPm);
   }
 
   resetEventsRow() {
@@ -251,7 +280,18 @@ class DayCalendar extends Component {
     this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
     this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
     this.state.selectedEvent.title = this.state.purpose;
+
+    //   alert('Please select a valid time');
+    //   this.state.selectedEvent.start = originalEvent.start;
+    //   this.state.selectedEvent.end = originalEvent.end;
+    //   this.setState({
+    //     selectedEvent: originalEvent
+    //   });
+    //   return;
+    // }
+
     this.setState({});
+    console.log(this.props.user)
     if (this.props.user.type !== 'admin') {
       let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime();
       if (diffTime > 3600000) {
@@ -295,9 +335,9 @@ class DayCalendar extends Component {
   }
 
   concatTimeMeridiem(time, meridiem) {
-    let year = this.state.selectedEvent.start.getFullYear();
-    let month = this.state.selectedEvent.start.getMonth() + 1;
-    let day = this.state.selectedEvent.start.getDate();
+    let year = this.props.currDate.year();
+    let month = this.props.currDate.month() + 1;
+    let day = this.props.currDate.date();
     return moment(`${year}-${month}-${day} ${time.hour()}:${time.minute()} ${meridiem} `, 'YYYY-MM-DD hh:mm a ');
   }
 
@@ -317,7 +357,7 @@ class DayCalendar extends Component {
             date={this.props.currDate}
             step={30}
             views={['week', 'day']}
-            titleAccessor = {this.title}
+            titleAccessor={this.title}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
             defaultDate={new Date(2018, 2, 2)}
@@ -374,6 +414,11 @@ class DayCalendar extends Component {
                       {this.state.selectedStartAmPm}
                     </button>
                     <h8>hh:mm</h8>
+                    {this.state.timeError ?
+                      <p>-invalid time</p>
+                      :
+                      null
+                    }
                     <div className="dropdown-menu">
                       <option onClick={this.handleStartAmPmChange} >am</option>
                       <option onClick={this.handleStartAmPmChange} >pm</option>
@@ -387,16 +432,39 @@ class DayCalendar extends Component {
                       {this.state.selectedEndAmPm}
                     </button>
                     <h8>hh:mm</h8>
+                    {this.state.timeError ?
+                      <p>-invalid time</p>
+                      :
+                      <p></p>
+                    }
                     <div className="dropdown-menu">
                       <option onClick={this.handleEndAmPmChange} >am</option>
                       <option onClick={this.handleEndAmPmChange} >pm</option>
                     </div>
                   </div>
+                  {/* {this.props.calType === 'weeks' ?
+                    <div className='btn-group'>
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {this.state.selectedRoom}
+                    </button>
+                      <div className='dropdown-menu '>
+                      
+                      </div>
+                    </div>
+                    :
+                    <div>
+                    </div>
+                  } */}
                 </form>
 
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={this.deleteEvent} data-dismiss="modal">Delete event</button>
+                  {this.state.timeError ? 
+                  <button type="button" className="btn btn-danger">Save Changes</button>
+                  :
                   <button type="button" className="btn btn-secondary" onClick={this.saveChanges} data-dismiss="modal">Save Changes</button>
+                  }
+                  
                   <button type="button" className="btn btn-secondary close" onClick={this.resetEventsRow} data-dismiss="modal" >Close</button>
                 </div>
               </div>

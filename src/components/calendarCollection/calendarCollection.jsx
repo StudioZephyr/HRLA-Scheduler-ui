@@ -150,7 +150,7 @@ class CalendarCollection extends Component {
               :
               <div id='weekCalendar'>
                 {/* change to weekcalendar component */}
-                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} />
+                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} roomArray={this.state.roomArray}/>
               </div>
             :
             <div>

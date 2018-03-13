@@ -208,13 +208,13 @@ class DayCalendar extends Component {
 
   handleStartChange(e) {
     let newStart = moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a');
-    if (this.state.selectedEvent.end - newStart <= 0) {
+    if (this.state.selectedEvent.end - newStart <= 0 || newStart.hours() < 8)  {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
     }
     if (e.target.value === '') {
-      newStart = moment(this.state.selectedEvent.start)
+      newStart = moment(this.state.selectedEvent.start);
     }
 
     this.setState({
@@ -224,13 +224,13 @@ class DayCalendar extends Component {
 
   async handleEndChange(e) {
     let newEnd = moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a');
-    if (this.state.selectedEvent.start - newEnd >= 0) {
+    if (this.state.selectedEvent.start - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
     }
     if (e.target.value === '') {
-      newEnd = moment(this.state.selectedEvent.end)
+      newEnd = moment(this.state.selectedEvent.end);
     }
 
     this.setState({
@@ -239,19 +239,15 @@ class DayCalendar extends Component {
   }
 
   handleStartAmPmChange(e) {
-    console.log('ampm 1', e.target.value, 'was before', this.state.selectedStartAmPm)
     this.setState({
       selectedStartAmPm: e.target.value
     })
-    console.log('ampm of 1:', this.state.selectedStartAmPm, 'ampm of 2:', this.state.selectedEndAmPm);
   }
 
   handleEndAmPmChange(e) {
-    console.log('ampm 2', e.target.value)
     this.setState({
       selectedEndAmPm: e.target.value
     })
-    console.log('ampm of 1:', this.state.selectedStartAmPm, 'ampm of 2:', this.state.selectedEndAmPm);
   }
 
   resetEventsRow() {
@@ -280,16 +276,6 @@ class DayCalendar extends Component {
     this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
     this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
     this.state.selectedEvent.title = this.state.purpose;
-
-    //   alert('Please select a valid time');
-    //   this.state.selectedEvent.start = originalEvent.start;
-    //   this.state.selectedEvent.end = originalEvent.end;
-    //   this.setState({
-    //     selectedEvent: originalEvent
-    //   });
-    //   return;
-    // }
-
     this.setState({});
     console.log(this.props.user)
     if (this.props.user.type !== 'admin') {

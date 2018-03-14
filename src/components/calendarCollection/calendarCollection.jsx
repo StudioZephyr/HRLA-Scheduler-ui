@@ -41,7 +41,7 @@ class CalendarCollection extends Component {
             let events = data.result.map((event) => {
               event.start = moment(event.start).toDate();
               event.end = moment(event.end).toDate();
-              event.desc = event.owner;
+              event.desc = event.groupName;
               event.selectable;
               return event;
             });

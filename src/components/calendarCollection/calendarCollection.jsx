@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import { getEvents, getRooms } from '../../actions/calendarActions';
 import DayCalendar from '../calendar/dayCalendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
+import { Promise } from 'bluebird';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendarCollection.css';
+
 const API_SERVER = process.env.API_SERVER;
 
 class CalendarCollection extends Component {
@@ -30,26 +34,13 @@ class CalendarCollection extends Component {
   }
 
   componentDidMount() {
+    //REPLACING WITH ACTION
     axios.get(`${API_SERVER}/api/rooms`)
       .then(({ data }) => {
         this.setState({
           roomArray: this.state.roomArray.concat(data.result)
         })
-        axios.get(`${API_SERVER}/api/timeslot`)
-          .then(({ data }) => {
-            console.log('data from get all timeslots', data)
-            let events = data.result.map((event) => {
-              event.start = moment(event.start).toDate();
-              event.end = moment(event.end).toDate();
-              event.desc = event.groupName;
-              event.selectable;
-              return event;
-            });
-            this.setState({
-              eventData: events,
-            })
-            this.organizeEvents();
-          })
+        this.getEvents();
       })
 
     //overrides date control on toolbar
@@ -76,6 +67,35 @@ class CalendarCollection extends Component {
 
   }
 
+  getEvents() {
+    return new Promise((resolve, reject)=> {
+      this.state.eventsSorted = [];
+      this.props.getEvents()
+      console.log('this should be second')
+      // .then((e) => {
+      //   console.log('its a promise!', e)
+      // })
+
+      axios.get(`${API_SERVER}/api/timeslot`)
+        .then(async ({ data }) => {
+          console.log('data from get all timeslots', data)
+          let events = data.result.map((event) => {
+            event.start = moment(event.start).toDate();
+            event.end = moment(event.end).toDate();
+            event.desc = event.groupName;
+            event.selectable;
+            return event;
+          });
+          await this.setState({
+            eventData: events,
+            eventsSorted: []
+          })
+          this.organizeEvents();
+          resolve()
+        })
+    })
+  }
+
   dayReset() {
     this.setState({
       currDay: moment()
@@ -94,7 +114,8 @@ class CalendarCollection extends Component {
     });
   }
 
-  changeView(view) {
+  async changeView(view) {
+    await this.getEvents();
     this.setState({
       calType: view
     });
@@ -150,7 +171,7 @@ class CalendarCollection extends Component {
               :
               <div id='weekCalendar'>
                 {/* change to weekcalendar component */}
-                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} roomArray={this.state.roomArray}/>
+                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} events={this.state.eventData} roomArray={this.state.roomArray} />
               </div>
             :
             <div>
@@ -170,4 +191,11 @@ const CalendarCollectionState = (state) => {
   };
 }
 
-export default connect(CalendarCollectionState)(CalendarCollection);
+const CalendarCollectionDispatch = (dispatch) => {
+  return {
+    getRooms: bindActionCreators(getRooms, dispatch),
+    getEvents: bindActionCreators(getEvents, dispatch)
+  }
+}
+
+export default connect(CalendarCollectionState, CalendarCollectionDispatch)(CalendarCollection);

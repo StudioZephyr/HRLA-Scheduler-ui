@@ -182,6 +182,7 @@ class DayCalendar extends Component {
       room: this.props.room.name
     }
     try {
+      //REPLACING WITH ACTION
       let result = await axios.post(`${API_SERVER}/api/timeslot`, (event))
       event.id = result.data.result.id;
       event.desc = result.data.result.groupName;
@@ -303,6 +304,7 @@ class DayCalendar extends Component {
   }
 
   async deleteEvent() {
+    //replace with action
     await axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
     this.props.refreshUser(this.props.user.id);
     this.state.eventsList.forEach((event, i) => {

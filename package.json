@@ -25,6 +25,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "history": "^4.7.2",
+    "immutable": "^3.8.2",
     "localforage": "^1.5.7",
     "moment": "^2.20.1",
     "react": "^16.2.0",

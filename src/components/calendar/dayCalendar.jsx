@@ -21,8 +21,8 @@ class DayCalendar extends Component {
       initEventRow: [],
       rowDate: props.currDate,
       eventsList: [],
-      selectedStart: '',
-      selectedEnd: '',
+      selectedStart: moment(),
+      selectedEnd: moment(),
       selectedStartAmPm: 'am',
       selectedEndAmPm: 'am',
       roomname: '',
@@ -51,10 +51,24 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
+    console.log('MADE IT', this.props.eventList);
     this.state.eventCreated = this.props.user.hasEvent;
-    if (this.props.events) {
-      this.state.eventsList = this.props.events;
-      this.renderDay();
+    this.state.eventsList = this.props.eventList.toArray()
+    this.state.eventsList = this.state.eventsList.map((event)=> {
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      return event;
+    })
+
+    // this.state.eventsList = this.props.eventList.map((event)=> {
+    //   return Object.assign({}, event, {
+    //     start: Object.assign({}, event.start),
+    //     end: Object.assign({}, event.end)
+    //   })
+    // });
+    console.log('INSIDE COMPONENT DID MOUNT', this.state.eventsList)
+        if (this.state.eventsList) {
+      // this.renderDay();
     }
     this.setState({
       roomname: this.props.room.name.replace(/\s+/g, '')
@@ -65,9 +79,10 @@ class DayCalendar extends Component {
   }
 
   componentDidUpdate() {
+    console.log('this updated and the props are', this.props.eventList);
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
-      this.renderDay();
+      // this.renderDay();
       this.setState({
         rowDate: this.props.currDate
       })
@@ -85,14 +100,14 @@ class DayCalendar extends Component {
   }
 
   toIdx(time) {
-    return (time.getHours() - 8) * 4 + (time.getMinutes() === 0 ? 0 : 1);
+    return (time.hours() - 8) * 4 + (time.minutes() === 0 ? 0 : 1);
   }
 
   fillTimeSlot(startTime, endTime) {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
     let initEventRow = this.state.eventRow.slice();
-    console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
+    console.log('fill start time of ', startTime.hours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
         this.state.eventRow = initEventRow.slice();
@@ -106,9 +121,9 @@ class DayCalendar extends Component {
   blockTodaysEvents() {
     this.state.eventsList.forEach((event) => {
       let start = event.start;
-      let end = event.end
+      let end = event.end;
       console.log('looking at blocking start:', start, 'end:', end)
-      if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
+      if (start.date() === this.props.currDate.date() && start.month() === this.props.currDate.month() && start.year() === this.props.currDate.year()) {
         this.fillTimeSlot(start, end);
       }
     })
@@ -155,13 +170,15 @@ class DayCalendar extends Component {
       } else if (this.props.user.hasEvent && this.props.user.type !== 'admin') {
         alert('You already have an event scheduled.\nPlease wait for this event to expire, or reschedule it');
       } else {
-        let fill = this.fillTimeSlot(slot.start, slot.end);
+        let start = moment(slot.start);
+        let end = moment(slot.end);
+        let fill = this.fillTimeSlot(start, end);
         if (!fill) {
           alert('Please select a valid time');
         } else {
           this.setState({
-            selectedStart: slot.start,
-            selectedEnd: slot.end
+            selectedStart: start,
+            selectedEnd: end
           })
           $(`#${this.state.roomname}Modal`).modal('show')
         }
@@ -337,7 +354,8 @@ class DayCalendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-        {this.props.currDate ?
+      {console.log('INSIDE THE RENDER OF DAYCALENDAR', this.state.eventsList)}
+        {this.state.eventsList ?
           <BigCalendar
             selectable
             events={this.state.eventsList}
@@ -366,7 +384,7 @@ class DayCalendar extends Component {
                 </button>
               </div>
               <div className="modal-body">
-                <p>{`${this.state.selectedStart.toLocaleString()} - ${this.state.selectedEnd.toLocaleString()}`}</p>
+                <p>{`${this.state.selectedStart.format('hh:mm a')} - ${this.state.selectedEnd.format('hh:mm a')}`}</p>
                 <form>
                   Description:<br />
                   <input id='eventNameInput' type='text' onChange={this.handlePurposeChange.bind(this)} />
@@ -467,7 +485,8 @@ class DayCalendar extends Component {
 
 const DayCalendarState = (state) => {
   return {
-    user: state.auth.user
+    user: state.auth.user,
+    // events: state.calendar.events,
   };
 }
 

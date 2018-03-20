@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Promise } from 'bluebird';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -9,7 +10,7 @@ const getRooms = () => (dispatch) => {
     })
     .catch(err => {
       console.log(`Error getting Rooms. ${err.message}`);
-      dispatch({ type: 'ROOM_GET_FAILED' })
+      dispatch({ type: 'ROOM_GET_FAILED' }, null);
     })
 }
 
@@ -20,7 +21,7 @@ const getEvents = () => (dispatch) => {
     })
     .catch(err => {
       console.log(`Error getting Events. ${err.message}`);
-      dispatch({ type: 'EVENTS_GET_FAILED' })
+      dispatch({ type: 'EVENTS_GET_FAILED' }, null)
     })
 }
 

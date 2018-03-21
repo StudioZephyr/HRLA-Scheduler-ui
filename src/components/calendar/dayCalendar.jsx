@@ -4,6 +4,7 @@ import axios from 'axios';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser } from '../../actions/authActions';
+import { postEvent, eventsLoaded } from '../../actions/calendarActions';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -30,7 +31,8 @@ class DayCalendar extends Component {
       selectedEvent: {},
       eventCreated: false,
       selectedRoom: '',
-      timeError: false
+      timeError: false,
+      eventsUpdated: false
     }
     // if (this.props.calType === 'weeks') {
     //   this.state.selectedRoom = this.props.roomArray[0];
@@ -53,12 +55,7 @@ class DayCalendar extends Component {
   componentDidMount() {
     console.log('MADE IT', this.props.eventList);
     this.state.eventCreated = this.props.user.hasEvent;
-    this.state.eventsList = this.props.eventList.toArray()
-    this.state.eventsList = this.state.eventsList.map((event)=> {
-      event.start = new Date(event.start);
-      event.end = new Date(event.end);
-      return event;
-    })
+    this.assignEvents();
 
     // this.state.eventsList = this.props.eventList.map((event)=> {
     //   return Object.assign({}, event, {
@@ -78,8 +75,12 @@ class DayCalendar extends Component {
       .textContent = this.props.room.name === 'time' ? `Room` : `${this.props.room.name}` //replace room number with room name
   }
 
-  componentDidUpdate() {
-    console.log('this updated and the props are', this.props.eventList);
+  componentDidUpdate(prevProps) {
+    console.log('this updated and the props are', this.props.eventList, 'in room', this.props.roomNo);
+    if (!this.props.eventsLoaded) {
+      this.props.loadEvents()
+      this.assignEvents()
+    }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
       // this.renderDay();
@@ -87,6 +88,19 @@ class DayCalendar extends Component {
         rowDate: this.props.currDate
       })
     }
+  }
+
+  assignEvents() {
+    console.log('converting list:', ...this.props.eventList)
+    this.state.eventsList = this.props.eventList.toArray()
+    this.state.eventsList = this.state.eventsList.map((event)=> {
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      return event;
+    })
+    this.setState({
+      eventsUpdated: true
+    })
   }
 
   toTime(idx) {
@@ -200,15 +214,18 @@ class DayCalendar extends Component {
     }
     try {
       //REPLACING WITH ACTION
-      let result = await axios.post(`${API_SERVER}/api/timeslot`, (event))
-      event.id = result.data.result.id;
-      event.desc = result.data.result.groupName;
-      event.UserId = result.data.result.UserId;
-      event.RoomId = result.data.result.RoomId;
+      this.props.postEvent(event, this.props.roomNo, event);
+      //remove the below
+      // let result = await axios.post(`${API_SERVER}/api/timeslot`, (event))
+      // event.id = result.data.result.id;
+      // event.desc = result.data.result.groupName;
+      // event.UserId = result.data.result.UserId;
+      // event.RoomId = result.data.result.RoomId;
       this.props.refreshUser(this.props.user.id);
       this.setState({
-        eventsList: this.state.eventsList.concat(event),
-        initEventRow: this.state.eventRow.slice()
+        // eventsList: this.state.eventsList.concat(event),
+        initEventRow: this.state.eventRow.slice(),
+        eventsUpdated: false,
       })
       if (this.props.user.type !== 'admin') {
         this.state.eventCreated = true;
@@ -486,13 +503,15 @@ class DayCalendar extends Component {
 const DayCalendarState = (state) => {
   return {
     user: state.auth.user,
-    // events: state.calendar.events,
+    eventsLoaded: state.calendar.eventsLoaded,
   };
 }
 
 const DayCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
+    postEvent: bindActionCreators(postEvent, dispatch),
+    loadEvents: bindActionCreators(eventsLoaded, dispatch)
   };
 }
 

@@ -135,7 +135,7 @@ class CalendarCollection extends Component {
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} eventList={events.get(0)} />
                 {rooms.map((x, i, arr) => {
                   console.log('events in render', events.get(i))
-                  return <DayCalendar room={x} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)}/>
+                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)}/>
                 })}
               </div>
               :

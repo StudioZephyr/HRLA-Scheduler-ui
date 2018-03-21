@@ -64,32 +64,48 @@ const calendarReducer = (state = initialState, action) => {
           })
         }
         console.log('SORTED', ...eventsSorted);
-        // if (eventsSorted.length === 0) {
-        //   eventsSorted = [[{title: 'noEvents', start: moment(), end: moment()}]]
-        // }
+
         console.log('EVENTS IN REDUCER AFTER EVERYTHING', eventsSorted)
         return Object.assign({}, state, {
           events: eventsSorted
         });
-        // return { 
-        //   ...state, 
-        //   events: {
-        //     ...eventsSorted, 
-        //     start: {
-        //       ...eventsSorted.start
-        //     },
-        //     end: {
-        //       ...eventsSorted.end
-        //     },
-        //     title: {
-        //       ...eventsSorted.title
-        //     }
-        // }}
-        // return state
+
     }
     case `EVENTS_GET_FAILED`: {
       return state;
     }
+
+    case `EVENT_POST_SUCCESS`: {
+      //action.roomNo
+      const roomNo = action.roomNo;
+      const payload = action.payload;
+      const event = action.event;
+      event.id = payload.id;
+      event.desc = payload.groupName;
+      event.UserId = payload.UserId;
+      event.RoomId = payload.RoomId;
+      event.start = new Date(payload.start);
+      event.end = new Date(payload.end);
+      console.log('before adding', state.events.get(roomNo))
+      const newEvents = state.events.update(roomNo, (val) => {
+        console.log('list tobe updated', ...val, 'roomno', roomNo)
+        // return val.withMutations((list)=> {
+          return val.push(event);
+        // })
+      })
+      console.log('after adding', newEvents, ...newEvents.get(roomNo))
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      });
+    }
+
+    case `EVENTS_LOADED`: {
+      return Object.assign({}, state, {
+        eventsLoaded: true
+      })
+    }
+
     default: {
       return state;
     }

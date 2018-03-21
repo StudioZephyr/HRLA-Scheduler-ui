@@ -25,17 +25,22 @@ const getEvents = () => (dispatch) => {
     })
 }
 
-const postEvent = (event) => (dispatch) => {
+
+const postEvent = (event, roomNo) => (dispatch) => {
   axios.post(`${API_SERVER}/api/timeslot`, (event))
-    .then(({ data }) => {
-      dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result });
-    })
-    .catch(err => {
-      console.log(`Error getting Events. ${err.message}`);
-      dispatch({ type: 'EVENT_POST_FAILED' });
-    })
+  .then(({ data }) => {
+    console.log('here is that data', data);
+    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, roomNo, event});
+  })
+  .catch(err => {
+    console.log(`Error getting Events. ${err.message}`);
+    dispatch({ type: 'EVENT_POST_FAILED' });
+  })
 }
 
+const eventsLoaded = () => (dispatch) => {
+  dispatch({ type: 'EVENTS_LOADED' });
+}
 const updateEvent = (event) => (dispatch) => {
   axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
@@ -58,4 +63,4 @@ const deleteEvent = (event) => (dispatch) => {
     })
 }
 
-export { getRooms, getEvents, postEvent, updateEvent, deleteEvent };
+export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, eventsLoaded };

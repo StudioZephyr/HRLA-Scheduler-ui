@@ -4,7 +4,7 @@ import axios from 'axios';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser } from '../../actions/authActions';
-import { postEvent, eventsLoaded, updateEvent } from '../../actions/calendarActions';
+import { postEvent, eventsLoaded, updateEvent, deleteEvent } from '../../actions/calendarActions';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -298,13 +298,8 @@ class DayCalendar extends Component {
     }
   }
 
-  async saveChanges() {
+  saveChanges() {
     let originalEvent = Object.assign({}, this.state.selectedEvent);
-
-    // this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
-    // this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
-    // this.state.selectedEvent.title = this.state.purpose;
-    // this.setState({});
 
     const newEvent = this.state.selectedEvent;
     newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
@@ -324,34 +319,11 @@ class DayCalendar extends Component {
         return;
       }
     }
-    // try {
-      //replace with action
-
-      // await axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
-
-      console.log('seleceted event', this.state.selectedEvent, this.state.selectedEnd, 'CONCATTED', this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate())
-      console.log('NEW EVENT', newEvent)
       this.props.updateEvent(newEvent, this.props.roomNo);
-      // this.renderDay();
-    // } catch (e) {
-    //   this.state.selectedEvent.start = originalEvent.start;
-    //   this.state.selectedEvent.end = originalEvent.end;
-    //   this.setState({
-    //     selectedEvent: originalEvent
-    //   });
-    // };
   }
 
-  async deleteEvent() {
-    //replace with action
-    await axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
-    this.props.refreshUser(this.props.user.id);
-    this.state.eventsList.forEach((event, i) => {
-      if (event.id === this.state.selectedEvent.id) {
-        delete this.state.eventsList[i];
-      }
-    })
-    this.renderDay();
+  deleteEvent() {
+    this.props.deleteEvent;
     this.setState({
       selectedEvent: { start: moment(), end: moment() }
     })
@@ -517,7 +489,8 @@ const DayCalendarDispatch = (dispatch) => {
     refreshUser: bindActionCreators(refreshUser, dispatch),
     postEvent: bindActionCreators(postEvent, dispatch),
     updateEvent: bindActionCreators(updateEvent, dispatch),
-    loadEvents: bindActionCreators(eventsLoaded, dispatch)
+    loadEvents: bindActionCreators(eventsLoaded, dispatch),
+    deleteEvent: bindActionCreators(deleteEvent, dispatch)
   };
 }
 

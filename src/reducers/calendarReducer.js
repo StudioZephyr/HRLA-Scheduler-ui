@@ -11,17 +11,15 @@ const calendarReducer = (state = initialState, action) => {
   const payload = action.payload;
 
   switch (action.type) {
+
     case `ROOM_GET_SUCCESS`: {
-      // Object.assign({}, state, {
-      //   rooms: payload
-      // })
       return Object.assign({}, state, {
         rooms: payload,
       });
     }
+
     case `EVENTS_GET_SUCCESS`: {
       let eventsSorted = List();
-      console.log('roooooms', state.rooms)
       const eventsUnsorted =
         payload.map((event) => {
           event.start = event.start;
@@ -39,22 +37,11 @@ const calendarReducer = (state = initialState, action) => {
         }
       });
 
-      console.log('events unsorted', eventsUnsorted);
-      console.log('SKELETON OF SORTED', eventsSorted);
-
       if (eventsUnsorted.length > 0) {
         eventsUnsorted.forEach((event) => {
           state.rooms.forEach((room, r) => {
             if (event.RoomId === room.id) {
-              console.log('here is updating to eventsorted', event)
-              // eventsSorted.update(r, (val) => {
-              //   console.log('here be that val', val)
-              //  val.push(1);
-              //   console.log('and then..', val);
-              //   // return newVal;
-              // })
               eventsSorted = eventsSorted.update(r, (val) => {
-                console.log('here be that val', val)
                 return val.withMutations((list) => {
                   list.push(event);
                 })
@@ -63,9 +50,7 @@ const calendarReducer = (state = initialState, action) => {
           })
         })
       }
-      console.log('SORTED', ...eventsSorted);
 
-      console.log('EVENTS IN REDUCER AFTER EVERYTHING', eventsSorted)
       return Object.assign({}, state, {
         events: eventsSorted
       });
@@ -102,7 +87,6 @@ const calendarReducer = (state = initialState, action) => {
 
     case `EVENT_UPDATE_SUCCESS`: {
       const roomNo = action.roomNo;
-      const payload = action.payload;
       const event = action.event;
       const deepList = state.events.get(roomNo);
       const idx = deepList.findIndex((i)=> {
@@ -111,6 +95,20 @@ const calendarReducer = (state = initialState, action) => {
       const newEvents = state.events.updateIn([roomNo, idx], (value) => {
         return value = event;
       })
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      })
+    }
+
+    case `EVENT_DELETE_SUCCESS`: {
+      const roomNo = action.roomNo;
+      const event = action.event;
+      const deepList = state.events.get(roomNo);
+      const idx = deepList.findIndex((i)=> {
+        return i.id = event.id;
+      })
+      const newEvents = state.events.deleteIn([roomNo, idx]);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

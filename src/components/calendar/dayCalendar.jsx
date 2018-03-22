@@ -4,7 +4,7 @@ import axios from 'axios';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser } from '../../actions/authActions';
-import { postEvent, eventsLoaded } from '../../actions/calendarActions';
+import { postEvent, eventsLoaded, updateEvent } from '../../actions/calendarActions';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -213,14 +213,7 @@ class DayCalendar extends Component {
       room: this.props.room.name
     }
     try {
-      //REPLACING WITH ACTION
       this.props.postEvent(event, this.props.roomNo, event);
-      //remove the below
-      // let result = await axios.post(`${API_SERVER}/api/timeslot`, (event))
-      // event.id = result.data.result.id;
-      // event.desc = result.data.result.groupName;
-      // event.UserId = result.data.result.UserId;
-      // event.RoomId = result.data.result.RoomId;
       this.props.refreshUser(this.props.user.id);
       this.setState({
         // eventsList: this.state.eventsList.concat(event),
@@ -308,11 +301,17 @@ class DayCalendar extends Component {
   async saveChanges() {
     let originalEvent = Object.assign({}, this.state.selectedEvent);
 
-    this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
-    this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
-    this.state.selectedEvent.title = this.state.purpose;
-    this.setState({});
-    console.log(this.props.user)
+    // this.state.selectedEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
+    // this.state.selectedEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
+    // this.state.selectedEvent.title = this.state.purpose;
+    // this.setState({});
+
+    const newEvent = this.state.selectedEvent;
+    newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
+    newEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
+    newEvent.title = this.state.purpose;
+
+    //checks length of event Kan wants this gone
     if (this.props.user.type !== 'admin') {
       let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime();
       if (diffTime > 7200000) {
@@ -325,16 +324,22 @@ class DayCalendar extends Component {
         return;
       }
     }
-    try {
-      await axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
-      this.renderDay()
-    } catch (e) {
-      this.state.selectedEvent.start = originalEvent.start;
-      this.state.selectedEvent.end = originalEvent.end;
-      this.setState({
-        selectedEvent: originalEvent
-      });
-    };
+    // try {
+      //replace with action
+
+      // await axios.put(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
+
+      console.log('seleceted event', this.state.selectedEvent, this.state.selectedEnd, 'CONCATTED', this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate())
+      console.log('NEW EVENT', newEvent)
+      this.props.updateEvent(newEvent, this.props.roomNo);
+      // this.renderDay();
+    // } catch (e) {
+    //   this.state.selectedEvent.start = originalEvent.start;
+    //   this.state.selectedEvent.end = originalEvent.end;
+    //   this.setState({
+    //     selectedEvent: originalEvent
+    //   });
+    // };
   }
 
   async deleteEvent() {
@@ -511,6 +516,7 @@ const DayCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
     postEvent: bindActionCreators(postEvent, dispatch),
+    updateEvent: bindActionCreators(updateEvent, dispatch),
     loadEvents: bindActionCreators(eventsLoaded, dispatch)
   };
 }

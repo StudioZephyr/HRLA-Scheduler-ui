@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Promise } from 'bluebird';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -13,6 +12,7 @@ const getRooms = () => (dispatch) => {
       dispatch({ type: 'ROOM_GET_FAILED' }, null);
     })
 }
+
 
 const getEvents = () => (dispatch) => {
   axios.get(`${API_SERVER}/api/timeslot`)
@@ -38,19 +38,24 @@ const postEvent = (event, roomNo) => (dispatch) => {
   })
 }
 
+
 const eventsLoaded = () => (dispatch) => {
   dispatch({ type: 'EVENTS_LOADED' });
 }
-const updateEvent = (event) => (dispatch) => {
+
+
+const updateEvent = (event, roomNo) => (dispatch) => {
   axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
-      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result });
+      console.log('event updated', data);
+      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, roomNo, event });
     })
     .catch(err => {
       console.log(`Error getting Events. ${err.message}`);
       dispatch({ type: 'EVENT_UPDATE_FAILED' });
     })
 }
+
 
 const deleteEvent = (event) => (dispatch) => {
   axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
@@ -62,5 +67,6 @@ const deleteEvent = (event) => (dispatch) => {
       dispatch({ type: 'EVENT_DELETE_FAILED' });
     })
 }
+
 
 export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, eventsLoaded };

@@ -12,9 +12,27 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendar.css';
 const API_SERVER = process.env.API_SERVER;
 
-class DayCalendar extends Component {
+class WeekCalendar extends Component {
   constructor(props) {
     super();
     BigCalendar.momentLocalizer(moment);
+    this.state = {
+      rowDate: props.currDate,
+      eventsList: [],
+      selectedStart: moment(),
+      selectedEnd: moment(),
+      selectedStartAmPm: 'am',
+      selectedEndAmPm: 'am',
+      roomname: '',
+      purpose: '',
+      selectedEvent: {},
+      eventCreated: false,
+      selectedRoom: '',
+      timeError: false,
+      eventsUpdated: false,
+      selectedRoom: '',
+    }
   }
+
+
 }

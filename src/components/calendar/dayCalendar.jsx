@@ -6,6 +6,9 @@ import { bindActionCreators } from 'redux';
 import { refreshUser } from '../../actions/authActions';
 import { postEvent, eventsLoaded, updateEvent, deleteEvent } from '../../actions/calendarActions';
 
+import EditModal from './eventEditModal.jsx';
+import PostModal from './eventPostModal.jsx';
+
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -32,7 +35,8 @@ class DayCalendar extends Component {
       eventCreated: false,
       selectedRoom: '',
       timeError: false,
-      eventsUpdated: false
+      eventsUpdated: false,
+      modal: 'none'
     }
     // if (this.props.calType === 'weeks') {
     //   this.state.selectedRoom = this.props.roomArray[0];
@@ -56,15 +60,8 @@ class DayCalendar extends Component {
     console.log('MADE IT', this.props.eventList);
     this.state.eventCreated = this.props.user.hasEvent;
     this.assignEvents();
-
-    // this.state.eventsList = this.props.eventList.map((event)=> {
-    //   return Object.assign({}, event, {
-    //     start: Object.assign({}, event.start),
-    //     end: Object.assign({}, event.end)
-    //   })
-    // });
     console.log('INSIDE COMPONENT DID MOUNT', this.state.eventsList)
-        if (this.state.eventsList) {
+    if (this.state.eventsList) {
       // this.renderDay();
     }
     this.setState({
@@ -93,7 +90,7 @@ class DayCalendar extends Component {
   assignEvents() {
     console.log('converting list:', ...this.props.eventList)
     this.state.eventsList = this.props.eventList.toArray()
-    this.state.eventsList = this.state.eventsList.map((event)=> {
+    this.state.eventsList = this.state.eventsList.map((event) => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
       return event;
@@ -193,8 +190,9 @@ class DayCalendar extends Component {
           this.setState({
             selectedStart: start,
             selectedEnd: end
+          }, () => {
+            $(`#${this.state.roomname}Modal`).modal('show')
           })
-          $(`#${this.state.roomname}Modal`).modal('show')
         }
       }
     }
@@ -233,10 +231,36 @@ class DayCalendar extends Component {
       purpose: e.target.value
     });
   }
+//vvvv refactor 
+  // selectTime(time, startOrEnd) {
+  //   meridiem = startOrEnd === 'start' ? this.state.selectedStartAmPm : this.state.selectedEndAmPm;
+  //   newTime = time || startOrEnd === 'start' ? this.state.selectedStart : this.state.selectedEnd
+  //   let newStart = moment(`${newTime} ${meridiem}`, 'hh:mm a');
+  //   if (startOrEnd === 'start'){
+  //     if (this.state.selectedEvent.end - newStart <= 0 || newStart.hours() < 8) {
+  //       this.state.timeError = true;
+  //     } else {
+  //       this.state.timeError = false;
+  //     }
+  //     this.setState({
+  //       selectedStart: newStart,
+  //     })
+  //   } else {
+  //     if (this.state.selectedEvent.start - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
+  //       this.state.timeError = true;
+  //     } else {
+  //       this.state.timeError = false;
+  //     }
+  //     this.setState({
+  //       selectedEnd: newStart,
+  //     })
+  //   }
+  // }
 
   handleStartChange(e) {
     let newStart = moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a');
-    if (this.state.selectedEvent.end - newStart <= 0 || newStart.hours() < 8)  {
+    console.log('comparing', moment(this.state.selectedEvent.end), 'and>>>>>>>>>>>>>>>>', newStart, 'and the result=', moment(this.state.selectedEvent.end) - newStart)
+    if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
@@ -250,9 +274,10 @@ class DayCalendar extends Component {
     })
   }
 
-  async handleEndChange(e) {
+  handleEndChange(e) {
     let newEnd = moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a');
-    if (this.state.selectedEvent.start - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
+    console.log('comparing', moment(this.state.selectedStart), 'and>>>>>>>>>>>>>>>>', newEnd, 'and the result=', moment(this.state.selectedEvent.Start) - newEnd)
+    if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
@@ -267,14 +292,29 @@ class DayCalendar extends Component {
   }
 
   handleStartAmPmChange(e) {
+    let newStart = moment(`${this.state.selectedStart.format('hh:mm')} ${e.target.value}`, 'hh:mm a');
+    if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
+      this.state.timeError = true;
+    } else {
+      this.state.timeError = false;
+    }
     this.setState({
-      selectedStartAmPm: e.target.value
+      selectedStartAmPm: e.target.value,
+      selectedStart: newStart
     })
   }
 
   handleEndAmPmChange(e) {
+    let newEnd = moment(`${this.state.selectedEnd.format('hh:mm')} ${e.target.value}`, 'hh:mm a');
+    console.log('comparing', moment(this.state.selectedStart), 'and>>>>>>>>>>>>>>>>', newEnd, 'and the result=', moment(this.state.selectedEvent.Start) - newEnd)
+    if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
+      this.state.timeError = true;
+    } else {
+      this.state.timeError = false;
+    }
     this.setState({
-      selectedEndAmPm: e.target.value
+      selectedEndAmPm: e.target.value,
+      selectedEnd: newEnd
     })
   }
 
@@ -292,9 +332,11 @@ class DayCalendar extends Component {
         selectedStartAmPm: moment(selectedEvent.start).format('a'),
         selectedEndAmPm: moment(selectedEvent.end).format('a'),
         selectedStart: moment(selectedEvent.start),
-        selectedEnd: moment(selectedEvent.end)
+        selectedEnd: moment(selectedEvent.end),
+        modal: 'editing'
+      }, () => {
+        $(`#${this.state.roomname}EditModal`).modal('show')
       })
-      $(`#${this.state.roomname}EditModal`).modal('show')
     }
   }
 
@@ -319,7 +361,7 @@ class DayCalendar extends Component {
         return;
       }
     }
-      this.props.updateEvent(newEvent, this.props.roomNo);
+    this.props.updateEvent(newEvent, this.props.roomNo);
   }
 
   deleteEvent() {
@@ -348,7 +390,7 @@ class DayCalendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-      {console.log('INSIDE THE RENDER OF DAYCALENDAR', this.state.eventsList)}
+        {console.log('INSIDE THE RENDER OF DAYCALENDAR', this.state.eventsList)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -368,7 +410,16 @@ class DayCalendar extends Component {
           :
           <p>Loading</p>
         }
-        <div className="modal fade" id={`${this.state.roomname}Modal`} role='dialog' tabIndex="-1" ref={modal => this.modal = modal}>
+        <PostModal
+          roomName={this.state.roomname}
+          selectedStart={this.state.selectedStart}
+          selectedEnd={this.state.selectedEnd}
+          handlePurposeChange={this.handlePurposeChange}
+          createEvent={this.createEvent}
+          resetEventsRow={this.resetEventsRow}
+          room={this.props.room.name}
+        />
+        {/* <div className="modal fade" id={`${this.state.roomname}Modal`} role='dialog' tabIndex="-1" ref={modal => this.modal = modal}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -391,86 +442,26 @@ class DayCalendar extends Component {
               </div>
             </div>
           </div>
-        </div>
-        {/* VVVV EDIT EVENT MODAL VVVV */}
-        <div className="modal fade" id={`${this.state.roomname}EditModal`} role='dialog' ref={modal => this.modal = modal}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Event</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <h2>{this.state.selectedEvent.desc}</h2>
-                <form>
-                  Description:<br />
-                  <input id='eventNameInput' type='text' placeholder={this.state.purpose} onChange={this.handlePurposeChange} /> <br />
-                  Start:<br />
-                  <input id='eventStartInput' type='text' placeholder={this.formatTime(this.state.selectedEvent.start)} onChange={this.handleStartChange} />
-                  <div className='btn-group'>
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {this.state.selectedStartAmPm}
-                    </button>
-                    <h8>hh:mm</h8>
-                    {this.state.timeError ?
-                      <p>-invalid time</p>
-                      :
-                      null
-                    }
-                    <div className="dropdown-menu">
-                      <option onClick={this.handleStartAmPmChange} >am</option>
-                      <option onClick={this.handleStartAmPmChange} >pm</option>
-                    </div>
-                  </div>
-                  <br />
-                  End: <br />
-                  <input id='eventEndInput' type='text' placeholder={this.formatTime(this.state.selectedEvent.end)} onChange={this.handleEndChange} />
-                  <div className='btn-group'>
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {this.state.selectedEndAmPm}
-                    </button>
-                    <h8>hh:mm</h8>
-                    {this.state.timeError ?
-                      <p>-invalid time</p>
-                      :
-                      <p></p>
-                    }
-                    <div className="dropdown-menu">
-                      <option onClick={this.handleEndAmPmChange} >am</option>
-                      <option onClick={this.handleEndAmPmChange} >pm</option>
-                    </div>
-                  </div>
-                  {/* {this.props.calType === 'weeks' ?
-                    <div className='btn-group'>
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {this.state.selectedRoom}
-                    </button>
-                      <div className='dropdown-menu '>
-                      
-                      </div>
-                    </div>
-                    :
-                    <div>
-                    </div>
-                  } */}
-                </form>
-
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={this.deleteEvent} data-dismiss="modal">Delete event</button>
-                  {this.state.timeError ? 
-                  <button type="button" className="btn btn-danger">Save Changes</button>
-                  :
-                  <button type="button" className="btn btn-secondary" onClick={this.saveChanges} data-dismiss="modal">Save Changes</button>
-                  }
-                  
-                  <button type="button" className="btn btn-secondary close" onClick={this.resetEventsRow} data-dismiss="modal" >Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div> */}
+        <EditModal
+          start={this.state.selectedEvent.start}
+          end={this.state.selectedEvent.end}
+          desc={this.state.selectedEvent.desc}
+          purpose={this.state.purpose}
+          roomName={this.state.roomname}
+          selectedEndAmPm={this.state.selectedEndAmPm}
+          selectedStartAmPm={this.state.selectedStartAmPm}
+          timeError={this.state.timeError}
+          handlePurposeChange={this.handlePurposeChange}
+          handleEndAmPmChange={this.handleEndAmPmChange}
+          handleEndChange={this.handleEndChange}
+          handleStartAmPmChange={this.handleStartAmPmChange}
+          handleStartChange={this.handleStartChange}
+          formatTime={this.formatTime}
+          deleteEvent={this.deleteEvent}
+          saveChanges={this.saveChanges}
+          resetEventsRow={this.resetEventsRow}
+        />
 
       </div>
     )

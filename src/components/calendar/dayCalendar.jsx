@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser } from '../../actions/authActions';
-import { postEvent, eventsLoaded, updateEvent, deleteEvent } from '../../actions/calendarActions';
+import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
 import calUtils from './calUtils.js';
 
 import EditModal from './eventEditModal.jsx';
@@ -48,6 +48,7 @@ class DayCalendar extends Component {
     this.handleEndChange = calUtils.handleEndChange.bind(this);
     this.handleStartAmPmChange = calUtils.handleStartAmPmChange.bind(this);
     this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
+    this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
     this.formatTime = calUtils.formatTime.bind(this);
     this.saveChanges = calUtils.saveChanges.bind(this);
     this.deleteEvent = calUtils.removeEvent.bind(this);
@@ -186,7 +187,7 @@ class DayCalendar extends Component {
             view={this.props.calType}
             date={this.props.currDate}
             step={30}
-            views={['week', 'day']}
+            views={'day'}
             titleAccessor={calUtils.title}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
@@ -245,7 +246,7 @@ const DayCalendarDispatch = (dispatch) => {
     refreshUser: bindActionCreators(refreshUser, dispatch),
     postEvent: bindActionCreators(postEvent, dispatch),
     updateEvent: bindActionCreators(updateEvent, dispatch),
-    loadEvents: bindActionCreators(eventsLoaded, dispatch),
+    loadEvents: bindActionCreators(loadEvents, dispatch),
     deleteEvent: bindActionCreators(deleteEvent, dispatch)
   };
 }

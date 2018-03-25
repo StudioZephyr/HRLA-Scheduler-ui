@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { addRoomToCalendar } from '../../actions/calendarActions';
 
 import Loading from '../loading/loadingView.jsx';
 import AddRoomView from './addRoomView.jsx';
@@ -49,6 +53,8 @@ class ManageRoomsSettings extends Component {
         this.setState({
           updated: false,
         });
+        console.log('SHOULD BE ADDING TO REDUCER!', this.props.addRoomToCalendar)
+        this.props.addRoomToCalendar(roomObj);
         this.componentDidMount();
       })
       .catch((err) => {
@@ -120,4 +126,16 @@ class ManageRoomsSettings extends Component {
   }
 };
 
-export default ManageRoomsSettings;
+
+const ManageRoomSettingsState = (state) => {
+  return {
+  };
+}
+
+const ManageRoomSettingsDispatch = (dispatch) => {
+  return {
+    addRoomToCalendar: bindActionCreators(addRoomToCalendar, dispatch)
+  }
+}
+
+export default connect(ManageRoomSettingsState, ManageRoomSettingsDispatch)(ManageRoomsSettings);

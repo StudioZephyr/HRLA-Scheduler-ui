@@ -39,10 +39,13 @@ const postEvent = (event, roomNo) => (dispatch) => {
 }
 
 
-const eventsLoaded = () => (dispatch) => {
+const loadEvents = () => (dispatch) => {
   dispatch({ type: 'EVENTS_LOADED' });
 }
 
+const loadRooms = () => (dispatch) => {
+  dispatch({ type: 'ROOMS_LOADED' });
+}
 
 const updateEvent = (event, roomNo) => (dispatch) => {
   axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
@@ -63,10 +66,17 @@ const deleteEvent = (event) => (dispatch) => {
       dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result });
     })
     .catch(err => {
-      console.log(`Error getting Events. ${err.message}`);
       dispatch({ type: 'EVENT_DELETE_FAILED' });
     })
 }
 
+const addRoomToCalendar = (roomObj) => (dispatch) => {
+  dispatch({ type: 'ROOM_ADD', payload: roomObj });
+}
 
-export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, eventsLoaded };
+const deleteRoomFromCalendar = (roomObj) => (dispatch) => {
+  dispatch({ type: 'ROOM_DELETE', payload: roomObj });
+}
+
+
+export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, loadEvents, loadRooms, addRoomToCalendar };

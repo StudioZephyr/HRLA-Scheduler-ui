@@ -4,7 +4,8 @@ import { Map, List } from 'immutable';
 const initialState = {
   events: [],
   rooms: [],
-  eventsLoaded: false
+  eventsLoaded: false,
+  roomsLoaded: false
 }
 
 const calendarReducer = (state = initialState, action) => {
@@ -43,6 +44,7 @@ const calendarReducer = (state = initialState, action) => {
             if (event.RoomId === room.id) {
               eventsSorted = eventsSorted.update(r, (val) => {
                 return val.withMutations((list) => {
+                  event.roomNo = r;
                   list.push(event);
                 })
               })
@@ -70,6 +72,7 @@ const calendarReducer = (state = initialState, action) => {
       event.RoomId = payload.RoomId;
       event.start = new Date(payload.start);
       event.end = new Date(payload.end);
+      event.roomNo = roomNo;
       const newEvents = state.events.update(roomNo, (val) => {
         return val.push(event);
       })
@@ -82,6 +85,12 @@ const calendarReducer = (state = initialState, action) => {
     case `EVENTS_LOADED`: {
       return Object.assign({}, state, {
         eventsLoaded: true
+      })
+    }
+
+    case `ROOMS_LOADED`: {
+      return Object.assign({}, state, {
+        roomsLoaded: true
       })
     }
 
@@ -112,6 +121,16 @@ const calendarReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false
+      })
+    }
+
+    case `ROOM_ADD`: {
+      const payload = action.payload;
+      const newEvents = state.events.push(List([]));
+      console.log('ROOM ADDED', newEvents);
+      return Object.assign({}, state, {
+        events: newEvents,
+        rooms: state.rooms.concat(payload)
       })
     }
 

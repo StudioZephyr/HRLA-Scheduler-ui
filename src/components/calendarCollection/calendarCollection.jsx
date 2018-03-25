@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getEvents, getRooms } from '../../actions/calendarActions';
+import { getEvents, getRooms, loadEvents, loadRooms } from '../../actions/calendarActions';
 import DayCalendar from '../calendar/dayCalendar.jsx';
+import WeekCalendar from '../calendar/weekCalendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -64,15 +65,15 @@ class CalendarCollection extends Component {
 
   componentDidUpdate(prevProps) {
     console.log('component did indeed update', prevProps)
-    if (this.props.rooms !== prevProps.rooms) {
+    if (this.props.rooms.length !== prevProps.rooms.length) {
       this.props.getEvents()
     }
     
-    if (this.props.events.length !== prevProps.events.length && this.props.events.length !== 0) {
+    if (!this.props.roomsLoaded && this.props.events.length !== prevProps.events.length ) {
       let events = this.props.events;
       console.log('here are the events', events);
-
-      console.log(events.get(0), 'events got 0, no error');
+      this.props.loadRooms();  
+      // console.log(events.get(0), 'events got 0, no error');
       console.log('events updated too!', this.props.events, prevProps.events);
       this.setState({
         eventsLoaded: true
@@ -128,7 +129,7 @@ class CalendarCollection extends Component {
         </div>
 
         {
-          this.state.eventsLoaded ?
+          this.props.roomsLoaded ?
             this.state.calType === 'day' ?
               <div id='calendars'>
                 {/* change to toolbarcalendar component */}
@@ -141,7 +142,7 @@ class CalendarCollection extends Component {
               :
               <div id='weekCalendar'>
                 {/* change to weekcalendar component */}
-                <DayCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} />
+                <WeekCalendar room={{ name: 'weeks' }} currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} />
               </div>
             :
             <div>
@@ -161,13 +162,16 @@ const CalendarCollectionState = (state) => {
     rooms: state.calendar.rooms,
     events: state.calendar.events,
     eventsLoaded: state.calendar.eventsLoaded,
+    roomsLoaded: state.calendar.roomsLoaded
   };
 }
 
 const CalendarCollectionDispatch = (dispatch) => {
   return {
     getRooms: bindActionCreators(getRooms, dispatch),
-    getEvents: bindActionCreators(getEvents, dispatch)
+    getEvents: bindActionCreators(getEvents, dispatch),
+    loadEvents: bindActionCreators(loadEvents, dispatch),
+    loadRooms: bindActionCreators(loadRooms, dispatch),
   }
 }
 

@@ -4,6 +4,11 @@ import axios from 'axios';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser } from '../../actions/authActions';
+import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
+import calUtils from './calUtils.js';
+
+import EditModal from './eventEditModal.jsx';
+import PostModal from './eventPostModal.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -32,7 +37,127 @@ class WeekCalendar extends Component {
       eventsUpdated: false,
       selectedRoom: '',
     }
+    this.createEvent = calUtils.createEvent.bind(this);
+    this.editEvent = calUtils.editEvent.bind(this);
+    this.selectRange = calUtils.selectRange.bind(this);
+    this.handlePurposeChange = calUtils.handlePurposeChange.bind(this);
+    this.handleStartChange = calUtils.handleStartChange.bind(this);
+    this.handleEndChange = calUtils.handleEndChange.bind(this);
+    this.handleStartAmPmChange = calUtils.handleStartAmPmChange.bind(this);
+    this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
+    this.formatTime = calUtils.formatTime.bind(this);
+    this.saveChanges = calUtils.saveChanges.bind(this);
+    this.deleteEvent = calUtils.removeEvent.bind(this);
   }
 
+  componentDidMount() {
+    this.flattenEvents()
+  }
 
+  flattenEvents() {
+    let events = [];
+    this.props.eventsList.forEach((list) => {
+      let newArr = list.toArray();
+      events = events.concat(newArr);
+    })
+    this.setState({
+      eventsList: events
+    });
+  }
+
+  eventStyles(event, start, end, isSelected) {
+    let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
+    let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
+    let colors = ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5'];
+    let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
+    let style = {
+      backgroundColor: colors[event.roomNo],
+      borderRadius: borderRadius,
+      opacity: 0.8,
+      color: 'lightgrey',
+      border: '1px solid #eaf6ff',
+      display: 'block',
+    };
+    return {
+      style: style
+    };
+  }
+
+  render() {
+    return (
+      <div id={`${this.props.room.name}`} className='calendar'>
+        {console.log('INSIDE THE RENDER OF WEEKCALENDAR', this.state.eventsList)}
+        {this.state.eventsList ?
+          <BigCalendar
+            selectable
+            events={this.state.eventsList}
+            view={this.props.calType}
+            date={this.props.currDate}
+            step={30}
+            views={'week'}
+            titleAccessor={calUtils.title}
+            min={new Date('2018-03-02T16:00:00.113Z')}
+            max={new Date('2018-03-02T04:00:00.113Z')}
+            defaultDate={new Date(2018, 2, 2)}
+            eventPropGetter={this.eventStyles}
+            onSelectEvent={this.editEvent}
+            onSelectSlot={this.selectRange}
+          />
+          :
+          <p>Loading</p>
+        }
+        <PostModal
+          roomName={this.state.roomname}
+          selectedStart={this.state.selectedStart}
+          selectedEnd={this.state.selectedEnd}
+          handlePurposeChange={this.handlePurposeChange}
+          createEvent={this.createEvent}
+          resetEventsRow={this.resetEventsRow}
+          room={this.props.room.name}
+        />
+
+        <EditModal
+          start={this.state.selectedEvent.start}
+          end={this.state.selectedEvent.end}
+          desc={this.state.selectedEvent.desc}
+          purpose={this.state.purpose}
+          roomName={this.state.roomname}
+          selectedEndAmPm={this.state.selectedEndAmPm}
+          selectedStartAmPm={this.state.selectedStartAmPm}
+          timeError={this.state.timeError}
+          handlePurposeChange={this.handlePurposeChange}
+          handleEndAmPmChange={this.handleEndAmPmChange}
+          handleEndChange={this.handleEndChange}
+          handleStartAmPmChange={this.handleStartAmPmChange}
+          handleStartChange={this.handleStartChange}
+          formatTime={this.formatTime}
+          deleteEvent={this.deleteEvent}
+          saveChanges={this.saveChanges}
+          resetEventsRow={this.resetEventsRow}
+        /> 
+
+      </div>
+    )
+  }
 }
+
+
+const WeekCalendarState = (state) => {
+  return {
+    user: state.auth.user,
+    eventsLoaded: state.calendar.eventsLoaded,
+  };
+}
+
+const WeekCalendarDispatch = (dispatch) => {
+  return {
+    refreshUser: bindActionCreators(refreshUser, dispatch),
+    postEvent: bindActionCreators(postEvent, dispatch),
+    updateEvent: bindActionCreators(updateEvent, dispatch),
+    loadEvents: bindActionCreators(loadEvents, dispatch),
+    deleteEvent: bindActionCreators(deleteEvent, dispatch)
+  };
+}
+
+export default connect(WeekCalendarState, WeekCalendarDispatch)(WeekCalendar);
+

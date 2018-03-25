@@ -26,11 +26,11 @@ const getEvents = () => (dispatch) => {
 }
 
 
-const postEvent = (event, roomNo) => (dispatch) => {
+const postEvent = (event, socket) => (dispatch) => {
   axios.post(`${API_SERVER}/api/timeslot`, (event))
   .then(({ data }) => {
     console.log('here is that data', data);
-    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, event, roomNo});
+    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, event, socket});
   })
   .catch(err => {
     console.log(`Error getting Events. ${err.message}`);

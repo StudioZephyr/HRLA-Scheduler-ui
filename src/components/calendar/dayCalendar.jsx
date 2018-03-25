@@ -30,6 +30,7 @@ class DayCalendar extends Component {
       selectedEnd: moment(),
       selectedStartAmPm: 'am',
       selectedEndAmPm: 'am',
+      selectedDate: '',
       roomname: '',
       purpose: '',
       selectedEvent: {},

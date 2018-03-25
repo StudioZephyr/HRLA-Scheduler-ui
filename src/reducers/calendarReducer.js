@@ -76,6 +76,7 @@ const calendarReducer = (state = initialState, action) => {
       const newEvents = state.events.update(roomNo, (val) => {
         return val.push(event);
       })
+      action.socket.emit('clientEventPost', newEvents);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

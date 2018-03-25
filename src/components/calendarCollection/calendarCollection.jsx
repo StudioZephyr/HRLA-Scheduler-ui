@@ -10,11 +10,13 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
 import { Promise } from 'bluebird';
+import io from 'socket.io-client/dist/socket.io.js';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendarCollection.css';
 
 const API_SERVER = process.env.API_SERVER;
+const API_SOCKET = process.env.API_SOCKET;
 
 class CalendarCollection extends Component {
   constructor() {
@@ -29,11 +31,22 @@ class CalendarCollection extends Component {
       eventsSorted: [],
       slotView: 'booked',
       bookingText: 'Book a Room',
+      socket: null
       // eventCreated: false
     }
   }
 
+  componentWillMount() {
+    this.setState({
+      socket: io(API_SOCKET)
+    }) 
+  }
+
   componentDidMount() {
+    this.state.socket.emit('clientEventPost', 'hi');
+    this.state.socket.on('eventPosted', (data) => {
+      console.log(data)
+    })
     //REPLACING WITH ACTION
     // axios.get(`${API_SERVER}/api/rooms`)
     this.props.getRooms()
@@ -136,13 +149,12 @@ class CalendarCollection extends Component {
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} eventList={events.get(0)} />
                 {rooms.map((x, i, arr) => {
                   console.log('events in render', events.get(i))
-                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)}/>
+                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)} socket={this.state.socket} />
                 })}
               </div>
               :
               <div id='weekCalendar'>
-                {/* change to weekcalendar component */}
-                <WeekCalendar currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} />
+                <WeekCalendar currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} socket={this.state.socket} />
               </div>
             :
             <div>

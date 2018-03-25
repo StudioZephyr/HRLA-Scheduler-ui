@@ -70,7 +70,8 @@ const calUtils = {
   },
 
   handleStartChange: function (e) {
-    let newStart = moment(`${e.target.value} ${this.state.selectedStartAmPm}`, 'hh:mm a');
+    let newStart = moment(`${this.state.selectedDate} ${e.target.value} ${this.state.selectedStartAmPm}`, 'MM-DD-YYYY hh:mm a');
+    console.log('HERE IS THE NEW START',newStart, 'AND HERE IS THE DATE', this.state.selectedDate)
     if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
       this.state.timeError = true;
     } else {
@@ -86,7 +87,7 @@ const calUtils = {
   },
 
   handleEndChange: function (e) {
-    let newEnd = moment(`${e.target.value} ${this.state.selectedEndAmPm}`, 'hh:mm a');
+    let newEnd = moment(`${this.state.selectedDate} ${e.target.value} ${this.state.selectedEndAmPm}`, 'MM-DD-YYYY hh:mm a');
     if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
       this.state.timeError = true;
     } else {
@@ -102,7 +103,7 @@ const calUtils = {
   },
 
   handleStartAmPmChange: function (e) {
-    let newStart = moment(`${this.state.selectedStart.format('hh:mm')} ${e.target.value}`, 'hh:mm a');
+    let newStart = moment(`${this.state.selectedDate} ${this.state.selectedStart.format('hh:mm')} ${e.target.value}`, 'MM-DD-YYYY hh:mm a');
     if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
       this.state.timeError = true;
     } else {
@@ -115,7 +116,7 @@ const calUtils = {
   },
 
   handleEndAmPmChange: function (e) {
-    let newEnd = moment(`${this.state.selectedEnd.format('hh:mm')} ${e.target.value}`, 'hh:mm a');
+    let newEnd = moment(`${this.state.selectedDate} ${this.state.selectedEnd.format('hh:mm')} ${e.target.value}`, 'MM-DD-YYYY hh:mm a');
     if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
       this.state.timeError = true;
     } else {
@@ -143,6 +144,7 @@ const calUtils = {
         selectedEndAmPm: moment(selectedEvent.end).format('a'),
         selectedStart: moment(selectedEvent.start),
         selectedEnd: moment(selectedEvent.end),
+        selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY')
       }, () => {
         $(`#${this.state.roomname}EditModal`).modal('show')
       })
@@ -153,8 +155,8 @@ const calUtils = {
     let originalEvent = Object.assign({}, this.state.selectedEvent);
 
     let newEvent = this.state.selectedEvent;
-    newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
-    newEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
+    newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm, this.state.selectedDate).toDate();
+    newEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm, this.state.selectedDate).toDate();
     newEvent.title = this.state.purpose;
 
     //checks length of event Kan wants this gone
@@ -185,11 +187,11 @@ const calUtils = {
     return moment(time).format('hh:mm');
   },
 
-  concatTimeMeridiem(time, meridiem) {
+  concatTimeMeridiem(time, meridiem, date) {
     let year = this.props.currDate.year();
     let month = this.props.currDate.month() + 1;
     let day = this.props.currDate.date();
-    return moment(`${year}-${month}-${day} ${time.hour()}:${time.minute()} ${meridiem} `, 'YYYY-MM-DD hh:mm a ');
+    return moment(`${date} ${time.hour()}:${time.minute()} ${meridiem} `, 'MM-DD-YYYY hh:mm a ');
   },
 
   title(event) {

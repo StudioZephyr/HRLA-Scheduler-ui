@@ -99,8 +99,10 @@ const calendarReducer = (state = initialState, action) => {
       const event = action.event;
       const deepList = state.events.get(roomNo);
       const idx = deepList.findIndex((i)=> {
-        return i.id = event.id;
+        console.log('comparison ocurring', i.id, event.id)
+        return i.id === event.id;
       })
+      console.log('HERE IS THE IDX', idx)
       const newEvents = state.events.updateIn([roomNo, idx], (value) => {
         return value = event;
       })

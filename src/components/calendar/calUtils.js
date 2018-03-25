@@ -152,6 +152,7 @@ const calUtils = {
   },
 
   editEvent: function (selectedEvent) {
+    console.log('selecao', selectedEvent)
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
       this.setState({
         selectedEvent: selectedEvent,
@@ -160,7 +161,6 @@ const calUtils = {
         selectedEndAmPm: moment(selectedEvent.end).format('a'),
         selectedStart: moment(selectedEvent.start),
         selectedEnd: moment(selectedEvent.end),
-        modal: 'editing'
       }, () => {
         $(`#${this.state.roomname}EditModal`).modal('show')
       })
@@ -170,7 +170,7 @@ const calUtils = {
   saveChanges: function () {
     let originalEvent = Object.assign({}, this.state.selectedEvent);
 
-    const newEvent = this.state.selectedEvent;
+    let newEvent = this.state.selectedEvent;
     newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm).toDate();
     newEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm).toDate();
     newEvent.title = this.state.purpose;

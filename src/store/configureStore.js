@@ -19,6 +19,7 @@ const enhancer = applyMiddleware(
 const persistConfig = {
   key: 'hrla-scheduler',
   storage,
+  blacklist: ['calendar']
 };
 
 const persistedReducer = persistReducer(persistConfig, Reducer);

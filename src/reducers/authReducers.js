@@ -38,10 +38,7 @@ const authReducer = (state=initialState, action) => {
       })
     }
     case 'USER_RETRIEVAL_FAILED': {
-      // return Object({}, state, {
-      //   user: {},
-      //   authorized: false
-      // })
+      return state;
     }
     default: {
       return state;

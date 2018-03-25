@@ -51,7 +51,7 @@ class DayCalendar extends Component {
     this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
     this.formatTime = calUtils.formatTime.bind(this);
     this.saveChanges = calUtils.saveChanges.bind(this);
-    this.deleteEvent = calUtils.removeEvent.bind(this);
+    this.removeEvent = calUtils.removeEvent.bind(this);
   }
 
   componentDidMount() {
@@ -224,7 +224,7 @@ class DayCalendar extends Component {
           handleStartAmPmChange={this.handleStartAmPmChange}
           handleStartChange={this.handleStartChange}
           formatTime={this.formatTime}
-          deleteEvent={this.deleteEvent}
+          removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
           resetEventsRow={this.resetEventsRow}
         />

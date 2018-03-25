@@ -17,7 +17,7 @@ const EditModal = (props) => {
     handleStartAmPmChange,
     handleStartChange,
     formatTime,
-    deleteEvent,
+    removeEvent,
     saveChanges,
     resetEventsRow
   } = props;
@@ -76,7 +76,7 @@ const EditModal = (props) => {
               </form>
 
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={deleteEvent} data-dismiss="modal">Delete event</button>
+                <button type="button" className="btn btn-secondary" onClick={removeEvent} data-dismiss="modal">Delete event</button>
                 {timeError ?
                   <button type="button" className="btn btn-danger">Save Changes</button>
                   :

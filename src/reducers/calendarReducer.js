@@ -117,7 +117,7 @@ const calendarReducer = (state = initialState, action) => {
       const event = action.event;
       const deepList = state.events.get(roomNo);
       const idx = deepList.findIndex((i)=> {
-        return i.id = event.id;
+        return i.id === event.id;
       })
       const newEvents = state.events.deleteIn([roomNo, idx]);
       return Object.assign({}, state, {
@@ -141,7 +141,7 @@ const calendarReducer = (state = initialState, action) => {
       const rooms = state.rooms
       let idx = 0
       rooms.forEach((room, i) => {
-        if (room.id = id) {
+        if (room.id === id) {
           idx = i;
         }
       })

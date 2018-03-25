@@ -192,7 +192,8 @@ const calUtils = {
   },
 
   removeEvent: function () {
-    this.props.deleteEvent;
+    console.log('this', this);
+    this.props.deleteEvent(this.state.selectedEvent, this.props.roomNo);
     this.setState({
       selectedEvent: { start: moment(), end: moment() }
     })

@@ -60,10 +60,10 @@ const updateEvent = (event, roomNo) => (dispatch) => {
 }
 
 
-const deleteEvent = (event) => (dispatch) => {
-  axios.delete(`${API_SERVER}/api/timeslot/${this.state.selectedEvent.id}`, this.state.selectedEvent)
+const deleteEvent = (event, roomNo) => (dispatch) => {
+  axios.delete(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
-      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result });
+      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event, roomNo });
     })
     .catch(err => {
       dispatch({ type: 'EVENT_DELETE_FAILED' });

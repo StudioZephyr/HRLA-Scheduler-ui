@@ -134,6 +134,26 @@ const calendarReducer = (state = initialState, action) => {
       })
     }
 
+    case `ROOM_DELETE`: {
+      const id = action.payload;
+      const rooms = state.rooms
+      let idx = 0
+      rooms.forEach((room, i) => {
+        if (room.id = id) {
+          idx = i;
+        }
+      })
+
+      rooms.splice(idx, 1);
+      const newEvents = state.events.delete(idx);
+      console.log('newEvents', newEvents)
+
+      return Object.assign({}, state, {
+        events: newEvents,
+        rooms: rooms
+      })
+    }
+
     default: {
       return state;
     }

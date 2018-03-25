@@ -74,9 +74,9 @@ const addRoomToCalendar = (roomObj) => (dispatch) => {
   dispatch({ type: 'ROOM_ADD', payload: roomObj });
 }
 
-const deleteRoomFromCalendar = (roomObj) => (dispatch) => {
-  dispatch({ type: 'ROOM_DELETE', payload: roomObj });
+const deleteRoomFromCalendar = (roomId) => (dispatch) => {
+  dispatch({ type: 'ROOM_DELETE', payload: roomId });
 }
 
 
-export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, loadEvents, loadRooms, addRoomToCalendar };
+export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, loadEvents, loadRooms, addRoomToCalendar, deleteRoomFromCalendar };

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { addRoomToCalendar } from '../../actions/calendarActions';
+import { addRoomToCalendar, deleteRoomFromCalendar } from '../../actions/calendarActions';
 
 import Loading from '../loading/loadingView.jsx';
 import AddRoomView from './addRoomView.jsx';
@@ -73,6 +73,7 @@ class ManageRoomsSettings extends Component {
         this.setState({
           updated: false,
         });
+        this.props.deleteRoomFromCalendar(id);
         this.componentDidMount();
       })
       .catch(err => {
@@ -134,7 +135,8 @@ const ManageRoomSettingsState = (state) => {
 
 const ManageRoomSettingsDispatch = (dispatch) => {
   return {
-    addRoomToCalendar: bindActionCreators(addRoomToCalendar, dispatch)
+    addRoomToCalendar: bindActionCreators(addRoomToCalendar, dispatch),
+    deleteRoomFromCalendar: bindActionCreators(deleteRoomFromCalendar, dispatch)
   }
 }
 

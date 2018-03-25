@@ -35,7 +35,8 @@ class WeekCalendar extends Component {
       selectedRoom: '',
       timeError: false,
       eventsUpdated: false,
-      selectedRoom: '',
+      selectedRoom: {name: 'Please Select a Room'},
+      roomSelected: false
     }
     this.createEvent = calUtils.createEvent.bind(this);
     this.editEvent = calUtils.editEvent.bind(this);
@@ -47,11 +48,19 @@ class WeekCalendar extends Component {
     this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
     this.formatTime = calUtils.formatTime.bind(this);
     this.saveChanges = calUtils.saveChanges.bind(this);
-    this.deleteEvent = calUtils.removeEvent.bind(this);
+    this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
+    this.removeEvent = calUtils.removeEvent.bind(this);
+    this.handleRoomSelect = this.handleRoomSelect.bind(this);
   }
 
   componentDidMount() {
-    this.flattenEvents()
+    this.flattenEvents();
+  }
+
+  componentDidUpdate() {
+    if (!this.props.eventsLoaded) {
+      this.flattenEvents();
+    }
   }
 
   flattenEvents() {
@@ -59,10 +68,11 @@ class WeekCalendar extends Component {
     this.props.eventsList.forEach((list) => {
       let newArr = list.toArray();
       events = events.concat(newArr);
-    })
+    });
     this.setState({
       eventsList: events
     });
+    this.props.loadEvents();
   }
 
   eventStyles(event, start, end, isSelected) {
@@ -83,9 +93,17 @@ class WeekCalendar extends Component {
     };
   }
 
+  handleRoomSelect(room) {
+    console.log(room)
+    this.setState({
+      selectedRoom: room,
+      roomSelected: true
+    })
+  }
+
   render() {
     return (
-      <div id={`${this.props.room.name}`} className='calendar'>
+      <div id={`weeks`} className='calendar'>
         {console.log('INSIDE THE RENDER OF WEEKCALENDAR', this.state.eventsList)}
         {this.state.eventsList ?
           <BigCalendar
@@ -112,8 +130,12 @@ class WeekCalendar extends Component {
           selectedEnd={this.state.selectedEnd}
           handlePurposeChange={this.handlePurposeChange}
           createEvent={this.createEvent}
-          resetEventsRow={this.resetEventsRow}
-          room={this.props.room.name}
+          resetEventsRow={()=>{}}
+          room={null}
+          rooms={this.props.rooms}
+          selectedRoom={this.state.selectedRoom}
+          roomSelected={this.state.roomSelected}
+          handleRoomSelect={this.handleRoomSelect}
         />
 
         <EditModal
@@ -131,9 +153,9 @@ class WeekCalendar extends Component {
           handleStartAmPmChange={this.handleStartAmPmChange}
           handleStartChange={this.handleStartChange}
           formatTime={this.formatTime}
-          deleteEvent={this.deleteEvent}
+          removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
-          resetEventsRow={this.resetEventsRow}
+          resetEventsRow={()=>{}}
         /> 
 
       </div>
@@ -146,6 +168,7 @@ const WeekCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
+    rooms: state.calendar.rooms
   };
 }
 

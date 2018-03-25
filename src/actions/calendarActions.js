@@ -30,7 +30,7 @@ const postEvent = (event, roomNo) => (dispatch) => {
   axios.post(`${API_SERVER}/api/timeslot`, (event))
   .then(({ data }) => {
     console.log('here is that data', data);
-    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, roomNo, event});
+    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, event, roomNo});
   })
   .catch(err => {
     console.log(`Error getting Events. ${err.message}`);
@@ -47,11 +47,11 @@ const loadRooms = () => (dispatch) => {
   dispatch({ type: 'ROOMS_LOADED' });
 }
 
-const updateEvent = (event, roomNo) => (dispatch) => {
+const updateEvent = (event) => (dispatch) => {
   axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
       console.log('event updated', data);
-      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, roomNo, event });
+      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, event });
     })
     .catch(err => {
       console.log(`Error getting Events. ${err.message}`);
@@ -60,10 +60,10 @@ const updateEvent = (event, roomNo) => (dispatch) => {
 }
 
 
-const deleteEvent = (event, roomNo) => (dispatch) => {
+const deleteEvent = (event) => (dispatch) => {
   axios.delete(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
-      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event, roomNo });
+      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event });
     })
     .catch(err => {
       dispatch({ type: 'EVENT_DELETE_FAILED' });

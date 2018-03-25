@@ -93,9 +93,9 @@ class DayCalendar extends Component {
       event.end = new Date(event.end);
       return event;
     })
-    this.setState({
-      eventsUpdated: true
-    })
+    // this.setState({
+    //   eventsUpdated: true
+    // })
   }
 
   toTime(idx) {

@@ -63,9 +63,9 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `EVENT_POST_SUCCESS`: {
-      const roomNo = action.roomNo;
       const payload = action.payload;
       const event = action.event;
+      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
       event.id = payload.id;
       event.desc = payload.groupName;
       event.UserId = payload.UserId;
@@ -95,8 +95,8 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `EVENT_UPDATE_SUCCESS`: {
-      const roomNo = action.roomNo;
       const event = action.event;
+      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
       const deepList = state.events.get(roomNo);
       const idx = deepList.findIndex((i)=> {
         console.log('comparison ocurring', i.id, event.id)
@@ -113,8 +113,8 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `EVENT_DELETE_SUCCESS`: {
-      const roomNo = action.roomNo;
       const event = action.event;
+      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
       const deepList = state.events.get(roomNo);
       const idx = deepList.findIndex((i)=> {
         return i.id === event.id;

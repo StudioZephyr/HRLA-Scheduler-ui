@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 const calUtils = {
 
   selectRange: function (slot) {
@@ -12,10 +12,10 @@ const calUtils = {
       //   //alerts if student group is making an event longer than 2 hours
       //   alert('Please select a time range of 2 hours or less')
       if (this.props.user.type !== 'admin') {
-        const currentDate = new Date();
-        const slotDate = slot.start;
-        if (currentDate.getUTCDate() !== slotDate.getUTCDate() || currentDate.getUTCMonth() !== slotDate.getUTCMonth() || currentDate.getUTCFullYear() !== slotDate.getUTCFullYear()) {
-          alert(`You may only create events on the current date ${currentDate.getDate()}/ ${currentDate.getMonth()}/ ${currentDate.getFullYear()}`);
+        const currentDate = moment().tz('America/Los_Angeles');
+        const slotDate = moment(slot.start).tz('America/Los_Angeles');
+        if (currentDate.date() !== slotDate.date() || currentDate.month() !== slotDate.month() || currentDate.year() !== slotDate.year()) {
+          alert(`You may only create events on the current date ${currentDate.date()}/${currentDate.month()}/${currentDate.year()}`);
           return;
         }
 
@@ -24,8 +24,8 @@ const calUtils = {
           return;
         }
 
-        let start = moment(slot.start);
-        let end = moment(slot.end);
+        let start = moment(slot.start).tz('America/Los_Angeles');
+        let end = moment(slot.end).tz('America/Los_Angeles');
         if (this.state.eventRow) {
           var fill = this.fillTimeSlot(slot.start, slot.end);
         }

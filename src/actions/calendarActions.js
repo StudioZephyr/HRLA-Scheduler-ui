@@ -47,11 +47,11 @@ const loadRooms = () => (dispatch) => {
   dispatch({ type: 'ROOMS_LOADED' });
 }
 
-const updateEvent = (event) => (dispatch) => {
+const updateEvent = (event, socket) => (dispatch) => {
   axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
       console.log('event updated', data);
-      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, event });
+      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, event, socket });
     })
     .catch(err => {
       console.log(`Error getting Events. ${err.message}`);
@@ -60,10 +60,10 @@ const updateEvent = (event) => (dispatch) => {
 }
 
 
-const deleteEvent = (event) => (dispatch) => {
+const deleteEvent = (event, socket) => (dispatch) => {
   axios.delete(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
-      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event });
+      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event, socket });
     })
     .catch(err => {
       dispatch({ type: 'EVENT_DELETE_FAILED' });
@@ -77,6 +77,7 @@ const addRoomToCalendar = (roomObj) => (dispatch) => {
 const deleteRoomFromCalendar = (roomId) => (dispatch) => {
   dispatch({ type: 'ROOM_DELETE', payload: roomId });
 }
+
 
 
 export { getRooms, getEvents, postEvent, updateEvent, deleteEvent, loadEvents, loadRooms, addRoomToCalendar, deleteRoomFromCalendar };

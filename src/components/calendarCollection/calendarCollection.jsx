@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { getEvents, getRooms, loadEvents, loadRooms } from '../../actions/calendarActions';
+import { recieveAddedEvent, recieveUpdatedEvent, recieveDeleteEvent } from '../../actions/socketActions';
 import DayCalendar from '../calendar/dayCalendar.jsx';
 import WeekCalendar from '../calendar/weekCalendar.jsx';
 
@@ -43,9 +44,15 @@ class CalendarCollection extends Component {
   }
 
   componentDidMount() {
-    this.state.socket.emit('clientEventPost', 'hi');
-    this.state.socket.on('eventPosted', (data) => {
-      console.log(data)
+    this.state.socket.on('eventPosted', (event) => {
+      this.props.recieveAddedEvent(event);
+    })
+    this.state.socket.on('eventUpdated', (event) => {
+      this.props.recieveUpdatedEvent(event);
+    })
+    this.state.socket.on('eventDeleted', (event) => {
+      console.log('DELETING IN SOCKET', event)
+      this.props.recieveDeleteEvent(event);
     })
     //REPLACING WITH ACTION
     // axios.get(`${API_SERVER}/api/rooms`)
@@ -184,6 +191,9 @@ const CalendarCollectionDispatch = (dispatch) => {
     getEvents: bindActionCreators(getEvents, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
     loadRooms: bindActionCreators(loadRooms, dispatch),
+    recieveAddedEvent: bindActionCreators(recieveAddedEvent, dispatch), 
+    recieveUpdatedEvent: bindActionCreators(recieveUpdatedEvent, dispatch), 
+    recieveDeleteEvent: bindActionCreators(recieveDeleteEvent, dispatch)
   }
 }
 

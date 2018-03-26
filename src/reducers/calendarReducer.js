@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { Map, List } from 'immutable';
+import { addEvent, updateEvent, deleteEvent } from '../utils/calenderReducerHelpers.js';
 
 const initialState = {
   events: [],
@@ -65,7 +66,7 @@ const calendarReducer = (state = initialState, action) => {
     case `EVENT_POST_SUCCESS`: {
       const payload = action.payload;
       const event = action.event;
-      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
+      const roomNo = state.rooms.findIndex(r => r.id === payload.RoomId);
       event.id = payload.id;
       event.desc = payload.groupName;
       event.UserId = payload.UserId;
@@ -73,10 +74,8 @@ const calendarReducer = (state = initialState, action) => {
       event.start = new Date(payload.start);
       event.end = new Date(payload.end);
       event.roomNo = roomNo;
-      const newEvents = state.events.update(roomNo, (val) => {
-        return val.push(event);
-      })
-      action.socket.emit('clientEventPost', newEvents);
+      const newEvents = addEvent(event, state);
+      action.socket.emit('clientEventPost', event);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false
@@ -92,39 +91,31 @@ const calendarReducer = (state = initialState, action) => {
     case `ROOMS_LOADED`: {
       return Object.assign({}, state, {
         roomsLoaded: true
-      })
+      });
     }
 
     case `EVENT_UPDATE_SUCCESS`: {
       const event = action.event;
-      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
-      const deepList = state.events.get(roomNo);
-      const idx = deepList.findIndex((i)=> {
-        console.log('comparison ocurring', i.id, event.id)
-        return i.id === event.id;
-      })
-      console.log('HERE IS THE IDX', idx)
-      const newEvents = state.events.updateIn([roomNo, idx], (value) => {
-        return value = event;
-      })
+      console.log('STAAAAATE', state.rooms);
+      event.roomNo = state.rooms.findIndex(r => r.id === event.RoomId);
+      console.log('IN REDUCER UPDATE', event)
+      action.socket.emit('clientEventUpdate', event);
+      const newEvents = updateEvent(event, state);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false
-      })
+      });
     }
 
     case `EVENT_DELETE_SUCCESS`: {
       const event = action.event;
-      const roomNo = state.rooms.findIndex(r=> r.name === event.room);
-      const deepList = state.events.get(roomNo);
-      const idx = deepList.findIndex((i)=> {
-        return i.id === event.id;
-      })
-      const newEvents = state.events.deleteIn([roomNo, idx]);
+      event.roomNo = state.rooms.findIndex(r => r.id === event.RoomId);
+      action.socket.emit('clientEventDelete', event);
+      const newEvents = deleteEvent(event, state)
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false
-      })
+      });
     }
 
     case `ROOM_ADD`: {
@@ -134,7 +125,7 @@ const calendarReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         events: newEvents,
         rooms: state.rooms.concat(payload)
-      })
+      });
     }
 
     case `ROOM_DELETE`: {
@@ -145,7 +136,7 @@ const calendarReducer = (state = initialState, action) => {
         if (room.id === id) {
           idx = i;
         }
-      })
+      });
 
       rooms.splice(idx, 1);
       const newEvents = state.events.delete(idx);
@@ -154,7 +145,31 @@ const calendarReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         events: newEvents,
         rooms: rooms
-      })
+      });
+    }
+
+    case `SOCKET_POST`: {
+      const newEvents = addEvent(action.payload, state);
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      });
+    }
+
+    case `SOCKET_UPDATE`: {
+      const newEvents = updateEvent(action.payload, state);
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      });
+    }
+
+    case `SOCKET_DELETE`: {
+      const newEvents = deleteEvent(action.payload, state);
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      });
     }
 
     default: {

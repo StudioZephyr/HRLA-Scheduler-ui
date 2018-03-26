@@ -46,7 +46,7 @@ const calUtils = {
     }
     console.log('GENERATED EVENT AS', event)
     try {
-      this.props.postEvent(event, this.props.roomNo);
+      this.props.postEvent(event, this.props.socket);
       this.props.refreshUser(this.props.user.id);
       if (this.props.room){
         this.setState({
@@ -172,12 +172,12 @@ const calUtils = {
         return;
       }
     }
-    this.props.updateEvent(newEvent);
+    this.props.updateEvent(newEvent, this.props.socket);
   },
 
   removeEvent: function () {
     console.log('this', this);
-    this.props.deleteEvent(this.state.selectedEvent);
+    this.props.deleteEvent(this.state.selectedEvent, this.props.socket);
     this.setState({
       selectedEvent: { start: moment(), end: moment() }
     })

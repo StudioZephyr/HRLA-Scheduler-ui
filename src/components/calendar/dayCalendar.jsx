@@ -3,7 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { refreshUser } from '../../actions/authActions';
+import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
 import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
 import calUtils from './calUtils.js';
 
@@ -61,7 +61,7 @@ class DayCalendar extends Component {
     this.assignEvents();
     console.log('INSIDE COMPONENT DID MOUNT', this.state.eventsList)
     if (this.state.eventsList) {
-      // this.renderDay();
+      this.renderDay();
     }
     this.setState({
       roomname: this.props.room.name.replace(/\s+/g, '')
@@ -74,12 +74,13 @@ class DayCalendar extends Component {
   componentDidUpdate(prevProps) {
     console.log('this updated and the props are', this.props.eventList, 'in room', this.props.roomNo);
     if (!this.props.eventsLoaded) {
-      this.props.loadEvents()
-      this.assignEvents()
+      this.props.loadEvents();
+      this.assignEvents();
+      this.renderDay();
     }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
       console.log('updating date');
-      // this.renderDay();
+      this.renderDay();
       this.setState({
         rowDate: this.props.currDate
       })
@@ -87,16 +88,13 @@ class DayCalendar extends Component {
   }
 
   assignEvents() {
-    console.log('converting list:', ...this.props.eventList)
     this.state.eventsList = this.props.eventList.toArray()
     this.state.eventsList = this.state.eventsList.map((event) => {
       event.start = new Date(event.start);
       event.end = new Date(event.end);
       return event;
     })
-    // this.setState({
-    //   eventsUpdated: true
-    // })
+
   }
 
   toTime(idx) {
@@ -110,14 +108,14 @@ class DayCalendar extends Component {
   }
 
   toIdx(time) {
-    return (time.hours() - 8) * 4 + (time.minutes() === 0 ? 0 : 1);
+    return (time.getHours() - 8) * 4 + (time.getMinutes() === 0 ? 0 : 1);
   }
 
   fillTimeSlot(startTime, endTime) {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
     let initEventRow = this.state.eventRow.slice();
-    console.log('fill start time of ', startTime.hours(), 'in room', this.props.room)
+    console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
         this.state.eventRow = initEventRow.slice();
@@ -129,11 +127,13 @@ class DayCalendar extends Component {
   }
 
   blockTodaysEvents() {
+    console.log('IN BLOCK!', this.state.eventsList);
     this.state.eventsList.forEach((event) => {
       let start = event.start;
       let end = event.end;
-      console.log('looking at blocking start:', start, 'end:', end)
-      if (start.date() === this.props.currDate.date() && start.month() === this.props.currDate.month() && start.year() === this.props.currDate.year()) {
+      console.log('looking at blocking start:', start, 'end:', end, this.props.currDate.month(), start.getMonth())
+      if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
+        console.log('le fille');
         this.fillTimeSlot(start, end);
       }
     })
@@ -248,7 +248,10 @@ const DayCalendarDispatch = (dispatch) => {
     postEvent: bindActionCreators(postEvent, dispatch),
     updateEvent: bindActionCreators(updateEvent, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
-    deleteEvent: bindActionCreators(deleteEvent, dispatch)
+    deleteEvent: bindActionCreators(deleteEvent, dispatch),
+    postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
+    updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
+    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)
   };
 }
 

@@ -2,6 +2,7 @@ import moment from 'moment';
 import { Map, List } from 'immutable';
 import { addEvent, updateEvent, deleteEvent } from '../utils/calenderReducerHelpers.js';
 
+
 const initialState = {
   events: [],
   rooms: [],

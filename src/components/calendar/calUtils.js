@@ -2,21 +2,32 @@ import moment from 'moment';
 const calUtils = {
 
   selectRange: function (slot) {
+    console.log('HERE IS THE SLOT', slot)
     if (this.state.eventRow) {
       this.state.initEventRow = this.state.eventRow.slice();
     }
     if (this.props.user.id) {
       //SLOT IS DATE OBJ
-      if (this.props.user.type !== 'admin' && slot.slots.length > 4) {
-        //change to something prettier
-        alert('Please select a time range of 2 hours or less')
-      } else if (this.props.user.hasEvent && this.props.user.type !== 'admin') {
-        alert('You already have an event scheduled.\nPlease wait for this event to expire, or reschedule it');
-      } else {
+      // if (this.props.user.type !== 'admin' && slot.slots.length > 4) {
+      //   //alerts if student group is making an event longer than 2 hours
+      //   alert('Please select a time range of 2 hours or less')
+      if (this.props.user.type !== 'admin') {
+        const currentDate = new Date();
+        const slotDate = slot.start;
+        if (currentDate.getUTCDate() !== slotDate.getUTCDate() || currentDate.getUTCMonth() !== slotDate.getUTCMonth() || currentDate.getUTCFullYear() !== slotDate.getUTCFullYear()) {
+          alert(`You may only create events on the current date ${currentDate.getDate()}/ ${currentDate.getMonth()}/ ${currentDate.getFullYear()}`);
+          return;
+        }
+
+        if (this.props.user.hasEvent) {
+          alert('You already have an event scheduled.\nPlease wait for this event to expire, or reschedule it');
+          return;
+        }
+
         let start = moment(slot.start);
         let end = moment(slot.end);
-        if (this.state.eventRow) {  
-          var fill = this.fillTimeSlot(start, end);
+        if (this.state.eventRow) {
+          var fill = this.fillTimeSlot(slot.start, slot.end);
         }
         if (this.state.eventRow && !fill) {
           alert('Please select a valid time');
@@ -46,9 +57,9 @@ const calUtils = {
     }
     console.log('GENERATED EVENT AS', event)
     try {
-      this.props.postEvent(event, this.props.socket);
-      this.props.refreshUser(this.props.user.id);
-      if (this.props.room){
+      this.props.postAndRefresh(event, this.props.socket);
+      // this.props.refreshUser(this.props.user.id);
+      if (this.props.room) {
         this.setState({
           // eventsList: this.state.eventsList.concat(event),
           initEventRow: this.state.eventRow.slice(),
@@ -71,7 +82,7 @@ const calUtils = {
 
   handleStartChange: function (e) {
     let newStart = moment(`${this.state.selectedDate} ${e.target.value} ${this.state.selectedStartAmPm}`, 'MM-DD-YYYY hh:mm a');
-    console.log('HERE IS THE NEW START',newStart, 'AND HERE IS THE DATE', this.state.selectedDate)
+    console.log('HERE IS THE NEW START', newStart, 'AND HERE IS THE DATE', this.state.selectedDate)
     if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
       this.state.timeError = true;
     } else {
@@ -152,32 +163,31 @@ const calUtils = {
   },
 
   saveChanges: function () {
-    let originalEvent = Object.assign({}, this.state.selectedEvent);
-
-    let newEvent = this.state.selectedEvent;
+    let newEvent = Object.assign({}, this.state.selectedEvent);
     newEvent.start = this.concatTimeMeridiem(this.state.selectedStart, this.state.selectedStartAmPm, this.state.selectedDate).toDate();
     newEvent.end = this.concatTimeMeridiem(this.state.selectedEnd, this.state.selectedEndAmPm, this.state.selectedDate).toDate();
     newEvent.title = this.state.purpose;
 
-    //checks length of event Kan wants this gone
-    if (this.props.user.type !== 'admin') {
-      let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime();
-      if (diffTime > 7200000) {
-        alert('Please select a time range of 2 hours or less');
-        this.state.selectedEvent.start = originalEvent.start;
-        this.state.selectedEvent.end = originalEvent.end;
-        this.setState({
-          selectedEvent: originalEvent
-        });
-        return;
-      }
-    }
-    this.props.updateEvent(newEvent, this.props.socket);
+    //checks length of event to not exceed 2 hours for student groups
+    // if (this.props.user.type !== 'admin') {
+    //   let diffTime = this.state.selectedEvent.end.getTime() - this.state.selectedEvent.start.getTime();
+    //   if (diffTime > 7200000) {
+    //     alert('Please select a time range of 2 hours or less');
+    //     this.state.selectedEvent.start = originalEvent.start;
+    //     this.state.selectedEvent.end = originalEvent.end;
+    //     this.setState({
+    //       selectedEvent: originalEvent
+    //     });
+    //     return;
+    //   }
+    // }
+
+    this.props.updateAndRefresh(newEvent, this.props.socket)
   },
 
   removeEvent: function () {
     console.log('this', this);
-    this.props.deleteEvent(this.state.selectedEvent, this.props.socket);
+    this.props.deleteAndRefresh(this.state.selectedEvent, this.props.socket);
     this.setState({
       selectedEvent: { start: moment(), end: moment() }
     })

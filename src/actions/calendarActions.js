@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Promise } from 'bluebird';
+import { refreshUser } from './authActions';
 
 const API_SERVER = process.env.API_SERVER;
 
@@ -27,14 +29,14 @@ const getEvents = () => (dispatch) => {
 
 
 const postEvent = (event, socket) => (dispatch) => {
-  axios.post(`${API_SERVER}/api/timeslot`, (event))
+  return axios.post(`${API_SERVER}/api/timeslot`, (event))
   .then(({ data }) => {
     console.log('here is that data', data);
-    dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, event, socket});
+    return dispatch({ type: 'EVENT_POST_SUCCESS', payload: data.result, event, socket});
   })
   .catch(err => {
     console.log(`Error getting Events. ${err.message}`);
-    dispatch({ type: 'EVENT_POST_FAILED' });
+    return dispatch({ type: 'EVENT_POST_FAILED' });
   })
 }
 
@@ -48,25 +50,25 @@ const loadRooms = () => (dispatch) => {
 }
 
 const updateEvent = (event, socket) => (dispatch) => {
-  axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
+  return axios.put(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
       console.log('event updated', data);
-      dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, event, socket });
+      return dispatch({ type: 'EVENT_UPDATE_SUCCESS', payload: data.result, event, socket });
     })
     .catch(err => {
-      console.log(`Error getting Events. ${err.message}`);
-      dispatch({ type: 'EVENT_UPDATE_FAILED' });
+      console.log(`Error updating Events. ${err.message}`);
+      return dispatch({ type: 'EVENT_UPDATE_FAILED' });
     })
 }
 
 
 const deleteEvent = (event, socket) => (dispatch) => {
-  axios.delete(`${API_SERVER}/api/timeslot/${event.id}`, event)
+  return axios.delete(`${API_SERVER}/api/timeslot/${event.id}`, event)
     .then(({ data }) => {
-      dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event, socket });
+      return dispatch({ type: 'EVENT_DELETE_SUCCESS', payload: data.result, event, socket });
     })
     .catch(err => {
-      dispatch({ type: 'EVENT_DELETE_FAILED' });
+      return dispatch({ type: 'EVENT_DELETE_FAILED' });
     })
 }
 

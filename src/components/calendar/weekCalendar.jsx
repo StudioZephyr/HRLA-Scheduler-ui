@@ -77,12 +77,12 @@ class WeekCalendar extends Component {
   }
 
   eventStyles(event, start, end, isSelected) {
-    let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
+    let expiredColor = 'rgba(34, 34, 34, 0.09)';
     let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
     let colors = ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5'];
     let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
     let style = {
-      backgroundColor: colors[event.roomNo],
+      backgroundColor: event.finished === false ? colors[event.roomNo] : expiredColor,
       borderRadius: borderRadius,
       opacity: 0.8,
       color: 'lightgrey',

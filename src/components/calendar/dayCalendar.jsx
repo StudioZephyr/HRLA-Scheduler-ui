@@ -153,8 +153,8 @@ class DayCalendar extends Component {
   }
 
   eventStyles(event, start, end, isSelected) {
-    let backgroundColor = event.id === 'openSlot' ? 'rgba(34, 34, 34, 0.09)' : '#3174B6';
-    let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
+    let backgroundColor = event.finished === true ? 'rgba(34, 34, 34, 0.4)' : '#3174B6';
+    let opacity = 0.8
     let color = event.id === 'openSlot' ? '#3174B6' : 'lightgray';
     let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
     let style = {

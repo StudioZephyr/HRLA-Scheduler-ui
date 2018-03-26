@@ -28,6 +28,7 @@
     "immutable": "^3.8.2",
     "localforage": "^1.5.7",
     "moment": "^2.20.1",
+    "moment-timezone": "^0.5.14",
     "react": "^16.2.0",
     "react-big-calendar": "^0.18.0",
     "react-dom": "^16.2.0",

@@ -38,6 +38,8 @@ class CalendarCollection extends Component {
   }
 
   componentDidMount() {
+    console.log('SOCKET', this.props.socket)
+    this.props.socket.removeAllListeners();
     this.props.socket.on('eventPosted', (event) => {
       this.props.recieveAddedEvent(event);
     })

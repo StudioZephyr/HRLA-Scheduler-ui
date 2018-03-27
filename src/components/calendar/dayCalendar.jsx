@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
-import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
-import calUtils from './calUtils.js';
+import { loadEvents } from '../../actions/calendarActions';
+import calHelpers from '../../utils/calHelpers';
 
-import EditModal from './eventEditModal.jsx';
-import PostModal from './eventPostModal.jsx';
+import EditModal from './modals/eventEditModal.jsx';
+import PostModal from './modals/eventPostModal.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -40,19 +40,19 @@ class DayCalendar extends Component {
       eventsUpdated: false,
     }
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
-    this.createEvent = calUtils.createEvent.bind(this);
+    this.createEvent = calHelpers.createEvent.bind(this);
     this.resetEventsRow = this.resetEventsRow.bind(this);
-    this.editEvent = calUtils.editEvent.bind(this);
-    this.selectRange = calUtils.selectRange.bind(this);
-    this.handlePurposeChange = calUtils.handlePurposeChange.bind(this);
-    this.handleStartChange = calUtils.handleStartChange.bind(this);
-    this.handleEndChange = calUtils.handleEndChange.bind(this);
-    this.handleStartAmPmChange = calUtils.handleStartAmPmChange.bind(this);
-    this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
-    this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
-    this.formatTime = calUtils.formatTime.bind(this);
-    this.saveChanges = calUtils.saveChanges.bind(this);
-    this.removeEvent = calUtils.removeEvent.bind(this);
+    this.editEvent = calHelpers.editEvent.bind(this);
+    this.selectRange = calHelpers.selectRange.bind(this);
+    this.handlePurposeChange = calHelpers.handlePurposeChange.bind(this);
+    this.handleStartChange = calHelpers.handleStartChange.bind(this);
+    this.handleEndChange = calHelpers.handleEndChange.bind(this);
+    this.handleStartAmPmChange = calHelpers.handleStartAmPmChange.bind(this);
+    this.handleEndAmPmChange = calHelpers.handleEndAmPmChange.bind(this);
+    this.concatTimeMeridiem = calHelpers.concatTimeMeridiem.bind(this);
+    this.formatTime = calHelpers.formatTime.bind(this);
+    this.saveChanges = calHelpers.saveChanges.bind(this);
+    this.removeEvent = calHelpers.removeEvent.bind(this);
   }
 
   componentDidMount() {
@@ -180,7 +180,7 @@ class DayCalendar extends Component {
             date={this.props.currDate}
             step={30}
             views={'day'}
-            titleAccessor={calUtils.title}
+            titleAccessor={calHelpers.title}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
             defaultDate={new Date(2018, 2, 2)}
@@ -237,10 +237,7 @@ const DayCalendarState = (state) => {
 const DayCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
-    postEvent: bindActionCreators(postEvent, dispatch),
-    updateEvent: bindActionCreators(updateEvent, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
-    deleteEvent: bindActionCreators(deleteEvent, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
     deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)

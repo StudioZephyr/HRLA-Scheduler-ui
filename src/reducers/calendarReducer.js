@@ -67,7 +67,6 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `EVENT_POST_SUCCESS`: {
-      console.log('ADDMING EVENTS', action.event)
       const payload = action.payload;
       const event = action.event;
       const roomNo = state.rooms.findIndex(r => r.id === payload.RoomId);
@@ -101,9 +100,7 @@ const calendarReducer = (state = initialState, action) => {
 
     case `EVENT_UPDATE_SUCCESS`: {
       const event = action.event;
-      console.log('STAAAAATE', state.rooms);
       event.roomNo = state.rooms.findIndex(r => r.id === event.RoomId);
-      console.log('IN REDUCER UPDATE', event)
       action.socket.emit('clientEventUpdate', event);
       const newEvents = updateEvent(event, state);
       return Object.assign({}, state, {
@@ -126,7 +123,6 @@ const calendarReducer = (state = initialState, action) => {
     case `ROOM_ADD`: {
       const payload = action.payload;
       const newEvents = state.events.push(List([]));
-      console.log('ROOM ADDED', newEvents);
       return Object.assign({}, state, {
         events: newEvents,
         rooms: state.rooms.concat(payload)
@@ -145,7 +141,6 @@ const calendarReducer = (state = initialState, action) => {
 
       rooms.splice(idx, 1);
       const newEvents = state.events.delete(idx);
-      console.log('newEvents', newEvents)
 
       return Object.assign({}, state, {
         events: newEvents,
@@ -154,7 +149,6 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `SOCKET_POST`: {
-      console.log('RECIEVING NEWNEW POST')
       const newEvents = addEvent(action.payload, state);
       return Object.assign({}, state, {
         events: newEvents,

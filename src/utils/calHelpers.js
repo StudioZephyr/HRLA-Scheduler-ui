@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-const calUtils = {
+const calHelpers = {
 
   selectRange: function (slot) {
     if (this.state.eventRow) {
@@ -197,4 +197,4 @@ const calUtils = {
 
 }
 
-export default calUtils;
+export default calHelpers;

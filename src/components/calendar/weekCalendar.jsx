@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { bindActionCreators } from 'redux';
 
-import { refreshUser } from '../../actions/authActions';
-import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
-import calUtils from './calUtils.js';
+import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
+import { loadEvents } from '../../actions/calendarActions';
+import calHelpers from '../../utils/calHelpers';
 
-import EditModal from './eventEditModal.jsx';
-import PostModal from './eventPostModal.jsx';
+import EditModal from './modals/eventEditModal.jsx';
+import PostModal from './modals/eventPostModal.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -37,21 +37,23 @@ class WeekCalendar extends Component {
       timeError: false,
       eventsUpdated: false,
       selectedRoom: {name: 'Please Select a Room'},
-      roomSelected: false
+      roomSelected: false,
+      colors: ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5']
     }
-    this.createEvent = calUtils.createEvent.bind(this);
-    this.editEvent = calUtils.editEvent.bind(this);
-    this.selectRange = calUtils.selectRange.bind(this);
-    this.handlePurposeChange = calUtils.handlePurposeChange.bind(this);
-    this.handleStartChange = calUtils.handleStartChange.bind(this);
-    this.handleEndChange = calUtils.handleEndChange.bind(this);
-    this.handleStartAmPmChange = calUtils.handleStartAmPmChange.bind(this);
-    this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
-    this.formatTime = calUtils.formatTime.bind(this);
-    this.saveChanges = calUtils.saveChanges.bind(this);
-    this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
-    this.removeEvent = calUtils.removeEvent.bind(this);
+    this.createEvent = calHelpers.createEvent.bind(this);
+    this.editEvent = calHelpers.editEvent.bind(this);
+    this.selectRange = calHelpers.selectRange.bind(this);
+    this.handlePurposeChange = calHelpers.handlePurposeChange.bind(this);
+    this.handleStartChange = calHelpers.handleStartChange.bind(this);
+    this.handleEndChange = calHelpers.handleEndChange.bind(this);
+    this.handleStartAmPmChange = calHelpers.handleStartAmPmChange.bind(this);
+    this.handleEndAmPmChange = calHelpers.handleEndAmPmChange.bind(this);
+    this.formatTime = calHelpers.formatTime.bind(this);
+    this.saveChanges = calHelpers.saveChanges.bind(this);
+    this.concatTimeMeridiem = calHelpers.concatTimeMeridiem.bind(this);
+    this.removeEvent = calHelpers.removeEvent.bind(this);
     this.handleRoomSelect = this.handleRoomSelect.bind(this);
+    this.eventStyles = this.eventStyles.bind(this);
   }
 
   componentDidMount() {
@@ -79,7 +81,7 @@ class WeekCalendar extends Component {
   eventStyles(event, start, end, isSelected) {
     let expiredColor = 'rgba(34, 34, 34, 0.09)';
     let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
-    let colors = ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5'];
+    let colors = this.state.colors;
     let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
     let style = {
       backgroundColor: event.finished === false ? colors[event.roomNo] : expiredColor,
@@ -95,7 +97,6 @@ class WeekCalendar extends Component {
   }
 
   handleRoomSelect(room) {
-    console.log(room)
     this.setState({
       selectedRoom: room,
       roomSelected: true
@@ -105,7 +106,6 @@ class WeekCalendar extends Component {
   render() {
     return (
       <div id={`weeks`} className='calendar'>
-        {console.log('INSIDE THE RENDER OF WEEKCALENDAR', this.state.eventsList)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -114,7 +114,7 @@ class WeekCalendar extends Component {
             date={this.props.currDate}
             step={30}
             views={'week'}
-            titleAccessor={calUtils.title}
+            titleAccessor={calHelpers.title}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
             defaultDate={new Date(2018, 2, 2)}
@@ -137,6 +137,7 @@ class WeekCalendar extends Component {
           selectedRoom={this.state.selectedRoom}
           roomSelected={this.state.roomSelected}
           handleRoomSelect={this.handleRoomSelect}
+          colors={this.state.colors}
         />
 
         <EditModal
@@ -177,10 +178,10 @@ const WeekCalendarState = (state) => {
 const WeekCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
-    postEvent: bindActionCreators(postEvent, dispatch),
-    updateEvent: bindActionCreators(updateEvent, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
-    deleteEvent: bindActionCreators(deleteEvent, dispatch)
+    postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
+    updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
+    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)
   };
 }
 

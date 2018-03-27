@@ -82,7 +82,6 @@ class CalendarCollection extends Component {
     if (!this.props.roomsLoaded && this.props.events.length !== prevProps.events.length ) {
       let events = this.props.events;
       this.props.loadRooms();  
-      // console.log(events.get(0), 'events got 0, no error');
       this.setState({
         eventsLoaded: true
       })
@@ -120,7 +119,6 @@ class CalendarCollection extends Component {
     }
     return (
       <div id='calendarCollection'>
-          {console.log('events in the return', events)}
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -142,7 +140,6 @@ class CalendarCollection extends Component {
                 {/* change to toolbarcalendar component */}
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} eventList={events.get(0)} />
                 {rooms.map((x, i, arr) => {
-                  console.log('events in render', events.get(i))
                   return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)} />
                 })}
               </div>
@@ -155,7 +152,6 @@ class CalendarCollection extends Component {
               Loading...
             </div>
         }
-
 
       </div>
     )

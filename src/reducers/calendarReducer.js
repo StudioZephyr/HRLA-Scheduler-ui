@@ -1,13 +1,15 @@
 import moment from 'moment';
 import { Map, List } from 'immutable';
 import { addEvent, updateEvent, deleteEvent } from '../utils/calenderReducerHelpers.js';
-
+import io from 'socket.io-client/dist/socket.io.js';
+const API_SOCKET = process.env.API_SOCKET;
 
 const initialState = {
   events: [],
   rooms: [],
   eventsLoaded: false,
-  roomsLoaded: false
+  roomsLoaded: false,
+  socket: io(API_SOCKET)
 }
 
 const calendarReducer = (state = initialState, action) => {
@@ -65,6 +67,7 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `EVENT_POST_SUCCESS`: {
+      console.log('ADDMING EVENTS', action.event)
       const payload = action.payload;
       const event = action.event;
       const roomNo = state.rooms.findIndex(r => r.id === payload.RoomId);
@@ -151,6 +154,7 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `SOCKET_POST`: {
+      console.log('RECIEVING NEWNEW POST')
       const newEvents = addEvent(action.payload, state);
       return Object.assign({}, state, {
         events: newEvents,

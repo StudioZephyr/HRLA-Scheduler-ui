@@ -169,7 +169,8 @@ const WeekCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
-    rooms: state.calendar.rooms
+    rooms: state.calendar.rooms,
+    socket: state.calendar.socket
   };
 }
 

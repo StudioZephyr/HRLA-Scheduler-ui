@@ -56,10 +56,8 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
-    console.log('MADE IT', this.props.eventList);
     this.state.eventCreated = this.props.user.hasEvent;
     this.assignEvents();
-    console.log('INSIDE COMPONENT DID MOUNT', this.state.eventsList)
     if (this.state.eventsList) {
       this.renderDay();
     }
@@ -72,14 +70,12 @@ class DayCalendar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('this updated and the props are', this.props.eventList, 'in room', this.props.roomNo);
     if (!this.props.eventsLoaded) {
       this.props.loadEvents();
       this.assignEvents();
       this.renderDay();
     }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
-      console.log('updating date');
       this.renderDay();
       this.setState({
         rowDate: this.props.currDate
@@ -115,7 +111,6 @@ class DayCalendar extends Component {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
     let initEventRow = this.state.eventRow.slice();
-    console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
         this.state.eventRow = initEventRow.slice();
@@ -127,13 +122,10 @@ class DayCalendar extends Component {
   }
 
   blockTodaysEvents() {
-    console.log('IN BLOCK!', this.state.eventsList);
     this.state.eventsList.forEach((event) => {
       let start = event.start;
       let end = event.end;
-      console.log('looking at blocking start:', start, 'end:', end, this.props.currDate.month(), start.getMonth())
       if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
-        console.log('le fille');
         this.fillTimeSlot(start, end);
       }
     })
@@ -180,7 +172,6 @@ class DayCalendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-        {console.log('INSIDE THE RENDER OF DAYCALENDAR', this.state.eventsList)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -239,6 +230,7 @@ const DayCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
+    socket: state.calendar.socket
   };
 }
 

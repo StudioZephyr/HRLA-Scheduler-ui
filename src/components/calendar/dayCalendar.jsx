@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
-import { postEvent, loadEvents, updateEvent, deleteEvent } from '../../actions/calendarActions';
-import calUtils from './calUtils.js';
+import { loadEvents } from '../../actions/calendarActions';
+import calHelpers from '../../utils/calHelpers';
 
-import EditModal from './eventEditModal.jsx';
-import PostModal from './eventPostModal.jsx';
+import EditModal from './modals/eventEditModal.jsx';
+import PostModal from './modals/eventPostModal.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -38,28 +38,31 @@ class DayCalendar extends Component {
       selectedRoom: '',
       timeError: false,
       eventsUpdated: false,
+      purposeText: '',
+      startText: '',
+      endText: ''
     }
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
-    this.createEvent = calUtils.createEvent.bind(this);
+    this.createEvent = calHelpers.createEvent.bind(this);
     this.resetEventsRow = this.resetEventsRow.bind(this);
-    this.editEvent = calUtils.editEvent.bind(this);
-    this.selectRange = calUtils.selectRange.bind(this);
-    this.handlePurposeChange = calUtils.handlePurposeChange.bind(this);
-    this.handleStartChange = calUtils.handleStartChange.bind(this);
-    this.handleEndChange = calUtils.handleEndChange.bind(this);
-    this.handleStartAmPmChange = calUtils.handleStartAmPmChange.bind(this);
-    this.handleEndAmPmChange = calUtils.handleEndAmPmChange.bind(this);
-    this.concatTimeMeridiem = calUtils.concatTimeMeridiem.bind(this);
-    this.formatTime = calUtils.formatTime.bind(this);
-    this.saveChanges = calUtils.saveChanges.bind(this);
-    this.removeEvent = calUtils.removeEvent.bind(this);
+    this.editEvent = calHelpers.editEvent.bind(this);
+    this.selectRange = calHelpers.selectRange.bind(this);
+    this.handlePurposeChange = calHelpers.handlePurposeChange.bind(this);
+    this.handleStartChange = calHelpers.handleStartChange.bind(this);
+    this.handleEndChange = calHelpers.handleEndChange.bind(this);
+    this.handleStartAmPmChange = calHelpers.handleStartAmPmChange.bind(this);
+    this.handleEndAmPmChange = calHelpers.handleEndAmPmChange.bind(this);
+    this.concatTimeMeridiem = calHelpers.concatTimeMeridiem.bind(this);
+    this.resetSelected = calHelpers.resetSelected.bind(this)
+    this.formatTime = calHelpers.formatTime.bind(this);
+    this.saveChanges = calHelpers.saveChanges.bind(this);
+    this.removeEvent = calHelpers.removeEvent.bind(this);
+    
   }
 
   componentDidMount() {
-    console.log('MADE IT', this.props.eventList);
     this.state.eventCreated = this.props.user.hasEvent;
     this.assignEvents();
-    console.log('INSIDE COMPONENT DID MOUNT', this.state.eventsList)
     if (this.state.eventsList) {
       this.renderDay();
     }
@@ -72,14 +75,12 @@ class DayCalendar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('this updated and the props are', this.props.eventList, 'in room', this.props.roomNo);
     if (!this.props.eventsLoaded) {
       this.props.loadEvents();
       this.assignEvents();
       this.renderDay();
     }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
-      console.log('updating date');
       this.renderDay();
       this.setState({
         rowDate: this.props.currDate
@@ -88,13 +89,13 @@ class DayCalendar extends Component {
   }
 
   assignEvents() {
-    this.state.eventsList = this.props.eventList.toArray()
-    this.state.eventsList = this.state.eventsList.map((event) => {
-      event.start = new Date(event.start);
-      event.end = new Date(event.end);
-      return event;
+    let newList = this.props.eventList.toArray()
+    newList = newList.map((event) => {
+      return Object.assign({}, event);
     })
-
+    this.setState({
+      eventsList: newList
+    });
   }
 
   toTime(idx) {
@@ -115,7 +116,6 @@ class DayCalendar extends Component {
     let startIdx = this.toIdx(startTime);
     let endIdx = this.toIdx(endTime);
     let initEventRow = this.state.eventRow.slice();
-    console.log('fill start time of ', startTime.getHours(), 'in room', this.props.room)
     for (let i = startIdx; i < endIdx; i++) {
       if (this.state.eventRow[i] === 1) {
         this.state.eventRow = initEventRow.slice();
@@ -127,13 +127,10 @@ class DayCalendar extends Component {
   }
 
   blockTodaysEvents() {
-    console.log('IN BLOCK!', this.state.eventsList);
     this.state.eventsList.forEach((event) => {
       let start = event.start;
       let end = event.end;
-      console.log('looking at blocking start:', start, 'end:', end, this.props.currDate.month(), start.getMonth())
       if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
-        console.log('le fille');
         this.fillTimeSlot(start, end);
       }
     })
@@ -173,6 +170,8 @@ class DayCalendar extends Component {
   resetEventsRow() {
     this.setState({
       eventRow: this.state.initEventRow.slice()
+    }, () => {
+      this.resetSelected();
     });
   }
 
@@ -180,7 +179,6 @@ class DayCalendar extends Component {
 
     return (
       <div id={`${this.props.room.name}`} className='calendar'>
-        {console.log('INSIDE THE RENDER OF DAYCALENDAR', this.state.eventsList)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -189,7 +187,7 @@ class DayCalendar extends Component {
             date={this.props.currDate}
             step={30}
             views={'day'}
-            titleAccessor={calUtils.title}
+            titleAccessor={calHelpers.title}
             min={new Date('2018-03-02T16:00:00.113Z')}
             max={new Date('2018-03-02T04:00:00.113Z')}
             defaultDate={new Date(2018, 2, 2)}
@@ -227,7 +225,10 @@ class DayCalendar extends Component {
           formatTime={this.formatTime}
           removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
-          resetEventsRow={this.resetEventsRow}
+          resetEvents={this.resetEventsRow}
+          startText={this.state.startText}
+          endText={this.state.endText}
+
         />
 
       </div>
@@ -239,16 +240,14 @@ const DayCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
+    socket: state.calendar.socket
   };
 }
 
 const DayCalendarDispatch = (dispatch) => {
   return {
     refreshUser: bindActionCreators(refreshUser, dispatch),
-    postEvent: bindActionCreators(postEvent, dispatch),
-    updateEvent: bindActionCreators(updateEvent, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
-    deleteEvent: bindActionCreators(deleteEvent, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
     deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)

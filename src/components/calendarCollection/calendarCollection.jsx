@@ -17,7 +17,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendarCollection.css';
 
 const API_SERVER = process.env.API_SERVER;
-const API_SOCKET = process.env.API_SOCKET;
+
 
 class CalendarCollection extends Component {
   constructor() {
@@ -37,25 +37,18 @@ class CalendarCollection extends Component {
     }
   }
 
-  componentWillMount() {
-    this.setState({
-      socket: io(API_SOCKET)
-    }) 
-  }
-
   componentDidMount() {
-    this.state.socket.on('eventPosted', (event) => {
+    console.log('SOCKET', this.props.socket)
+    this.props.socket.removeAllListeners();
+    this.props.socket.on('eventPosted', (event) => {
       this.props.recieveAddedEvent(event);
     })
-    this.state.socket.on('eventUpdated', (event) => {
+    this.props.socket.on('eventUpdated', (event) => {
       this.props.recieveUpdatedEvent(event);
     })
-    this.state.socket.on('eventDeleted', (event) => {
-      console.log('DELETING IN SOCKET', event)
+    this.props.socket.on('eventDeleted', (event) => {
       this.props.recieveDeleteEvent(event);
     })
-    //REPLACING WITH ACTION
-    // axios.get(`${API_SERVER}/api/rooms`)
     this.props.getRooms()
 
 
@@ -84,17 +77,13 @@ class CalendarCollection extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('component did indeed update', prevProps)
     if (this.props.rooms.length !== prevProps.rooms.length) {
       this.props.getEvents()
     }
     
     if (!this.props.roomsLoaded && this.props.events.length !== prevProps.events.length ) {
       let events = this.props.events;
-      console.log('here are the events', events);
       this.props.loadRooms();  
-      // console.log(events.get(0), 'events got 0, no error');
-      console.log('events updated too!', this.props.events, prevProps.events);
       this.setState({
         eventsLoaded: true
       })
@@ -129,11 +118,9 @@ class CalendarCollection extends Component {
   render() {
     const { events, rooms, eventsLoaded } = this.props;
     if (this.state.eventsLoaded) {
-      console.log('props in render', this.props.events, this.props.rooms);
     }
     return (
       <div id='calendarCollection'>
-          {console.log('events in the return', events)}
         <div id='calendarNav'>
           <div className='container'></div>
           <BigCalendar
@@ -155,20 +142,18 @@ class CalendarCollection extends Component {
                 {/* change to toolbarcalendar component */}
                 <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} eventList={events.get(0)} />
                 {rooms.map((x, i, arr) => {
-                  console.log('events in render', events.get(i))
-                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)} socket={this.state.socket} />
+                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)} />
                 })}
               </div>
               :
               <div id='weekCalendar'>
-                <WeekCalendar currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} socket={this.state.socket} />
+                <WeekCalendar currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} />
               </div>
             :
             <div>
               Loading...
             </div>
         }
-
 
       </div>
     )
@@ -181,7 +166,8 @@ const CalendarCollectionState = (state) => {
     rooms: state.calendar.rooms,
     events: state.calendar.events,
     eventsLoaded: state.calendar.eventsLoaded,
-    roomsLoaded: state.calendar.roomsLoaded
+    roomsLoaded: state.calendar.roomsLoaded,
+    socket: state.calendar.socket
   };
 }
 

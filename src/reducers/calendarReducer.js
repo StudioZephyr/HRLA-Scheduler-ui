@@ -1,13 +1,15 @@
 import moment from 'moment';
 import { Map, List } from 'immutable';
 import { addEvent, updateEvent, deleteEvent } from '../utils/calenderReducerHelpers.js';
-
+import io from 'socket.io-client/dist/socket.io.js';
+const API_SOCKET = process.env.API_SOCKET;
 
 const initialState = {
   events: [],
   rooms: [],
   eventsLoaded: false,
-  roomsLoaded: false
+  roomsLoaded: false,
+  socket: io(API_SOCKET)
 }
 
 const calendarReducer = (state = initialState, action) => {
@@ -25,8 +27,8 @@ const calendarReducer = (state = initialState, action) => {
       let eventsSorted = List();
       const eventsUnsorted =
         payload.map((event) => {
-          event.start = event.start;
-          event.end = event.end;
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
           event.desc = event.groupName;
           event.selectable;
           return event;
@@ -98,9 +100,7 @@ const calendarReducer = (state = initialState, action) => {
 
     case `EVENT_UPDATE_SUCCESS`: {
       const event = action.event;
-      console.log('STAAAAATE', state.rooms);
       event.roomNo = state.rooms.findIndex(r => r.id === event.RoomId);
-      console.log('IN REDUCER UPDATE', event)
       action.socket.emit('clientEventUpdate', event);
       const newEvents = updateEvent(event, state);
       return Object.assign({}, state, {
@@ -123,7 +123,6 @@ const calendarReducer = (state = initialState, action) => {
     case `ROOM_ADD`: {
       const payload = action.payload;
       const newEvents = state.events.push(List([]));
-      console.log('ROOM ADDED', newEvents);
       return Object.assign({}, state, {
         events: newEvents,
         rooms: state.rooms.concat(payload)
@@ -142,7 +141,6 @@ const calendarReducer = (state = initialState, action) => {
 
       rooms.splice(idx, 1);
       const newEvents = state.events.delete(idx);
-      console.log('newEvents', newEvents)
 
       return Object.assign({}, state, {
         events: newEvents,
@@ -151,7 +149,10 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `SOCKET_POST`: {
-      const newEvents = addEvent(action.payload, state);
+      const event = action.payload;
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      const newEvents = addEvent(event, state);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

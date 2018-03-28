@@ -11,7 +11,8 @@ const PostModal = (props) => {
     room,
     selectedRoom,
     roomSelected,
-    handleRoomSelect
+    handleRoomSelect,
+    colors
   } = props;
 
   return (
@@ -37,8 +38,8 @@ const PostModal = (props) => {
                       {selectedRoom.name}
                     </button>
                     <div className="dropdown-menu">
-                      {props.rooms.map((room) => {
-                        return <option onClick={()=>{handleRoomSelect(room)}}>{room.name}</option>
+                      {props.rooms.map((room, i) => {
+                        return <option style={{color:colors[i]}} onClick={()=>{handleRoomSelect(room)}}>{room.name}</option>
                       })}
                     </div>
                   </div>

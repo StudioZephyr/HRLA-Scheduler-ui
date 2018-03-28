@@ -82,6 +82,7 @@ const calHelpers = {
     }
 
     this.setState({
+      startText: e.target.value,
       selectedStart: newStart,
     })
   },
@@ -98,13 +99,14 @@ const calHelpers = {
     }
 
     this.setState({
+      endText: e.target.value,
       selectedEnd: newEnd
     })
   },
 
   handleStartAmPmChange: function (e) {
     let newStart = moment(`${this.state.selectedDate} ${this.state.selectedStart.format('hh:mm')} ${e.target.value}`, 'MM-DD-YYYY hh:mm a');
-    if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8) {
+    if (this.state.selectedEnd - newStart <= 0 || newStart.hours() < 8 || newStart.hours() > 20 || (newStart.hours() === 20 && newStart.minutes() > 0)) {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
@@ -117,7 +119,7 @@ const calHelpers = {
 
   handleEndAmPmChange: function (e) {
     let newEnd = moment(`${this.state.selectedDate} ${this.state.selectedEnd.format('hh:mm')} ${e.target.value}`, 'MM-DD-YYYY hh:mm a');
-    if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
+    if (this.state.selectedStart - newEnd >= 0 || newEnd.hours() < 8 || newEnd.hours() > 20 || (newEnd.hours() === 20 && newEnd.minutes() > 0)) {
       this.state.timeError = true;
     } else {
       this.state.timeError = false;
@@ -136,6 +138,7 @@ const calHelpers = {
 
   editEvent: function (selectedEvent) {
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
+      console.log('SELECTED', selectedEvent)
       this.setState({
         selectedEvent: selectedEvent,
         purpose: selectedEvent.title,
@@ -170,14 +173,13 @@ const calHelpers = {
     //   }
     // }
 
-    this.props.updateAndRefresh(newEvent, this.props.socket)
+    this.props.updateAndRefresh(newEvent, this.props.socket);
+    this.resetSelected()
   },
 
   removeEvent: function () {
     this.props.deleteAndRefresh(this.state.selectedEvent, this.props.socket);
-    this.setState({
-      selectedEvent: { start: moment(), end: moment() }
-    })
+    this.resetSelected();
   },
 
   formatTime: function (time) {
@@ -193,6 +195,26 @@ const calHelpers = {
 
   title(event) {
     return `${event.desc} - ${event.title}`;
+  },
+
+  resetSelected() {
+    this.setState({
+      purpose: '',
+      startText: '',
+      endText: '',
+      selectedStart: moment(),
+      selectedEnd: moment(),
+    })
+  },
+
+  input(string) {
+    console.log(string);
+    ref = {
+      'start': this.state.inputStart,
+      'title': this.state.inputTitle,
+      'end': this.state.inputEnd,
+    }
+    return ref[string];
   }
 
 }

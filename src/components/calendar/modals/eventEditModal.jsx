@@ -19,7 +19,11 @@ const EditModal = (props) => {
     formatTime,
     removeEvent,
     saveChanges,
-    resetEventsRow
+    resetEvents,
+    input,
+    purposeText,
+    startText,
+    endText
   } = props;
 
   return (
@@ -37,9 +41,9 @@ const EditModal = (props) => {
               <h2>{desc}</h2>
               <form>
                 Description:<br />
-                <input id='eventNameInput' type='text' placeholder={purpose} onChange={handlePurposeChange} /> <br />
+                <input id='eventNameInput' type='text' value={purpose} placeholder={purpose} onChange={handlePurposeChange} /> <br />
                 Start:<br />
-                <input id='eventStartInput' type='text' placeholder={formatTime(start)} onChange={handleStartChange} />
+                <input id='eventStartInput' type='text' value={startText} placeholder={formatTime(start)} onChange={handleStartChange} />
                 <div className='btn-group'>
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {selectedStartAmPm}
@@ -57,7 +61,7 @@ const EditModal = (props) => {
                 </div>
                 <br />
                 End: <br />
-                <input id='eventEndInput' type='text' placeholder={formatTime(end)} onChange={handleEndChange} />
+                <input id='eventEndInput' type='text' value={endText} placeholder={formatTime(end)} onChange={handleEndChange} />
                 <div className='btn-group'>
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {selectedEndAmPm}
@@ -83,7 +87,7 @@ const EditModal = (props) => {
                   <button type="button" className="btn btn-secondary" onClick={saveChanges} data-dismiss="modal">Save Changes</button>
                 }
 
-                <button type="button" className="btn btn-secondary close" onClick={resetEventsRow} data-dismiss="modal" >Close</button>
+                <button type="button" className="btn btn-secondary close" onClick={resetEvents} data-dismiss="modal" >Close</button>
               </div>
             </div>
           </div>

@@ -38,6 +38,9 @@ class DayCalendar extends Component {
       selectedRoom: '',
       timeError: false,
       eventsUpdated: false,
+      purposeText: '',
+      startText: '',
+      endText: ''
     }
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
     this.createEvent = calHelpers.createEvent.bind(this);
@@ -50,9 +53,11 @@ class DayCalendar extends Component {
     this.handleStartAmPmChange = calHelpers.handleStartAmPmChange.bind(this);
     this.handleEndAmPmChange = calHelpers.handleEndAmPmChange.bind(this);
     this.concatTimeMeridiem = calHelpers.concatTimeMeridiem.bind(this);
+    this.resetSelected = calHelpers.resetSelected.bind(this)
     this.formatTime = calHelpers.formatTime.bind(this);
     this.saveChanges = calHelpers.saveChanges.bind(this);
     this.removeEvent = calHelpers.removeEvent.bind(this);
+    
   }
 
   componentDidMount() {
@@ -84,13 +89,13 @@ class DayCalendar extends Component {
   }
 
   assignEvents() {
-    this.state.eventsList = this.props.eventList.toArray()
-    this.state.eventsList = this.state.eventsList.map((event) => {
-      event.start = new Date(event.start);
-      event.end = new Date(event.end);
-      return event;
+    let newList = this.props.eventList.toArray()
+    newList = newList.map((event) => {
+      return Object.assign({}, event);
     })
-
+    this.setState({
+      eventsList: newList
+    });
   }
 
   toTime(idx) {
@@ -165,6 +170,8 @@ class DayCalendar extends Component {
   resetEventsRow() {
     this.setState({
       eventRow: this.state.initEventRow.slice()
+    }, () => {
+      this.resetSelected();
     });
   }
 
@@ -218,7 +225,10 @@ class DayCalendar extends Component {
           formatTime={this.formatTime}
           removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
-          resetEventsRow={this.resetEventsRow}
+          resetEvents={this.resetEventsRow}
+          startText={this.state.startText}
+          endText={this.state.endText}
+
         />
 
       </div>

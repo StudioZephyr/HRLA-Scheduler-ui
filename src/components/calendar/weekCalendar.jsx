@@ -52,6 +52,7 @@ class WeekCalendar extends Component {
     this.saveChanges = calHelpers.saveChanges.bind(this);
     this.concatTimeMeridiem = calHelpers.concatTimeMeridiem.bind(this);
     this.removeEvent = calHelpers.removeEvent.bind(this);
+    this.resetSelected = calHelpers.resetSelected.bind(this)
     this.handleRoomSelect = this.handleRoomSelect.bind(this);
     this.eventStyles = this.eventStyles.bind(this);
   }
@@ -67,22 +68,24 @@ class WeekCalendar extends Component {
   }
 
   flattenEvents() {
-    let events = [];
+    let events = new Array();
     this.props.eventsList.forEach((list) => {
       let newArr = list.toArray();
       events = events.concat(newArr);
     });
+    console.log(events);
     this.setState({
       eventsList: events
+    }, ()=> {
+      this.props.loadEvents();
     });
-    this.props.loadEvents();
   }
 
   eventStyles(event, start, end, isSelected) {
     let expiredColor = 'rgba(34, 34, 34, 0.09)';
-    let opacity = event.id === 'openSlot' ? 0.8 : 0.8;
+    let opacity = 0.8;
     let colors = this.state.colors;
-    let borderRadius = event.id === 'openSlot' ? '0px' : '5px';
+    let borderRadius = '5px';
     let style = {
       backgroundColor: event.finished === false ? colors[event.roomNo] : expiredColor,
       borderRadius: borderRadius,
@@ -157,7 +160,7 @@ class WeekCalendar extends Component {
           formatTime={this.formatTime}
           removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
-          resetEventsRow={()=>{}}
+          resetEvents={this.resetSelected}
         /> 
 
       </div>

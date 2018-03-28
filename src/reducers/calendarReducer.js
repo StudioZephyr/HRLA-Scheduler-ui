@@ -27,8 +27,8 @@ const calendarReducer = (state = initialState, action) => {
       let eventsSorted = List();
       const eventsUnsorted =
         payload.map((event) => {
-          event.start = event.start;
-          event.end = event.end;
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
           event.desc = event.groupName;
           event.selectable;
           return event;
@@ -149,7 +149,10 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `SOCKET_POST`: {
-      const newEvents = addEvent(action.payload, state);
+      const event = action.payload;
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      const newEvents = addEvent(event, state);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

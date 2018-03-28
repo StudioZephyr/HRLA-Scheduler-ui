@@ -138,7 +138,6 @@ const calHelpers = {
 
   editEvent: function (selectedEvent) {
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
-      console.log('SELECTED', selectedEvent)
       this.setState({
         selectedEvent: selectedEvent,
         purpose: selectedEvent.title,
@@ -206,16 +205,6 @@ const calHelpers = {
       selectedEnd: moment(),
     })
   },
-
-  input(string) {
-    console.log(string);
-    ref = {
-      'start': this.state.inputStart,
-      'title': this.state.inputTitle,
-      'end': this.state.inputEnd,
-    }
-    return ref[string];
-  }
 
 }
 

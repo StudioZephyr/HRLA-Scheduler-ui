@@ -73,7 +73,6 @@ class WeekCalendar extends Component {
       let newArr = list.toArray();
       events = events.concat(newArr);
     });
-    console.log(events);
     this.setState({
       eventsList: events
     }, ()=> {

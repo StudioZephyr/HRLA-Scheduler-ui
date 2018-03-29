@@ -105,9 +105,16 @@ class WeekCalendar extends Component {
     })
   }
 
+  dayFormat(date, culture, localizer) {
+    console.log('formatting', date, culture, localizer);
+    return localizer.format(date, 'mm/dd', culture)
+  }
+
   render() {
+    console.log('LOOKIN IN RENDER', this.dayFormat)
     return (
       <div id={`weeks`} className='calendar'>
+      {console.log('LOOKING FOR DAYFORMAT', this.dayFormat)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -123,6 +130,8 @@ class WeekCalendar extends Component {
             eventPropGetter={this.eventStyles}
             onSelectEvent={this.editEvent}
             onSelectSlot={this.selectRange}
+            formats={this.dayFormat}
+
           />
           :
           <p>Loading</p>

@@ -9,7 +9,7 @@ import calHelpers from '../../utils/calHelpers';
 
 import EditModal from './modals/eventEditModal.jsx';
 import PostModal from './modals/eventPostModal.jsx';
-import Legend from './legend.jsx';
+import Legend from '../legend/legend.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
@@ -36,7 +36,7 @@ class WeekCalendar extends Component {
       selectedRoom: '',
       timeError: false,
       eventsUpdated: false,
-      selectedRoom: {name: 'Please Select a Room'},
+      selectedRoom: { name: 'Please Select a Room' },
       roomSelected: false,
       colors: ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5'],
       shownEvents: [],
@@ -79,8 +79,7 @@ class WeekCalendar extends Component {
     });
     this.setState({
       eventsList: events
-    }, ()=> {
-      console.log('here');
+    }, () => {
       this.filterRooms(this.state.filteredRoomNo)
     });
   }
@@ -124,12 +123,10 @@ class WeekCalendar extends Component {
   }
 
   filterRooms(roomIdx) {
-    console.log('ROOMIDX', roomIdx)
-    if (typeof roomIdx === 'number'){
+    if (typeof roomIdx === 'number') {
       const events = this.state.eventsList.filter((event) => {
         return event.roomNo === roomIdx;
       })
-      console.log('events', events);
       this.setState({
         shownEvents: events || []
       }, () => {
@@ -148,7 +145,7 @@ class WeekCalendar extends Component {
     console.log('LOOKIN IN RENDER', this.dayFormat)
     return (
       <div id={`weeks`} className='calendar'>
-      {console.log('LOOKING FOR DAYFORMAT', this.dayFormat)}
+        {console.log('LOOKING FOR DAYFORMAT', this.dayFormat)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -176,7 +173,7 @@ class WeekCalendar extends Component {
           selectedEnd={this.state.selectedEnd}
           handlePurposeChange={this.handlePurposeChange}
           createEvent={this.createEvent}
-          resetEventsRow={()=>{}}
+          resetEventsRow={() => { }}
           room={null}
           rooms={this.props.rooms}
           selectedRoom={this.state.selectedRoom}
@@ -203,14 +200,12 @@ class WeekCalendar extends Component {
           removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
           resetEvents={this.resetSelected}
-        /> 
-
+        />
         <Legend
           rooms={this.props.rooms}
           colors={this.state.colors}
           filter={this.selectRoomFilter}
         />
-
       </div>
     )
   }

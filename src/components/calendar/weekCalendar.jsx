@@ -109,11 +109,6 @@ class WeekCalendar extends Component {
     })
   }
 
-  dayFormat(date, culture, localizer) {
-    console.log('formatting', date, culture, localizer);
-    return localizer.format(date, 'mm/dd', culture)
-  }
-
   selectRoomFilter(roomIdx) {
     this.setState({
       filteredRoomNo: roomIdx
@@ -161,7 +156,7 @@ class WeekCalendar extends Component {
             eventPropGetter={this.eventStyles}
             onSelectEvent={this.editEvent}
             onSelectSlot={this.selectRange}
-            formats={this.dayFormat}
+            formats={{dayFormat: 'MM/DD' + ' ' + 'ddd'}}
 
           />
           :
@@ -201,6 +196,7 @@ class WeekCalendar extends Component {
           saveChanges={this.saveChanges}
           resetEvents={this.resetSelected}
         />
+
         <Legend
           rooms={this.props.rooms}
           colors={this.state.colors}

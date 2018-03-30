@@ -1,4 +1,4 @@
-.legend-bar{
+.legend-bar {
   display: inline-flex;
   width: 100%;
 }
@@ -7,6 +7,6 @@
     width: 20%;
 }
 
-.btn{
+.btn {
   margin: 3px;
 }

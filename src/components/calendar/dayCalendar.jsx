@@ -14,7 +14,6 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import './calendar.css';
 const API_SERVER = process.env.API_SERVER;
 
 class DayCalendar extends Component {
@@ -61,6 +60,7 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
+    console.log('mounting')
     this.state.eventCreated = this.props.user.hasEvent;
     this.assignEvents();
     if (this.state.eventsList) {
@@ -75,6 +75,7 @@ class DayCalendar extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log('updating', prevProps)
     if (!this.props.eventsLoaded) {
       this.props.loadEvents();
       this.assignEvents();
@@ -87,6 +88,10 @@ class DayCalendar extends Component {
       })
     }
   }
+
+  // componentWillReceiveProps() {
+  //   this.renderDay();
+  // }
 
   assignEvents() {
     let newList = this.props.eventList.toArray()

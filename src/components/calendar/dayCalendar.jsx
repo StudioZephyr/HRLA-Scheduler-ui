@@ -60,12 +60,8 @@ class DayCalendar extends Component {
   }
 
   componentDidMount() {
-    console.log('mounting')
     this.state.eventCreated = this.props.user.hasEvent;
     this.assignEvents();
-    if (this.state.eventsList) {
-      this.renderDay();
-    }
     this.setState({
       roomname: this.props.room.name.replace(/\s+/g, '')
     });
@@ -75,14 +71,11 @@ class DayCalendar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('updating', prevProps)
     if (!this.props.eventsLoaded) {
       this.props.loadEvents();
       this.assignEvents();
-      this.renderDay();
     }
     if (this.props.currDate.date() !== this.state.rowDate.date()) {
-      this.renderDay();
       this.setState({
         rowDate: this.props.currDate
       })
@@ -103,48 +96,18 @@ class DayCalendar extends Component {
     });
   }
 
-  toTime(idx) {
-    return moment({
-      year: this.props.currDate.year(),
-      month: this.props.currDate.month(),
-      date: this.props.currDate.date(),
-      hour: Math.floor(idx / 4) + 8,
-      minute: idx % 2 === 0 ? 0 : 30
-    }).toDate()
-  }
-
-  toIdx(time) {
-    return (time.getHours() - 8) * 4 + (time.getMinutes() === 0 ? 0 : 1);
-  }
-
-  fillTimeSlot(startTime, endTime) {
-    let startIdx = this.toIdx(startTime);
-    let endIdx = this.toIdx(endTime);
-    let initEventRow = this.state.eventRow.slice();
-    for (let i = startIdx; i < endIdx; i++) {
-      if (this.state.eventRow[i] === 1) {
-        this.state.eventRow = initEventRow.slice();
-        return false;
+  conflictCheck(start, end) {
+    const eventList = this.state.eventsList;
+    for (let i = 0; i < eventList.length; i++){
+      const e = eventList[i];
+      const eStart = moment(e.start);
+      const eEnd = moment(e.end);
+      if (start.isBetween(eStart, eEnd) || end.isBetween(eStart, eEnd) || eStart.isBetween(start, end) || eEnd.isBetween(start, end) || end.isSame(eEnd) || start.isSame(eStart)){
+        return true;
       }
-      this.state.eventRow[i] = 1;
     }
-    return true;
+    return false
   }
-
-  blockTodaysEvents() {
-    this.state.eventsList.forEach((event) => {
-      let start = event.start;
-      let end = event.end;
-      if (start.getDate() === this.props.currDate.date() && start.getMonth() === this.props.currDate.month() && start.getFullYear() === this.props.currDate.year()) {
-        this.fillTimeSlot(start, end);
-      }
-    })
-  }
-
-  resetEvents() {
-    this.state.eventRow = new Array(24).fill(0)
-  }
-
 
   renderDay() {
     this.resetEvents();

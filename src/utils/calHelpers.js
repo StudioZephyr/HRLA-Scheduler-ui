@@ -21,10 +21,11 @@ const calHelpers = {
       }
       let start = moment(slot.start).tz('America/Los_Angeles');
       let end = moment(slot.end).tz('America/Los_Angeles');
-      if (this.state.eventRow) {
-        var fill = this.fillTimeSlot(slot.start, slot.end);
+      let conflict;
+      if (this.props.calType === 'day') {
+        conflict = this.conflictCheck(start, end)
       }
-      if (this.state.eventRow && !fill) {
+      if (conflict) {
         alert('Please select a valid time');
       } else {
         this.setState({

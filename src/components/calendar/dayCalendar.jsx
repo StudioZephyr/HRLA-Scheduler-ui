@@ -82,10 +82,6 @@ class DayCalendar extends Component {
     }
   }
 
-  // componentWillReceiveProps() {
-  //   this.renderDay();
-  // }
-
   assignEvents() {
     let newList = this.props.eventList.toArray()
     newList = newList.map((event) => {

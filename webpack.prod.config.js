@@ -40,6 +40,17 @@ module.exports = {
         },
       },
       {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: '[path][name]-[hash:8].[ext]'
+            },
+          }
+        ]
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',

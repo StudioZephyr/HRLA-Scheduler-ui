@@ -3,6 +3,8 @@ const path = require('path');
 const HTMLPlugin = require('html-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
+
 
 const APP_DIR = path.resolve(__dirname, './src/index.jsx');
 const BUILD_DIR = path.resolve(__dirname, './dist');
@@ -38,6 +40,17 @@ module.exports = {
         },
       },
       {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: '[path][name]-[hash:8].[ext]'
+            },
+          }
+        ]
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',
@@ -47,6 +60,18 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
     new CleanPlugin(
       ['dist'],
       cleanOptions

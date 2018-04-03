@@ -1,0 +1,12 @@
+.legend-bar {
+  display: inline-flex;
+  width: 100%;
+}
+
+.legend-container {
+    width: 20%;
+}
+
+.btn {
+  margin: 3px;
+}

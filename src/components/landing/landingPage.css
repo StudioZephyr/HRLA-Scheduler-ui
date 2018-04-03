@@ -1,0 +1,30 @@
+/* img, .carousel {
+  width: '720px'!important;
+  height: '405px'!important;
+} */
+
+/* li {
+  color:
+} */
+
+.carousel-caption {
+  color: blue;
+}
+
+.welcome {
+  margin-left: 15%;
+  margin-right: 15%;
+  width: 70%;
+}
+
+h4 {
+  margin-left: 40%;
+  margin-right: 30%;
+  width: 40%;
+}
+
+.carouselContainer {
+  margin-top:20%;
+  margin-left:20%;
+  margin-right:20%;
+}

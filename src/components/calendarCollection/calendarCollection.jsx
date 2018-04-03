@@ -33,12 +33,10 @@ class CalendarCollection extends Component {
       slotView: 'booked',
       bookingText: 'Book a Room',
       socket: null
-      // eventCreated: false
     }
   }
 
   componentDidMount() {
-    console.log('SOCKET', this.props.socket)
     this.props.socket.removeAllListeners();
     this.props.socket.on('eventPosted', (event) => {
       this.props.recieveAddedEvent(event);
@@ -49,30 +47,30 @@ class CalendarCollection extends Component {
     this.props.socket.on('eventDeleted', (event) => {
       this.props.recieveDeleteEvent(event);
     })
-    this.props.getRooms()
+    this.props.getRooms();
 
 
     //overrides date control on toolbar
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[0]
-      .onclick = () => { this.dayReset() }
+      .onclick = () => { this.dayReset() };
 
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[1]
-      .onclick = () => { this.dayBack() }
+      .onclick = () => { this.dayBack() };
 
     document.getElementsByClassName('rbc-btn-group')[0]
       .getElementsByTagName('button')[2]
-      .onclick = () => { this.dayForward() }
+      .onclick = () => { this.dayForward() };
 
     //overrides view control on toolbar
     document.getElementsByClassName('rbc-btn-group')[1]
       .getElementsByTagName('button')[0]
-      .onclick = () => { this.changeView('week') }
+      .onclick = () => { this.changeView('week') };
 
     document.getElementsByClassName('rbc-btn-group')[1]
       .getElementsByTagName('button')[1]
-      .onclick = () => { this.changeView('day') }
+      .onclick = () => { this.changeView('day') };
 
   }
 
@@ -86,7 +84,7 @@ class CalendarCollection extends Component {
       this.props.loadRooms();  
       this.setState({
         eventsLoaded: true
-      })
+      });
     }
   }
 
@@ -175,8 +173,8 @@ const CalendarCollectionDispatch = (dispatch) => {
   return {
     getRooms: bindActionCreators(getRooms, dispatch),
     getEvents: bindActionCreators(getEvents, dispatch),
-    loadEvents: bindActionCreators(loadEvents, dispatch),
     loadRooms: bindActionCreators(loadRooms, dispatch),
+    loadEvents: bindActionCreators(loadEvents, dispatch),
     recieveAddedEvent: bindActionCreators(recieveAddedEvent, dispatch), 
     recieveUpdatedEvent: bindActionCreators(recieveUpdatedEvent, dispatch), 
     recieveDeleteEvent: bindActionCreators(recieveDeleteEvent, dispatch)

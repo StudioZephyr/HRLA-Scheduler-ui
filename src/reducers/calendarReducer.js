@@ -160,7 +160,10 @@ const calendarReducer = (state = initialState, action) => {
     }
 
     case `SOCKET_UPDATE`: {
-      const newEvents = updateEvent(action.payload, state);
+      const event = action.payload;
+      event.start = new Date(event.start);
+      event.end = new Date(event.end);
+      const newEvents = updateEvent(event, state);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

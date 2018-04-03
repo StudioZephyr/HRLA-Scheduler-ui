@@ -187,6 +187,7 @@ class CalendarCollection extends Component {
 const CalendarCollectionState = (state) => {
   return {
     user: state.auth.user,
+    id: state.auth.id,
     rooms: state.calendar.rooms,
     events: state.calendar.events,
     eventsLoaded: state.calendar.eventsLoaded,

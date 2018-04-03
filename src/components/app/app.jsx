@@ -5,16 +5,19 @@ import './app.css';
 
 import Routes from './routes.jsx';
 import Navbar from '../navbar/navbarView.jsx';
+import LandingNav from '../landing/landingNav.jsx';
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {
     return (
       <div className="container">
-        <Navbar />
+        {
+          this.props.location.pathname === '/' ? <LandingNav /> : <Navbar />
+        }
         <div id="app-main-view">
           <Routes />
         </div>

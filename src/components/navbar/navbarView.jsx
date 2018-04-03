@@ -26,10 +26,10 @@ class Navbar extends Component {
         <div className="collapse navbar-collapse d-flex flex-row-reverse" id="navbarAuthContent">
           <div className="navbar-nav">
             { 
-              !authorized &&
-              <span className="nav-item nav-link">
-                <Link to="/login">LOGIN</Link> 
-              </span> 
+              // !authorized &&
+              // <span className="nav-item nav-link">
+              //   <Link to="/login">LOGIN</Link> 
+              // </span> 
             }
             {
               authorized && 

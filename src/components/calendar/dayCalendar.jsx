@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
 import { loadEvents } from '../../actions/calendarActions';
+import { loadContacts } from '../../actions/contactActions';
 import calHelpers from '../../utils/calHelpers';
 
 import EditModal from './modals/eventEditModal.jsx';
@@ -79,6 +80,10 @@ class DayCalendar extends Component {
       this.setState({
         rowDate: this.props.currDate
       })
+    }
+    if (this.props.contactsUpdated) {
+      // $('[data-toggle="tooltip"]').tooltip();
+      this.props.loadContacts();
     }
   }
 
@@ -171,7 +176,8 @@ class DayCalendar extends Component {
           resetEventsRow={this.resetEventsRow}
           room={this.props.room.name}
         />
- 
+
+
         <EditModal
           start={this.state.selectedEvent.start}
           end={this.state.selectedEvent.end}
@@ -192,6 +198,9 @@ class DayCalendar extends Component {
           resetEvents={this.resetEventsRow}
           startText={this.state.startText}
           endText={this.state.endText}
+          participants={this.props.contacts.reduce((all, current)=> {
+            return all + current.name + ', '
+          }, '').slice(0, -2)}
 
         />
 
@@ -204,7 +213,9 @@ const DayCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
-    socket: state.calendar.socket
+    socket: state.calendar.socket,
+    contacts: state.contact.contacts,
+    contactsUpdated: state.contact.contactsUpdated
   };
 }
 
@@ -214,7 +225,8 @@ const DayCalendarDispatch = (dispatch) => {
     loadEvents: bindActionCreators(loadEvents, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
-    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)
+    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch),
+    loadContacts: bindActionCreators(loadContacts, dispatch),
   };
 }
 

@@ -113,7 +113,7 @@ class WeekCalendar extends Component {
     this.setState({
       filteredRoomNo: roomIdx
     }, () => {
-      this.flattenEvents();
+      this.filterRooms();
     });
   }
 

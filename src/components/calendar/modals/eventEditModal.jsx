@@ -23,7 +23,8 @@ const EditModal = (props) => {
     input,
     purposeText,
     startText,
-    endText
+    endText,
+    participants
   } = props;
 
   return (
@@ -41,7 +42,12 @@ const EditModal = (props) => {
               <h2>{desc}</h2>
               <form>
                 Description:<br />
-                <input id='eventNameInput' type='text' value={purpose} placeholder={purpose} onChange={handlePurposeChange} /> <br />
+                <input id='eventNameInput' type='text' value={purpose} placeholder={purpose} onChange={handlePurposeChange} />
+                <a data-toggle="tooltip" data-placement="right" 
+                data-original-title={participants}>
+                  Participants
+                </a>
+                <br />
                 Start:<br />
                 <input id='eventStartInput' type='text' value={startText} placeholder={formatTime(start)} onChange={handleStartChange} />
                 <div className='btn-group'>

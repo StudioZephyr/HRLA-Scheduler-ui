@@ -138,6 +138,7 @@ const calHelpers = {
   },
 
   editEvent: function (selectedEvent) {
+
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
       this.setState({
         selectedEvent: selectedEvent,
@@ -148,7 +149,9 @@ const calHelpers = {
         selectedEnd: moment(selectedEvent.end),
         selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY')
       }, () => {
+        this.props.getContacts(selectedEvent.UserId);
         $(`#${this.state.roomname}EditModal`).modal('show')
+        $('[data-toggle="tooltip"]').tooltip()
       })
     }
   },

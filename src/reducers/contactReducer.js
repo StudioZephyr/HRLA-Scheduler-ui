@@ -24,6 +24,11 @@ const contactsReducer = (state=initialState, action) => {
         contactsUpdated: false,
       });
     }
+    case `CONTACT_LOADED`: {
+      return Object.assign({}, state, {
+        contactsUpdated: false,
+      });
+    }
     case `CONTACT_FAILED`: {
       return state;
     }

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './eventEditModal.css';
+
 const EditModal = (props) => {
   const {
     start,

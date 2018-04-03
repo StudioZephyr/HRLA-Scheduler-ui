@@ -199,8 +199,8 @@ class DayCalendar extends Component {
           startText={this.state.startText}
           endText={this.state.endText}
           participants={this.props.contacts.reduce((all, current)=> {
-            return all + current.name + ', '
-          }, '').slice(0, -2)}
+            return all + current.name + '\n'
+          }, '').slice(0, -1)}
 
         />
 

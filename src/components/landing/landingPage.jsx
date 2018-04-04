@@ -14,7 +14,6 @@ class LandingPage extends Component {
   }
 
   render() {
-
     if (this.props.authorized) {
       return (
         <Redirect
@@ -25,39 +24,58 @@ class LandingPage extends Component {
       )
     } else {
       return (
-        <div>
-          <div className="welcome">
-            <h1>Hack Reactor Los Angeles Room Scheduler</h1>
-          </div>
-          <h4>Login to get started</h4>
-          <div className="carouselContainer"style={{ width: '60%', height: '33.75%' }}>
-            <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-              <ol className="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-              </ol>
-              <div className="carousel-inner">
-                <div className="carousel-item active">
-                  <img className="d-block w-100" src={img} alt="First slide" />
-                  <div className="carousel-caption d-none d-md-block">
-                    <p>Click and drag to create an event</p>
-                  </div>
-                </div>
-                <div className="carousel-item">
-                  <img className="d-block w-100" src={img2} alt="Second slide" />
-                  <div className="carousel-caption d-none d-md-block">
-                    <p className>Select your event to edit it</p>
-                  </div>
-                </div>
+        <div id="landingPage">
+          <div id="intro" className="component">
+            <div className="row justify-content-center">
+              <div className="col-lg-12 align-self-center">
+                <h4>Hack Reactor Los Angeles</h4>
+                <h1>Room Scheduler</h1>
               </div>
-              <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="sr-only">Previous</span>
-              </a>
-              <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="sr-only">Next</span>
-              </a>
+            </div>
+          </div>
+          <div id="appInfo" className="component">
+            <div className="component-header">
+              <p className="header-title">{'Schedule Rooms for your appointments, 1 <> 1, or group projects.'}</p>
+              <p className="header-detail">
+                The HRLA Scheduler makes it easy to keep track of ALL rooms and timeslots.
+                Schedule rooms to make sure your group stays on top of the timeline, to go over sprints, SCRUM, or
+                just to have some quality group time! The scheduler updates in real-time to reflect any changes made
+                to the calendar and/or timeslot!
+              </p>
+            </div>
+          </div>
+          <div id="appInfo-detail">
+            <div className="row appInfo-container">
+              <div className="col-lg-7 align-self-center">
+                <img className="appImage" src={img} />
+              </div>
+              <div className="col-lg-5 align-self-end">
+                <h4 className="appInfo-title">Schedule a Room</h4>
+                <p className="appInfo-detail">
+                  It's as easy as clicking and dragging. Make sure you don't overlap any existing timeslots, otherwise your timeslot
+                  will not be scheduled! Be aware that your timeslot is not 100% guaranteed in case of a HiR or Staff scheduling.
+                  Your timeslot will be scheuled in real-time and be reflected in the calendar.
+                </p>
+              </div>
+            </div>
+            <div className="row appInfo-container">
+              <div className="col-lg-5 align-self-end left-col">
+                <h4 className="appInfo-title">Edit Timeslots</h4>
+                <p className="appInfo-detail">
+                  You can edit your timeslots up until its scheduled time. A simple click will bring
+                  up a menu where you can edit the description, start and end time. Remember, make sure it does
+                  not overlap with any exisiting timeslot! Your changes will be reflected immediately as long
+                  as the edit is successful.
+                </p>
+              </div>
+              <div className="col-lg-7 align-self-center">
+                <img className="appImage" src={img2} />
+              </div>
+            </div>
+          </div>
+          <div id="aboutTeam" className="component">
+            <div className="component-header">
+              <p className="header-title">Contributors</p>
             </div>
           </div>
         </div>
@@ -72,8 +90,4 @@ const LandingPageState = (state) => {
   }
 }
 
-const LandingPageDispatch = (dispatch) => {
-
-}
-
-export default connect(LandingPageState, LandingPageDispatch)(LandingPage);
+export default connect(LandingPageState)(LandingPage);

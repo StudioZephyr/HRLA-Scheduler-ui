@@ -21,11 +21,20 @@ class LandingNav extends Component {
         </button>
         <div className="collapse navbar-collapse d-flex flex-row-reverse" id="navbarAuthContent">
           <div className="navbar-nav">
-            <span className="nav-item nav-link">
-
+            <span className="nav-item nav-link" onClick={(e) => {
+              e.preventDefault();
+              this.smoothScrollTo('appInfo');
+            }} >
+              <a href="">THE APP</a>
+            </span>
+            <span className="nav-item nav-link" onClick={(e) => {
+              e.preventDefault();
+              this.smoothScrollTo('aboutTeam');
+            }} >
+              <a href="">CONTRIBUTORS</a>
             </span>
             <span className="nav-item nav-link">
-              <Link to="/login">Login</Link>
+              <Link to="/login">LOGIN</Link>
             </span>
           </div>
         </div>

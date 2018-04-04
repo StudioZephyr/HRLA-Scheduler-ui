@@ -147,7 +147,17 @@ const calHelpers = {
         selectedEndAmPm: moment(selectedEvent.end).format('a'),
         selectedStart: moment(selectedEvent.start),
         selectedEnd: moment(selectedEvent.end),
-        selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY')
+        selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY'),
+        editAuthorized: true
+      }, () => {
+        this.props.getContacts(selectedEvent.UserId);
+        $(`#${this.state.roomname}EditModal`).modal('show')
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    } else {
+      this.setState({
+        selectedEvent: selectedEvent,
+        editAuthorized: false
       }, () => {
         this.props.getContacts(selectedEvent.UserId);
         $(`#${this.state.roomname}EditModal`).modal('show')
@@ -209,6 +219,12 @@ const calHelpers = {
       selectedEnd: moment(),
     })
   },
+
+  parseContacts() {
+    return this.props.contacts.reduce((all, current)=> {
+      return all + current.name + '\n'
+    }, '').slice(0, -1)
+  }
 
 }
 

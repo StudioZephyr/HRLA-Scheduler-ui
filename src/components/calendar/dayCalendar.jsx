@@ -40,7 +40,8 @@ class DayCalendar extends Component {
       eventsUpdated: false,
       purposeText: '',
       startText: '',
-      endText: ''
+      endText: '',
+      editAuthorized: false,
     }
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
     this.createEvent = calHelpers.createEvent.bind(this);
@@ -57,6 +58,7 @@ class DayCalendar extends Component {
     this.formatTime = calHelpers.formatTime.bind(this);
     this.saveChanges = calHelpers.saveChanges.bind(this);
     this.removeEvent = calHelpers.removeEvent.bind(this);
+    this.parseContacts = calHelpers.parseContacts.bind(this);
     
   }
 
@@ -82,7 +84,6 @@ class DayCalendar extends Component {
       })
     }
     if (this.props.contactsUpdated) {
-      // $('[data-toggle="tooltip"]').tooltip();
       this.props.loadContacts();
     }
   }
@@ -144,6 +145,12 @@ class DayCalendar extends Component {
     });
   }
 
+  parseContacts() {
+    return this.props.contacts.reduce((all, current)=> {
+      return all + current.name + '\n'
+    }, '').slice(0, -1)
+  }
+
   render() {
 
     return (
@@ -198,10 +205,8 @@ class DayCalendar extends Component {
           resetEvents={this.resetEventsRow}
           startText={this.state.startText}
           endText={this.state.endText}
-          participants={this.props.contacts.reduce((all, current)=> {
-            return all + current.name + '\n'
-          }, '').slice(0, -1)}
-
+          participants={this.parseContacts()}
+          editAuthorized={this.state.editAuthorized}
         />
 
       </div>

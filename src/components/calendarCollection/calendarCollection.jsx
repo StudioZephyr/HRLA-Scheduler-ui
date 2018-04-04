@@ -145,9 +145,8 @@ class CalendarCollection extends Component {
                   calType={this.state.calType}
                   eventList={events.get(0)}
                 />
-                {console.log(rooms)}
                 {rooms.map((x, i, arr) => {
-                  return(
+                  return (
                   <DayCalendar
                     room={x}
                     roomNo={i}
@@ -155,7 +154,6 @@ class CalendarCollection extends Component {
                     calType={this.state.calType}
                     slotView={this.state.slotView}
                     eventList={events.get(i)}
-                    // id={this.props.id}
                     getContacts={getContacts}
                   />
                 )
@@ -168,7 +166,7 @@ class CalendarCollection extends Component {
                   calType={this.state.calType}
                   eventsList={events}
                   roomArray={this.state.roomArray}
-                  // id={this.props.id}
+                  getContacts={getContacts}
                 />
               </div>
             :

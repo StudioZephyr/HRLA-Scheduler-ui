@@ -7,20 +7,12 @@
   color:
 } */
 
+#landingPage {
+  margin-top: -56px;
+}
+
 .carousel-caption {
   color: blue;
-}
-
-.welcome {
-  margin-left: 15%;
-  margin-right: 15%;
-  width: 70%;
-}
-
-h4 {
-  margin-left: 40%;
-  margin-right: 30%;
-  width: 40%;
 }
 
 .carouselContainer {
@@ -28,3 +20,61 @@ h4 {
   margin-left:20%;
   margin-right:20%;
 }
+
+#intro {
+  text-align: center;
+}
+
+.component {
+  height: 100vh;
+  width: 100%;
+}
+
+.component-header {
+  padding-top: 56px;
+  text-align: center;
+}
+
+.header-title {
+  padding-top: 10px;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.header-detail {
+  width: 80%;
+  margin: auto;
+  font-size: 0.9rem;
+}
+
+#appInfo-detail {
+  height: 100%;
+  margin-top: -480px;
+}
+
+#appInfo-detail .row {
+  height: unset;
+  max-height: 100%;
+}
+
+.left-col {
+  text-align: right;
+}
+
+.appInfo-container {
+  margin-top: 100px;
+}
+
+.appInfo-title {
+  font-size: 2rem;
+  font-style: italic;
+}
+
+.appInfo-detail {
+  font-size: 0.9rem;
+}
+
+.appImage {
+  width: 100%
+}
+

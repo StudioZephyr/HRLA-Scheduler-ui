@@ -157,6 +157,7 @@ const calHelpers = {
     } else {
       this.setState({
         selectedEvent: selectedEvent,
+        purpose: selectedEvent.title,
         editAuthorized: false
       }, () => {
         this.props.getContacts(selectedEvent.UserId);

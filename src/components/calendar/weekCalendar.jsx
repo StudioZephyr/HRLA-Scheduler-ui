@@ -87,7 +87,7 @@ class WeekCalendar extends Component {
     this.setState({
       eventsList: events
     }, () => {
-      this.filterRooms(this.state.filteredRoomNo)
+      this.filterRooms()
     });
   }
 
@@ -124,7 +124,8 @@ class WeekCalendar extends Component {
     });
   }
 
-  filterRooms(roomIdx) {
+  filterRooms() {
+    const roomIdx = this.state.filteredRoomNo
     if (typeof roomIdx === 'number') {
       const events = this.state.eventsList.filter((event) => {
         return event.roomNo === roomIdx;
@@ -144,10 +145,8 @@ class WeekCalendar extends Component {
   }
 
   render() {
-    console.log('LOOKIN IN RENDER', this.dayFormat)
     return (
       <div id={`weeks`} className='calendar'>
-        {console.log('LOOKING FOR DAYFORMAT', this.dayFormat)}
         {this.state.eventsList ?
           <BigCalendar
             selectable

@@ -51,7 +51,7 @@ const EditModal = (props) => {
                   <form>
                     Description:<br />
                     <input id='eventNameInput' type='text' value={purpose} placeholder={purpose} onChange={handlePurposeChange} />
-                    <a data-toggle="tooltip" data-placement="right"
+                    <a className='participants' data-toggle="tooltip" data-placement="right"
                       data-original-title={participants}>
                       Participants
                 </a>
@@ -107,11 +107,13 @@ const EditModal = (props) => {
                 :
 
 
-                <div>
+                <div className="selectedModal">
                   <h2>{desc}</h2>
-                  <h4>{`${formatTime(start)} ${start.toLocaleString().split(' ')[2]} - ${formatTime(end)} ${end.toLocaleString().split(' ')[2]}`}</h4>
+                  {start && 
+                  <h4 className="timeLength">{`${formatTime(start)} ${start.toLocaleString().split(' ')[2]} - ${formatTime(end)} ${end.toLocaleString().split(' ')[2]}`}</h4>
+                  }
                   <h4>{purpose}</h4>
-                  <a data-toggle="tooltip" data-placement="right"
+                  <a className="participants" data-toggle="tooltip" data-placement="right"
                     data-original-title={participants}>
                     Participants
                   </a>

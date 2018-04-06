@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Map, List } from 'immutable';
 import { addEvent, updateEvent, deleteEvent } from '../utils/calenderReducerHelpers.js';
 import io from 'socket.io-client/dist/socket.io.js';
@@ -172,6 +172,23 @@ const calendarReducer = (state = initialState, action) => {
 
     case `SOCKET_DELETE`: {
       const newEvents = deleteEvent(action.payload, state);
+      return Object.assign({}, state, {
+        events: newEvents,
+        eventsLoaded: false
+      });
+    }
+
+    case `SOCKET_EVENT_REFRESH`: {
+      const currentTime = moment().tz('America/Los_Angeles');
+      const newEvents = state.events.map((room) => {
+        return room.map((event) => {
+          if (!event.finished && currentTime > moment(event.end)) {
+            event.finished = true;
+          }
+          return event;
+        })
+      });
+      action.resolve(newEvents);
       return Object.assign({}, state, {
         events: newEvents,
         eventsLoaded: false

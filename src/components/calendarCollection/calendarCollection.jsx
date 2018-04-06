@@ -4,14 +4,14 @@ import { bindActionCreators } from 'redux';
 
 import { getEvents, getRooms, loadEvents, loadRooms } from '../../actions/calendarActions';
 import { getContacts } from '../../actions/contactActions';
-import { recieveAddedEvent, recieveUpdatedEvent, recieveDeleteEvent } from '../../actions/socketActions';
+import { refreshUser } from '../../actions/authActions';
+import { recieveAddedEvent, recieveUpdatedEvent, recieveDeleteEvent, recieveRefreshRequest } from '../../actions/socketActions';
 import DayCalendar from '../calendar/dayCalendar.jsx';
 import WeekCalendar from '../calendar/weekCalendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
-import { Promise } from 'bluebird';
 import io from 'socket.io-client/dist/socket.io.js';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -39,6 +39,10 @@ class CalendarCollection extends Component {
 
   componentDidMount() {
     this.props.socket.removeAllListeners();
+    this.props.recieveRefreshRequest();
+    this.props.socket.on('updateRequest', () => {
+      this.props.recieveRefreshRequest()
+    })
     this.props.socket.on('eventPosted', (event) => {
       this.props.recieveAddedEvent(event);
     })
@@ -183,7 +187,6 @@ class CalendarCollection extends Component {
 const CalendarCollectionState = (state) => {
   return {
     user: state.auth.user,
-    id: state.auth.id,
     rooms: state.calendar.rooms,
     events: state.calendar.events,
     eventsLoaded: state.calendar.eventsLoaded,
@@ -194,6 +197,7 @@ const CalendarCollectionState = (state) => {
 
 const CalendarCollectionDispatch = (dispatch) => {
   return {
+    refreshUser: bindActionCreators(refreshUser, dispatch),
     getRooms: bindActionCreators(getRooms, dispatch),
     getEvents: bindActionCreators(getEvents, dispatch),
     loadRooms: bindActionCreators(loadRooms, dispatch),
@@ -201,7 +205,8 @@ const CalendarCollectionDispatch = (dispatch) => {
     recieveAddedEvent: bindActionCreators(recieveAddedEvent, dispatch),
     recieveUpdatedEvent: bindActionCreators(recieveUpdatedEvent, dispatch),
     recieveDeleteEvent: bindActionCreators(recieveDeleteEvent, dispatch),
-    getContacts: bindActionCreators(getContacts, dispatch)
+    getContacts: bindActionCreators(getContacts, dispatch),
+    recieveRefreshRequest: bindActionCreators(recieveRefreshRequest, dispatch)
   }
 }
 

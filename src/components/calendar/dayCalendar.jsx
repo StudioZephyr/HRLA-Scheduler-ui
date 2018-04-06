@@ -3,7 +3,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
+import { postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
 import { loadEvents } from '../../actions/calendarActions';
 import { loadContacts } from '../../actions/contactActions';
 import calHelpers from '../../utils/calHelpers';
@@ -226,7 +226,7 @@ const DayCalendarState = (state) => {
 
 const DayCalendarDispatch = (dispatch) => {
   return {
-    refreshUser: bindActionCreators(refreshUser, dispatch),
+    
     loadEvents: bindActionCreators(loadEvents, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),

@@ -13,7 +13,7 @@ class Navbar extends Component {
   }
 
   render() {
-    const { authorized, logoutAction, type } = this.props;
+    const { authorized, logoutAction, type, userName } = this.props;
 
     return (
       <nav className="navbar fixed-top navbar-expand-lg bg-primary navbar-text-color">
@@ -23,6 +23,7 @@ class Navbar extends Component {
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarAuthContent" aria-controls="navbarAuthContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
+          <span className="nav-item nav-link nav-name">{userName}</span>
         <div className="collapse navbar-collapse d-flex flex-row-reverse" id="navbarAuthContent">
           <div className="navbar-nav">
             { 
@@ -60,6 +61,7 @@ const NavbarState = (state) => {
   return {
     authorized: state.auth.authorized,
     type: state.auth.user.type,
+    userName: state.auth.user.groupName
   }
 };
 

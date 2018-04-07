@@ -77,6 +77,31 @@ class LandingPage extends Component {
             <div className="component-header">
               <p className="header-title">Contributors</p>
             </div>
+            <div className="about-body">
+              <div className="team-content">
+                <div className="row justify-content-center">
+                  <div className="col-lg-auto team-name">
+                    <h2>Studio Zephyr</h2>
+                    <a href="https://github.com/StudioZephyr">GitHub</a>
+                  </div>
+                  <div className="col-lg-auto team-info">
+                    <div className="row">
+                      <div className="col-lg-auto team-member">
+                        <h4>Daniel Chong</h4>
+                        <p>Software Engineer</p>
+                      </div>
+                      <div className="col-lg-auto team-member">
+                        <h4>Gabriel Katz</h4>
+                        <p>Software Engineer</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="contribute-contact">
+                <p>Contact your friendly HiRs or a Tech Mentor if you would like to contribute!</p>
+              </div>
+            </div>
           </div>
         </div>
       )

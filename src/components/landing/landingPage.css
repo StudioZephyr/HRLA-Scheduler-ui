@@ -78,3 +78,50 @@
   width: 100%
 }
 
+#aboutTeam .row {
+  height: auto;
+}
+
+.about-body {
+  margin-top: 80px;
+  height: 70%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.team-name {
+  text-align: right;
+}
+
+.team-info {
+  align-self: center;
+}
+
+.team-name h2 {
+  font-size: 2.5rem;
+  font-style: italic;
+  font-weight: 300;
+}
+
+.team-name a {
+  color: black;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.team-member h4 {
+  font-style: italic;
+}
+
+.team-member p {
+  margin-bottom: 0;
+}
+
+.contribute-contact {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}

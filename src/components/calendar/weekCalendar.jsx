@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
 import { loadEvents } from '../../actions/calendarActions';
+import { loadContacts } from '../../actions/contactActions';
 import calHelpers from '../../utils/calHelpers';
 
 import EditModal from './modals/eventEditModal.jsx';
@@ -40,8 +41,10 @@ class WeekCalendar extends Component {
       roomSelected: false,
       colors: ['#3174B6', '#B531B6', '#B67331', '#31B631', '#31B6AF', '#B63131', '#E1F5CE', '#F5CFCE', '#E2CEF5'],
       shownEvents: [],
-      filteredRoomNo: null
+      filteredRoomNo: null,
+      editAuthorized: false,
     }
+
     this.createEvent = calHelpers.createEvent.bind(this);
     this.editEvent = calHelpers.editEvent.bind(this);
     this.selectRange = calHelpers.selectRange.bind(this);
@@ -59,6 +62,7 @@ class WeekCalendar extends Component {
     this.eventStyles = this.eventStyles.bind(this);
     this.filterRooms = this.filterRooms.bind(this);
     this.selectRoomFilter = this.selectRoomFilter.bind(this);
+    this.parseContacts = calHelpers.parseContacts.bind(this);
   }
 
   componentDidMount() {
@@ -68,6 +72,9 @@ class WeekCalendar extends Component {
   componentDidUpdate() {
     if (!this.props.eventsLoaded) {
       this.flattenEvents();
+    }
+    if (this.props.contactsUpdated) {
+      this.props.loadContacts();
     }
   }
 
@@ -80,7 +87,7 @@ class WeekCalendar extends Component {
     this.setState({
       eventsList: events
     }, () => {
-      this.filterRooms(this.state.filteredRoomNo)
+      this.filterRooms()
     });
   }
 
@@ -113,11 +120,12 @@ class WeekCalendar extends Component {
     this.setState({
       filteredRoomNo: roomIdx
     }, () => {
-      this.flattenEvents();
+      this.filterRooms();
     });
   }
 
-  filterRooms(roomIdx) {
+  filterRooms() {
+    const roomIdx = this.state.filteredRoomNo
     if (typeof roomIdx === 'number') {
       const events = this.state.eventsList.filter((event) => {
         return event.roomNo === roomIdx;
@@ -137,10 +145,8 @@ class WeekCalendar extends Component {
   }
 
   render() {
-    console.log('LOOKIN IN RENDER', this.dayFormat)
     return (
       <div id={`weeks`} className='calendar'>
-        {console.log('LOOKING FOR DAYFORMAT', this.dayFormat)}
         {this.state.eventsList ?
           <BigCalendar
             selectable
@@ -195,6 +201,8 @@ class WeekCalendar extends Component {
           removeEvent={this.removeEvent}
           saveChanges={this.saveChanges}
           resetEvents={this.resetSelected}
+          participants={this.parseContacts()}
+          editAuthorized={this.state.editAuthorized}
         />
 
         <Legend
@@ -213,7 +221,9 @@ const WeekCalendarState = (state) => {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
     rooms: state.calendar.rooms,
-    socket: state.calendar.socket
+    socket: state.calendar.socket,
+    contacts: state.contact.contacts,
+    contactsUpdated: state.contact.contactsUpdated
   };
 }
 
@@ -223,7 +233,8 @@ const WeekCalendarDispatch = (dispatch) => {
     loadEvents: bindActionCreators(loadEvents, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
-    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)
+    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch),
+    loadContacts: bindActionCreators(loadContacts, dispatch),
   };
 }
 

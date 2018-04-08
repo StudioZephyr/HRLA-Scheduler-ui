@@ -138,6 +138,7 @@ const calHelpers = {
   },
 
   editEvent: function (selectedEvent) {
+
     if (this.props.user.id === selectedEvent.UserId || this.props.user.type === 'admin') {
       this.setState({
         selectedEvent: selectedEvent,
@@ -146,9 +147,22 @@ const calHelpers = {
         selectedEndAmPm: moment(selectedEvent.end).format('a'),
         selectedStart: moment(selectedEvent.start),
         selectedEnd: moment(selectedEvent.end),
-        selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY')
+        selectedDate: moment(selectedEvent.start).format('MM-DD-YYYY'),
+        editAuthorized: true
       }, () => {
+        this.props.getContacts(selectedEvent.UserId);
         $(`#${this.state.roomname}EditModal`).modal('show')
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    } else {
+      this.setState({
+        selectedEvent: selectedEvent,
+        purpose: selectedEvent.title,
+        editAuthorized: false
+      }, () => {
+        this.props.getContacts(selectedEvent.UserId);
+        $(`#${this.state.roomname}EditModal`).modal('show')
+        $('[data-toggle="tooltip"]').tooltip()
       })
     }
   },
@@ -206,6 +220,12 @@ const calHelpers = {
       selectedEnd: moment(),
     })
   },
+
+  parseContacts() {
+    return this.props.contacts.reduce((all, current)=> {
+      return all + current.name + '\n'
+    }, '').slice(0, -1)
+  }
 
 }
 

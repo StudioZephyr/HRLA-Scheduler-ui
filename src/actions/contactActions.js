@@ -46,4 +46,8 @@ const deleteContact = (id) => (dispatch) => {
     });
 };
 
-export { getContacts, addContact, updateContact, deleteContact };
+const loadContacts = () => (dispatch) => {
+  dispatch({ type: 'CONTACT_LOADED' })
+}
+
+export { getContacts, addContact, updateContact, deleteContact, loadContacts };

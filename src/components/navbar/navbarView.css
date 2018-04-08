@@ -11,3 +11,8 @@
 .navbar-nav span {
   margin: 0 5px;
 }
+
+.nav-name {
+  text-decoration: underline;
+  color: #ddd;
+}

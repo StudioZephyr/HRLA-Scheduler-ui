@@ -40,6 +40,22 @@ const authReducer = (state=initialState, action) => {
     case 'USER_RETRIEVAL_FAILED': {
       return state;
     }
+    case'SOCKET_USER_REFRESH': {
+      const events= action.events;
+      let hasEvent = false;
+      events.forEach((room) => {
+        room.forEach((event) => {
+          if ( !event.finished && event.UserId === state.user.id ) {
+            hasEvent = true;
+          }
+        })
+      })
+      return Object.assign({}, state, {
+        user: Object.assign({}, state.user, {
+          hasEvent: hasEvent
+        })
+      });
+    }
     default: {
       return state;
     }

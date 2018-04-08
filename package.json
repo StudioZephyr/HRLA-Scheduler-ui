@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
     "localforage": "^1.5.7",

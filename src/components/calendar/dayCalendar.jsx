@@ -3,8 +3,9 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { refreshUser, postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
+import { postAndRefresh, updateAndRefresh, deleteAndRefresh } from '../../actions/authActions';
 import { loadEvents } from '../../actions/calendarActions';
+import { loadContacts } from '../../actions/contactActions';
 import calHelpers from '../../utils/calHelpers';
 
 import EditModal from './modals/eventEditModal.jsx';
@@ -39,7 +40,8 @@ class DayCalendar extends Component {
       eventsUpdated: false,
       purposeText: '',
       startText: '',
-      endText: ''
+      endText: '',
+      editAuthorized: false,
     }
     this.state.selectedEvent = { start: this.state.selectedStart, end: this.state.selectedStart }
     this.createEvent = calHelpers.createEvent.bind(this);
@@ -56,6 +58,7 @@ class DayCalendar extends Component {
     this.formatTime = calHelpers.formatTime.bind(this);
     this.saveChanges = calHelpers.saveChanges.bind(this);
     this.removeEvent = calHelpers.removeEvent.bind(this);
+    this.parseContacts = calHelpers.parseContacts.bind(this);
     
   }
 
@@ -79,6 +82,9 @@ class DayCalendar extends Component {
       this.setState({
         rowDate: this.props.currDate
       })
+    }
+    if (this.props.contactsUpdated) {
+      this.props.loadContacts();
     }
   }
 
@@ -139,6 +145,12 @@ class DayCalendar extends Component {
     });
   }
 
+  parseContacts() {
+    return this.props.contacts.reduce((all, current)=> {
+      return all + current.name + '\n'
+    }, '').slice(0, -1)
+  }
+
   render() {
 
     return (
@@ -171,7 +183,8 @@ class DayCalendar extends Component {
           resetEventsRow={this.resetEventsRow}
           room={this.props.room.name}
         />
- 
+
+
         <EditModal
           start={this.state.selectedEvent.start}
           end={this.state.selectedEvent.end}
@@ -192,7 +205,8 @@ class DayCalendar extends Component {
           resetEvents={this.resetEventsRow}
           startText={this.state.startText}
           endText={this.state.endText}
-
+          participants={this.parseContacts()}
+          editAuthorized={this.state.editAuthorized}
         />
 
       </div>
@@ -204,17 +218,20 @@ const DayCalendarState = (state) => {
   return {
     user: state.auth.user,
     eventsLoaded: state.calendar.eventsLoaded,
-    socket: state.calendar.socket
+    socket: state.calendar.socket,
+    contacts: state.contact.contacts,
+    contactsUpdated: state.contact.contactsUpdated
   };
 }
 
 const DayCalendarDispatch = (dispatch) => {
   return {
-    refreshUser: bindActionCreators(refreshUser, dispatch),
+    
     loadEvents: bindActionCreators(loadEvents, dispatch),
     postAndRefresh: bindActionCreators(postAndRefresh, dispatch),
     updateAndRefresh: bindActionCreators(updateAndRefresh, dispatch),
-    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch)
+    deleteAndRefresh: bindActionCreators(deleteAndRefresh, dispatch),
+    loadContacts: bindActionCreators(loadContacts, dispatch),
   };
 }
 

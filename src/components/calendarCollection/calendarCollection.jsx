@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { getEvents, getRooms, loadEvents, loadRooms } from '../../actions/calendarActions';
-import { recieveAddedEvent, recieveUpdatedEvent, recieveDeleteEvent } from '../../actions/socketActions';
+import { getContacts } from '../../actions/contactActions';
+import { refreshUser } from '../../actions/authActions';
+import { recieveAddedEvent, recieveUpdatedEvent, recieveDeleteEvent, recieveRefreshRequest } from '../../actions/socketActions';
 import DayCalendar from '../calendar/dayCalendar.jsx';
 import WeekCalendar from '../calendar/weekCalendar.jsx';
 
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import axios from 'axios';
-import { Promise } from 'bluebird';
 import io from 'socket.io-client/dist/socket.io.js';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -38,6 +39,10 @@ class CalendarCollection extends Component {
 
   componentDidMount() {
     this.props.socket.removeAllListeners();
+    this.props.recieveRefreshRequest();
+    this.props.socket.on('updateRequest', () => {
+      this.props.recieveRefreshRequest()
+    })
     this.props.socket.on('eventPosted', (event) => {
       this.props.recieveAddedEvent(event);
     })
@@ -78,10 +83,10 @@ class CalendarCollection extends Component {
     if (this.props.rooms.length !== prevProps.rooms.length) {
       this.props.getEvents()
     }
-    
-    if (!this.props.roomsLoaded && this.props.events.length !== prevProps.events.length ) {
+
+    if (!this.props.roomsLoaded && this.props.events.length !== prevProps.events.length) {
       let events = this.props.events;
-      this.props.loadRooms();  
+      this.props.loadRooms();
       this.setState({
         eventsLoaded: true
       });
@@ -114,7 +119,7 @@ class CalendarCollection extends Component {
 
 
   render() {
-    const { events, rooms, eventsLoaded } = this.props;
+    const { events, rooms, eventsLoaded, getContacts } = this.props;
     if (this.state.eventsLoaded) {
     }
     return (
@@ -138,14 +143,35 @@ class CalendarCollection extends Component {
             this.state.calType === 'day' ?
               <div id='calendars'>
                 {/* change to toolbarcalendar component */}
-                <DayCalendar room={{ name: 'time' }} currDate={this.state.currDay} calType={this.state.calType} eventList={events.get(0)} />
+                <DayCalendar
+                  room={{ name: 'time' }}
+                  currDate={this.state.currDay}
+                  calType={this.state.calType}
+                  eventList={events.get(0)}
+                />
                 {rooms.map((x, i, arr) => {
-                  return <DayCalendar room={x} roomNo = {i} currDate={this.state.currDay} calType={this.state.calType} slotView={this.state.slotView} eventList={events.get(i)} />
+                  return (
+                  <DayCalendar
+                    room={x}
+                    roomNo={i}
+                    currDate={this.state.currDay}
+                    calType={this.state.calType}
+                    slotView={this.state.slotView}
+                    eventList={events.get(i)}
+                    getContacts={getContacts}
+                  />
+                )
                 })}
               </div>
               :
               <div id='weekCalendar'>
-                <WeekCalendar currDate={this.state.currDay} calType={this.state.calType} eventsList={events} roomArray={this.state.roomArray} />
+                <WeekCalendar
+                  currDate={this.state.currDay}
+                  calType={this.state.calType}
+                  eventsList={events}
+                  roomArray={this.state.roomArray}
+                  getContacts={getContacts}
+                />
               </div>
             :
             <div>
@@ -161,23 +187,27 @@ class CalendarCollection extends Component {
 const CalendarCollectionState = (state) => {
   return {
     user: state.auth.user,
+    id: state.auth.id,
     rooms: state.calendar.rooms,
     events: state.calendar.events,
     eventsLoaded: state.calendar.eventsLoaded,
     roomsLoaded: state.calendar.roomsLoaded,
-    socket: state.calendar.socket
+    socket: state.calendar.socket,
   };
 }
 
 const CalendarCollectionDispatch = (dispatch) => {
   return {
+    refreshUser: bindActionCreators(refreshUser, dispatch),
     getRooms: bindActionCreators(getRooms, dispatch),
     getEvents: bindActionCreators(getEvents, dispatch),
     loadRooms: bindActionCreators(loadRooms, dispatch),
     loadEvents: bindActionCreators(loadEvents, dispatch),
-    recieveAddedEvent: bindActionCreators(recieveAddedEvent, dispatch), 
-    recieveUpdatedEvent: bindActionCreators(recieveUpdatedEvent, dispatch), 
-    recieveDeleteEvent: bindActionCreators(recieveDeleteEvent, dispatch)
+    recieveAddedEvent: bindActionCreators(recieveAddedEvent, dispatch),
+    recieveUpdatedEvent: bindActionCreators(recieveUpdatedEvent, dispatch),
+    recieveDeleteEvent: bindActionCreators(recieveDeleteEvent, dispatch),
+    getContacts: bindActionCreators(getContacts, dispatch),
+    recieveRefreshRequest: bindActionCreators(recieveRefreshRequest, dispatch)
   }
 }
 
